@@ -106,6 +106,12 @@ pnpm test        # vitest (offline; covers every compute fn + report assembly)
 pnpm build       # tsc → dist/
 ```
 
+**Coverage (ratchet).** Measured 2026-06-29 (`vitest run --coverage`, `src/`):
+**statements 67.38%, branches 77.96%, functions 66.66%, lines 67.38%**. Vitest
+thresholds are set just below those numbers in `vitest.config.ts`, and `pnpm test`
+runs with `--coverage`, so the floor can only rise. Rationale: ai-starter
+`playbook/testing-and-coverage.md`.
+
 Scaffolded on the `ai-starter` Node standard: sequential CI gates
 (typecheck → lint → test → build), a `pre-push` hook mirroring CI, a committed
 secret-scan test, Biome, and Vitest. `pnpm install` wires the git hooks path

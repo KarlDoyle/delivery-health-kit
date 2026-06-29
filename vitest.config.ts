@@ -20,9 +20,16 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "html"],
       exclude: ["dist/**", "build/**", "scripts/**", "tests/**", "**/*.config.*", "**/*.d.ts"],
-      // Turn these on for your core/safety module once it exists:
-      // include: ["src/core/**/*.ts"],
-      // thresholds: { lines: 90, functions: 90, branches: 85 },
+      // Ratchet, not a stretch goal. Set at/just-below the coverage measured on
+      // 2026-06-29 (stmts 67.38 / branch 77.96 / funcs 66.66 / lines 67.38) so the
+      // repo is green now and coverage can only go up. Raise these as you add
+      // tests; never lower them. See ai-starter playbook/testing-and-coverage.md.
+      thresholds: {
+        statements: 65,
+        branches: 75,
+        functions: 64,
+        lines: 65,
+      },
     },
   },
 });
