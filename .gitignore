@@ -1,0 +1,20 @@
+# --- Node ---
+node_modules/
+dist/
+build/
+coverage/
+.next/
+*.tsbuildinfo
+
+# --- Env / secrets (never commit real values) ---
+.env
+.env.*
+!.env.example
+
+# --- OS ---
+.DS_Store
+
+# --- Delivery Health Kit ---
+# Generated reports (the offline demo writes here)
+output/
+*.tsbuildinfo

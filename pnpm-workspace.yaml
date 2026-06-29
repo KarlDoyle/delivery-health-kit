@@ -1,0 +1,6 @@
+# Approve the build scripts of these dev dependencies so `pnpm install` exits 0.
+# Both ship prebuilt platform binaries via optional deps; approving silences the
+# pnpm "ignored build scripts" gate that otherwise fails install (and thus CI).
+allowBuilds:
+  '@biomejs/biome': true
+  esbuild: true

@@ -1,0 +1,9 @@
+{
+  "team": "Team Atlas",
+  "asOf": "2026-06-29T12:00:00Z",
+  "periodDays": 14,
+  "repos": ["acme/web", "acme/api"],
+  "teamMembers": ["alice", "bob", "carol", "dave"],
+  "jiraProjectKey": "ATL",
+  "sprintName": "Atlas Sprint 24"
+}

@@ -1,0 +1,32 @@
+{
+  "name": "delivery-health-kit",
+  "version": "0.1.0",
+  "description": "One CLI that pulls delivery signals (GitHub / Jira / Slack) and produces an EM report — DORA + sprint + support metrics → Markdown / Slack. Runs fully offline against committed synthetic fixtures.",
+  "type": "module",
+  "license": "MIT",
+  "packageManager": "pnpm@11.5.2",
+  "bin": {
+    "dhk": "./dist/index.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dhk": "node --import tsx/esm src/index.ts",
+    "report": "node --import tsx/esm src/index.ts report --offline",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "build": "tsc -p tsconfig.build.json",
+    "prepare": "git config core.hooksPath .githooks || true"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

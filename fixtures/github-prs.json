@@ -1,0 +1,112 @@
+[
+  {
+    "repo": "web",
+    "number": 4101,
+    "author": "alice",
+    "createdAt": "2026-06-17T09:00:00Z",
+    "mergedAt": "2026-06-17T15:30:00Z",
+    "additions": 120,
+    "deletions": 30,
+    "firstReviewAt": "2026-06-17T11:00:00Z"
+  },
+  {
+    "repo": "web",
+    "number": 4108,
+    "author": "bob",
+    "createdAt": "2026-06-18T13:00:00Z",
+    "mergedAt": "2026-06-19T10:00:00Z",
+    "additions": 60,
+    "deletions": 14,
+    "firstReviewAt": "2026-06-18T16:30:00Z"
+  },
+  {
+    "repo": "api",
+    "number": 2207,
+    "author": "carol",
+    "createdAt": "2026-06-20T08:30:00Z",
+    "mergedAt": "2026-06-20T18:00:00Z",
+    "additions": 240,
+    "deletions": 80,
+    "firstReviewAt": "2026-06-20T13:00:00Z"
+  },
+  {
+    "repo": "api",
+    "number": 2210,
+    "author": "dave",
+    "createdAt": "2026-06-22T10:00:00Z",
+    "mergedAt": "2026-06-23T09:00:00Z",
+    "additions": 45,
+    "deletions": 5,
+    "firstReviewAt": "2026-06-22T14:00:00Z"
+  },
+  {
+    "repo": "web",
+    "number": 4120,
+    "author": "alice",
+    "createdAt": "2026-06-24T09:00:00Z",
+    "mergedAt": "2026-06-24T12:15:00Z",
+    "additions": 30,
+    "deletions": 10,
+    "firstReviewAt": "2026-06-24T10:30:00Z"
+  },
+  {
+    "repo": "web",
+    "number": 4125,
+    "author": "bob",
+    "createdAt": "2026-06-25T11:00:00Z",
+    "mergedAt": "2026-06-26T16:00:00Z",
+    "additions": 320,
+    "deletions": 110,
+    "firstReviewAt": "2026-06-26T09:30:00Z"
+  },
+  {
+    "repo": "api",
+    "number": 2218,
+    "author": "carol",
+    "createdAt": "2026-06-27T09:00:00Z",
+    "mergedAt": "2026-06-27T17:00:00Z",
+    "additions": 90,
+    "deletions": 20,
+    "firstReviewAt": "2026-06-27T12:00:00Z"
+  },
+  {
+    "repo": "api",
+    "number": 2221,
+    "author": "dave",
+    "createdAt": "2026-06-28T10:00:00Z",
+    "mergedAt": "2026-06-28T14:30:00Z",
+    "additions": 15,
+    "deletions": 3,
+    "firstReviewAt": null
+  },
+  {
+    "repo": "web",
+    "number": 4090,
+    "author": "alice",
+    "createdAt": "2026-06-01T09:00:00Z",
+    "mergedAt": "2026-06-02T09:00:00Z",
+    "additions": 50,
+    "deletions": 5,
+    "firstReviewAt": "2026-06-01T12:00:00Z"
+  },
+  {
+    "repo": "web",
+    "number": 4130,
+    "author": "external-contributor",
+    "createdAt": "2026-06-26T09:00:00Z",
+    "mergedAt": "2026-06-26T18:00:00Z",
+    "additions": 200,
+    "deletions": 40,
+    "firstReviewAt": "2026-06-26T12:00:00Z"
+  },
+  {
+    "repo": "api",
+    "number": 2225,
+    "author": "carol",
+    "createdAt": "2026-06-28T09:00:00Z",
+    "mergedAt": null,
+    "additions": 70,
+    "deletions": 10,
+    "firstReviewAt": null
+  }
+]

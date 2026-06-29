@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Pre-push gate (Node) — the ai-starter standard.
+#
+# Runs the same checks CI runs, locally, before code leaves the machine:
+#   1. typecheck
+#   2. tests (includes tests/secret-scan.test.ts)
+# Blocks the push on failure so drift can't reach the remote.
+#
+# Enabled via `git config core.hooksPath .githooks`, set automatically by the
+# package.json `prepare` script on install.
+#
+# Skip in an emergency with `git push --no-verify`.
+
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+# Pick a package manager that's actually installed.
+if command -v pnpm >/dev/null 2>&1; then
+  PM="pnpm"
+elif command -v npm >/dev/null 2>&1; then
+  PM="npm run"
+else
+  echo "pre-push: no pnpm/npm found — skipping local gate (CI still enforces)." >&2
+  exit 0
+fi
+
+# Robust no-op: without installed deps the scripts can't run. Don't hard-block a
+# fresh clone that hasn't installed yet — CI is the backstop.
+if [ ! -d node_modules ]; then
+  echo "pre-push: node_modules missing — run install first; skipping gate." >&2
+  exit 0
+fi
+
+echo "pre-push: typecheck + tests…"
+
+if ! $PM typecheck; then
+  echo "pre-push: typecheck failed — push aborted." >&2
+  exit 1
+fi
+
+if ! $PM test; then
+  echo "pre-push: tests failed — push aborted." >&2
+  exit 1
+fi
+
+echo "pre-push: OK."

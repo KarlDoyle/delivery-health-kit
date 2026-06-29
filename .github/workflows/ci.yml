@@ -1,0 +1,48 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+# Sequential quality gates — cheapest, fastest signal first; each step only runs
+# if the previous one passed. This is the same order the local pre-push hook
+# runs, so "green here" means "green there". Lifted from moss/relay and
+# generalised. Target: a fast, boring, always-the-same pipeline.
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # 1. Types — fastest failure.
+      - name: Typecheck
+        run: pnpm typecheck
+
+      # 2. Lint + format check (biome).
+      - name: Lint
+        run: pnpm lint
+
+      # 3. Tests — unit + the secret-scan boundary test.
+      - name: Test
+        run: pnpm test
+
+      # 4. Build last — the most expensive step.
+      - name: Build
+        run: pnpm build

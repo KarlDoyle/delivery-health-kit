@@ -1,0 +1,74 @@
+[
+  {
+    "requesterRole": "Customer",
+    "firstResponseMinutes": 12,
+    "resolutionStatus": "Resolved",
+    "tags": ["billing", "login"]
+  },
+  {
+    "requesterRole": "Customer",
+    "firstResponseMinutes": 35,
+    "resolutionStatus": "Resolved",
+    "tags": ["api-error"]
+  },
+  {
+    "requesterRole": "Partner",
+    "firstResponseMinutes": 48,
+    "resolutionStatus": "Resolved",
+    "tags": ["integration"]
+  },
+  {
+    "requesterRole": "Internal",
+    "firstResponseMinutes": 8,
+    "resolutionStatus": "Resolved",
+    "tags": ["deploy"]
+  },
+  {
+    "requesterRole": "Customer",
+    "firstResponseMinutes": 95,
+    "resolutionStatus": "Resolved",
+    "tags": ["billing"]
+  },
+  {
+    "requesterRole": "Customer",
+    "firstResponseMinutes": 22,
+    "resolutionStatus": "Resolved",
+    "tags": ["login"]
+  },
+  {
+    "requesterRole": "Partner",
+    "firstResponseMinutes": 310,
+    "resolutionStatus": "Resolved",
+    "tags": ["integration", "api-error"]
+  },
+  {
+    "requesterRole": "Customer",
+    "firstResponseMinutes": 60,
+    "resolutionStatus": "Resolved",
+    "tags": ["billing"]
+  },
+  {
+    "requesterRole": "Internal",
+    "firstResponseMinutes": 18,
+    "resolutionStatus": "Resolved",
+    "tags": ["deploy"]
+  },
+  {
+    "requesterRole": "Customer",
+    "firstResponseMinutes": null,
+    "resolutionStatus": "Unanswered",
+    "tags": ["api-error"]
+  },
+  {
+    "requesterRole": "Customer",
+    "firstResponseMinutes": null,
+    "resolutionStatus": "Unanswered",
+    "tags": ["login"]
+  },
+  {
+    "requesterRole": "Partner",
+    "firstResponseMinutes": 280,
+    "resolutionStatus": "Open",
+    "tags": ["integration"]
+  }
+]
