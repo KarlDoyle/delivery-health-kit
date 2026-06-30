@@ -3,16 +3,23 @@ import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { type ILogger, type LogLevel, createLogger, createSilentLogger } from "./logger.js";
 import {
+  type RiskyTicketInput,
+  computeRiskyTickets,
+  renderRiskyTicketMarkdown,
+} from "./reads/risky-ticket.js";
+import {
   type SprintInput,
   computeSprintHealth,
   renderSprintHealthMarkdown,
 } from "./reads/sprint-health.js";
+import { computeSupportDrag, renderSupportDragMarkdown } from "./reads/support-drag.js";
 import { type AssembleInput, assembleReport } from "./report/assemble.js";
 import { renderMarkdown, renderScorecardMarkdown } from "./report/markdown.js";
 import { assembleScorecard } from "./report/scorecard.js";
 import { renderScorecardSlack, renderSlackBlocks } from "./report/slack.js";
 import { loadFixtures, loadScorecardFixtures } from "./sources/fixtures.js";
 import { type GitHubLiveConfig, fetchGitHubPRs } from "./sources/github.js";
+import type { SupportThread } from "./sources/support.js";
 import type { DeliveryReport, DeliveryScorecard } from "./types.js";
 
 export interface ParsedArgs {
@@ -46,7 +53,9 @@ const HELP = `Delivery Health Kit (dhk)
 Usage:
   dhk report [options]        Build the consolidated EM report (one team)
   dhk scorecard [options]     Compare many teams in one ranked scorecard
-  dhk sprint-health [options] The lead "read": verdict + scorecard + flags
+  dhk sprint-health [options] Read 1: sprint verdict + scorecard + flags
+  dhk support-drag [options]  Read 2: is this team a hidden help desk?
+  dhk risky-ticket [options]  Read 4: the 3–5 tickets worth raising, blameless
 
 Options:
   --offline                 Use committed synthetic fixtures (default)
@@ -210,6 +219,40 @@ export async function runSprintHealth(flags: Record<string, string | boolean>): 
   return output;
 }
 
+export async function runRiskyTicket(flags: Record<string, string | boolean>): Promise<string> {
+  const inPath =
+    typeof flags.in === "string"
+      ? flags.in
+      : fileURLToPath(new URL("../fixtures/risky-tickets.json", import.meta.url));
+  const tickets = JSON.parse(await readFile(inPath, "utf8")) as RiskyTicketInput[];
+  const read = computeRiskyTickets(tickets);
+  const format = typeof flags.format === "string" ? flags.format : "markdown";
+  const output =
+    format === "json" ? JSON.stringify(read, null, 2) : renderRiskyTicketMarkdown(read);
+  if (typeof flags.out === "string") {
+    await mkdir(dirname(flags.out), { recursive: true });
+    await writeFile(flags.out, output, "utf8");
+  }
+  return output;
+}
+
+export async function runSupportDrag(flags: Record<string, string | boolean>): Promise<string> {
+  const inPath =
+    typeof flags.in === "string"
+      ? flags.in
+      : fileURLToPath(new URL("../fixtures/support-drag.json", import.meta.url));
+  const threads = JSON.parse(await readFile(inPath, "utf8")) as SupportThread[];
+  const read = computeSupportDrag(threads);
+  const format = typeof flags.format === "string" ? flags.format : "markdown";
+  const output =
+    format === "json" ? JSON.stringify(read, null, 2) : renderSupportDragMarkdown(read);
+  if (typeof flags.out === "string") {
+    await mkdir(dirname(flags.out), { recursive: true });
+    await writeFile(flags.out, output, "utf8");
+  }
+  return output;
+}
+
 export async function main(argv: string[]): Promise<number> {
   const { command, flags } = parseArgs(argv);
 
@@ -232,6 +275,18 @@ export async function main(argv: string[]): Promise<number> {
 
   if (command === "sprint-health") {
     const output = await runSprintHealth(flags);
+    if (typeof flags.out !== "string") process.stdout.write(`${output}\n`);
+    return 0;
+  }
+
+  if (command === "risky-ticket") {
+    const output = await runRiskyTicket(flags);
+    if (typeof flags.out !== "string") process.stdout.write(`${output}\n`);
+    return 0;
+  }
+
+  if (command === "support-drag") {
+    const output = await runSupportDrag(flags);
     if (typeof flags.out !== "string") process.stdout.write(`${output}\n`);
     return 0;
   }

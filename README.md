@@ -115,6 +115,24 @@ maths or the verdict. (Example: a sprint can hit 95% completion yet still be
 Input: `committed`, `completed`, `completedPlannedWork`, `addedMidSprint`,
 `carriedOver` (see `fixtures/sprint-input.json`).
 
+## More reads (same data-constant engine)
+
+Two more of the Delivery Health Check reads are now built to the same standard —
+bands + verdict in code, the AI only writes prose:
+
+```bash
+dhk support-drag    # Read 2: is this team a hidden help desk? (verdict + scorecard + hidden-load hours)
+dhk risky-ticket    # Read 4: the 3–5 tickets worth raising in a retro, blameless, with the reason
+```
+
+- **Support-Drag** reuses the tested `sources/support.ts` connector and grades FRT / resolution /
+  unanswered / late against benchmarks — **team-level only, never per-person**.
+- **Risky-Ticket** flags each ticket (stale, no estimate, no reviewers, blocked, reopened, slow
+  review), scores by count + severity, and surfaces the shortlist + a blameless talk-track.
+
+Both take `--in <file>` / `--format json` and ship with a demo fixture. The 4th read (On-Call) is
+designed but not yet built to this standard.
+
 ## What needs live credentials
 
 The offline demo needs **nothing**. Live mode (`--live`) reads config from the

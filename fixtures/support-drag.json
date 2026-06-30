@@ -1,0 +1,74 @@
+[
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": 35,
+    "resolutionStatus": "Resolved",
+    "tags": ["billing"]
+  },
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": 45,
+    "resolutionStatus": "Resolved",
+    "tags": ["login"]
+  },
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": 120,
+    "resolutionStatus": "Resolved",
+    "tags": ["billing"]
+  },
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": 260,
+    "resolutionStatus": "Resolved",
+    "tags": ["report"]
+  },
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": null,
+    "resolutionStatus": "Unanswered",
+    "tags": ["billing"]
+  },
+  {
+    "requesterRole": "Support",
+    "firstResponseMinutes": 55,
+    "resolutionStatus": "Resolved",
+    "tags": ["api"]
+  },
+  {
+    "requesterRole": "Support",
+    "firstResponseMinutes": 150,
+    "resolutionStatus": "Resolved",
+    "tags": ["deploy"]
+  },
+  {
+    "requesterRole": "Support",
+    "firstResponseMinutes": 300,
+    "resolutionStatus": "Open",
+    "tags": ["api"]
+  },
+  {
+    "requesterRole": "eng",
+    "firstResponseMinutes": 90,
+    "resolutionStatus": "Resolved",
+    "tags": ["ci"]
+  },
+  {
+    "requesterRole": "eng",
+    "firstResponseMinutes": 200,
+    "resolutionStatus": "Resolved",
+    "tags": ["ci"]
+  },
+  {
+    "requesterRole": "Data",
+    "firstResponseMinutes": 40,
+    "resolutionStatus": "Resolved",
+    "tags": ["pipeline"]
+  },
+  {
+    "requesterRole": "Data",
+    "firstResponseMinutes": null,
+    "resolutionStatus": "Unanswered",
+    "tags": ["pipeline"]
+  }
+]

@@ -1,0 +1,79 @@
+[
+  {
+    "key": "PROJ-377",
+    "title": "Add coupon validation",
+    "status": "Blocked",
+    "daysSinceUpdate": 8,
+    "hasEstimate": true,
+    "reviewers": 1,
+    "blocked": true,
+    "reopened": 0,
+    "daysInReview": 0
+  },
+  {
+    "key": "PROJ-412",
+    "title": "Refactor cart totals",
+    "status": "In Progress",
+    "daysSinceUpdate": 11,
+    "hasEstimate": false,
+    "reviewers": 0,
+    "blocked": false,
+    "reopened": 0,
+    "daysInReview": 0
+  },
+  {
+    "key": "PROJ-389",
+    "title": "Fix checkout 500",
+    "status": "In Review",
+    "daysSinceUpdate": 2,
+    "hasEstimate": true,
+    "reviewers": 1,
+    "blocked": false,
+    "reopened": 2,
+    "daysInReview": 6
+  },
+  {
+    "key": "PROJ-401",
+    "title": "Update pricing copy",
+    "status": "In Progress",
+    "daysSinceUpdate": 3,
+    "hasEstimate": false,
+    "reviewers": 0,
+    "blocked": false,
+    "reopened": 0,
+    "daysInReview": 0
+  },
+  {
+    "key": "PROJ-356",
+    "title": "Add cart analytics events",
+    "status": "In Review",
+    "daysSinceUpdate": 1,
+    "hasEstimate": true,
+    "reviewers": 2,
+    "blocked": false,
+    "reopened": 0,
+    "daysInReview": 1
+  },
+  {
+    "key": "PROJ-360",
+    "title": "Tidy checkout logging",
+    "status": "Done",
+    "daysSinceUpdate": 1,
+    "hasEstimate": true,
+    "reviewers": 2,
+    "blocked": false,
+    "reopened": 0,
+    "daysInReview": 1
+  },
+  {
+    "key": "PROJ-405",
+    "title": "Promo banner A/B test",
+    "status": "In Progress",
+    "daysSinceUpdate": 4,
+    "hasEstimate": true,
+    "reviewers": 1,
+    "blocked": false,
+    "reopened": 0,
+    "daysInReview": 0
+  }
+]
