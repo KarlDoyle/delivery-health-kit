@@ -66,6 +66,33 @@ dhk report --live                   # live mode (needs creds, see below)
 (During development use `pnpm dhk report …`; after `pnpm build` the `dhk` bin is
 `dist/index.js`.)
 
+## Scorecard — many teams, one view
+
+`dhk report` is one team; `dhk scorecard` points at **many** teams and ranks them
+in a single comparison, flagging the biggest drag. Same engine — each team goes
+through the exact same `assembleReport` + `compute*` maths; the scorecard only
+adds a transparent composite health score (the mean of whichever of DORA /
+PR-flow / support health a team has data for; sprint is shown but not scored, as
+it has no normalised target).
+
+```bash
+dhk scorecard                  # offline markdown, ranked healthiest-first
+dhk scorecard --format slack   # Slack Block Kit JSON
+dhk scorecard --out sc.md      # write to a file
+```
+
+```
+| Rank | Team | Score | DORA (deploy) | Cycle time | Sprint | Support |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | Team Atlas | 97 | High | 5h | 3 closed / 16 pts | 100% |
+| 2 | Team Nimbus | 71 | High | 22h | 3 closed / 10 pts | 75% |
+| 3 | Team Orion | 40 | High | 2.5d | 2 closed / 5 pts | 50% |
+
+Biggest drag: Team Orion (40) — weakest dimension: PR flow.
+```
+
+Multi-site fixtures live in `fixtures/scorecard.json` (one window, N teams).
+
 ## What needs live credentials
 
 The offline demo needs **nothing**. Live mode (`--live`) reads config from the

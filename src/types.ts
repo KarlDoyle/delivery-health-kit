@@ -84,3 +84,24 @@ export interface DeliveryReport {
   jira?: JiraMetrics;
   support?: SupportMetrics;
 }
+
+// --- Multi-site scorecard (point at many teams → one comparison view) ---
+
+/** One team's report plus a transparent composite health score, for ranking. */
+export interface SiteScore {
+  team: string;
+  /** 0–100 composite health score (higher = healthier). See `scoreReport`. */
+  score: number;
+  /** The per-dimension sub-scores that make up `score` (absent ones omitted). */
+  parts: Partial<Record<"dora" | "prFlow" | "support", number>>;
+  report: DeliveryReport;
+}
+
+/** The cross-site view: every team scored and ranked in one scorecard. */
+export interface DeliveryScorecard {
+  generatedAt: string;
+  periodDays: number;
+  mode: "offline" | "live";
+  /** Sites, ranked healthiest-first. */
+  sites: SiteScore[];
+}

@@ -1,4 +1,11 @@
-import type { DeliveryReport, DoraMetrics, JiraMetrics, SupportMetrics } from "../types.js";
+import type {
+  DeliveryReport,
+  DeliveryScorecard,
+  DoraMetrics,
+  JiraMetrics,
+  SiteScore,
+  SupportMetrics,
+} from "../types.js";
 
 /**
  * Renders the consolidated report as an EM-facing Markdown document.
@@ -113,6 +120,70 @@ export function renderMarkdown(report: DeliveryReport): string {
       "---",
       "",
       "_Generated offline from synthetic fixtures. Run `dhk report --live` with credentials for real data._",
+    );
+  }
+  return `${parts.join("\n")}\n`;
+}
+
+/** Human label for a score dimension key. */
+const PART_LABEL: Record<keyof SiteScore["parts"], string> = {
+  dora: "DORA",
+  prFlow: "PR flow",
+  support: "Support",
+};
+
+/** The weakest scored dimension of a site (for the "biggest drag" callout). */
+function weakestPart(site: SiteScore): string {
+  const entries = Object.entries(site.parts) as [keyof SiteScore["parts"], number][];
+  const lowest = entries.sort((a, b) => a[1] - b[1])[0];
+  if (!lowest) return "no scored signals";
+  return PART_LABEL[lowest[0]];
+}
+
+/**
+ * Renders a multi-site scorecard: every team in one comparison table, ranked
+ * healthiest-first, with the biggest drag called out. Pure string out —
+ * deterministic and snapshot-testable, like the single-team renderer.
+ */
+export function renderScorecardMarkdown(sc: DeliveryScorecard): string {
+  const parts: string[] = [];
+  parts.push(`# Delivery Scorecard — ${sc.sites.length} teams`);
+  parts.push("");
+  parts.push(
+    `_Period: last ${sc.periodDays} days · generated ${fmtDate(sc.generatedAt)} · mode: ${sc.mode}_`,
+  );
+  parts.push("");
+  parts.push(
+    "Ranked healthiest-first (score = mean of available DORA / PR-flow / support health).",
+  );
+  parts.push("");
+  parts.push("| Rank | Team | Score | DORA (deploy) | Cycle time | Sprint | Support |");
+  parts.push("| --- | --- | --- | --- | --- | --- | --- |");
+  sc.sites.forEach((s, i) => {
+    const r = s.report;
+    const dora = r.dora ? r.dora.classes.deploymentFrequency : "—";
+    const cycle = r.github ? hours(r.github.avgCycleTimeHours) : "—";
+    const sprint = r.jira
+      ? `${r.jira.ticketsClosed} closed / ${r.jira.storyPointsCompleted} pts`
+      : "—";
+    const support = r.support ? `${r.support.resolutionRatePct}%` : "—";
+    parts.push(
+      `| ${i + 1} | ${s.team} | **${s.score}** | ${dora} | ${cycle} | ${sprint} | ${support} |`,
+    );
+  });
+  parts.push("");
+  const worst = sc.sites[sc.sites.length - 1];
+  if (worst && sc.sites.length > 1) {
+    parts.push(
+      `**Biggest drag: ${worst.team} (${worst.score})** — weakest dimension: ${weakestPart(worst)}.`,
+    );
+  }
+  if (sc.mode === "offline") {
+    parts.push(
+      "",
+      "---",
+      "",
+      "_Generated offline from synthetic fixtures. Run with live credentials for real data._",
     );
   }
   return `${parts.join("\n")}\n`;

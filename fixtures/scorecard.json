@@ -1,0 +1,345 @@
+{
+  "asOf": "2026-06-29T12:00:00Z",
+  "periodDays": 14,
+  "sites": [
+    {
+      "team": "Team Atlas",
+      "repos": ["acme/web", "acme/api"],
+      "teamMembers": ["alice", "bob", "carol"],
+      "jiraProjectKey": "ATL",
+      "sprintName": "Atlas Sprint 24",
+      "prs": [
+        {
+          "repo": "web",
+          "number": 5101,
+          "author": "alice",
+          "createdAt": "2026-06-20T09:00:00Z",
+          "mergedAt": "2026-06-20T14:00:00Z",
+          "additions": 80,
+          "deletions": 20,
+          "firstReviewAt": "2026-06-20T10:00:00Z"
+        },
+        {
+          "repo": "api",
+          "number": 5102,
+          "author": "bob",
+          "createdAt": "2026-06-22T09:00:00Z",
+          "mergedAt": "2026-06-22T15:00:00Z",
+          "additions": 60,
+          "deletions": 10,
+          "firstReviewAt": "2026-06-22T10:30:00Z"
+        },
+        {
+          "repo": "web",
+          "number": 5103,
+          "author": "carol",
+          "createdAt": "2026-06-24T09:00:00Z",
+          "mergedAt": "2026-06-24T13:00:00Z",
+          "additions": 40,
+          "deletions": 5,
+          "firstReviewAt": "2026-06-24T09:45:00Z"
+        }
+      ],
+      "deploys": [
+        {
+          "repo": "web",
+          "builtAt": "2026-06-18T09:00:00Z",
+          "deployedAt": "2026-06-18T11:00:00Z",
+          "isRevert": false
+        },
+        {
+          "repo": "api",
+          "builtAt": "2026-06-20T09:00:00Z",
+          "deployedAt": "2026-06-20T11:00:00Z",
+          "isRevert": false
+        },
+        {
+          "repo": "web",
+          "builtAt": "2026-06-23T09:00:00Z",
+          "deployedAt": "2026-06-23T11:00:00Z",
+          "isRevert": false
+        },
+        {
+          "repo": "api",
+          "builtAt": "2026-06-26T09:00:00Z",
+          "deployedAt": "2026-06-26T11:00:00Z",
+          "isRevert": false
+        }
+      ],
+      "issues": [
+        {
+          "key": "ATL-601",
+          "type": "Story",
+          "status": "Done",
+          "createdAt": "2026-06-16T09:00:00Z",
+          "inProgressAt": "2026-06-17T09:00:00Z",
+          "doneAt": "2026-06-18T17:00:00Z",
+          "resolvedAt": "2026-06-18T17:00:00Z",
+          "storyPoints": 5,
+          "labels": ["checkout"]
+        },
+        {
+          "key": "ATL-602",
+          "type": "Story",
+          "status": "Done",
+          "createdAt": "2026-06-19T09:00:00Z",
+          "inProgressAt": "2026-06-20T09:00:00Z",
+          "doneAt": "2026-06-21T13:00:00Z",
+          "resolvedAt": "2026-06-21T13:00:00Z",
+          "storyPoints": 3,
+          "labels": ["api"]
+        },
+        {
+          "key": "ATL-603",
+          "type": "Story",
+          "status": "Done",
+          "createdAt": "2026-06-22T09:00:00Z",
+          "inProgressAt": "2026-06-23T09:00:00Z",
+          "doneAt": "2026-06-25T11:00:00Z",
+          "resolvedAt": "2026-06-25T11:00:00Z",
+          "storyPoints": 8,
+          "labels": ["web"]
+        }
+      ],
+      "threads": [
+        {
+          "requesterRole": "Customer",
+          "firstResponseMinutes": 10,
+          "resolutionStatus": "Resolved",
+          "tags": ["billing"]
+        },
+        {
+          "requesterRole": "Engineer",
+          "firstResponseMinutes": 15,
+          "resolutionStatus": "Resolved",
+          "tags": ["api"]
+        },
+        {
+          "requesterRole": "Customer",
+          "firstResponseMinutes": 20,
+          "resolutionStatus": "Resolved",
+          "tags": ["login"]
+        },
+        {
+          "requesterRole": "PM",
+          "firstResponseMinutes": 12,
+          "resolutionStatus": "Resolved",
+          "tags": ["checkout"]
+        }
+      ]
+    },
+    {
+      "team": "Team Nimbus",
+      "repos": ["acme/nimbus-app", "acme/nimbus-svc"],
+      "teamMembers": ["dave", "erin", "frank"],
+      "jiraProjectKey": "NIM",
+      "sprintName": "Nimbus Sprint 12",
+      "prs": [
+        {
+          "repo": "nimbus-app",
+          "number": 7201,
+          "author": "dave",
+          "createdAt": "2026-06-19T09:00:00Z",
+          "mergedAt": "2026-06-20T05:00:00Z",
+          "additions": 150,
+          "deletions": 40,
+          "firstReviewAt": "2026-06-19T18:00:00Z"
+        },
+        {
+          "repo": "nimbus-svc",
+          "number": 7202,
+          "author": "erin",
+          "createdAt": "2026-06-22T09:00:00Z",
+          "mergedAt": "2026-06-23T09:00:00Z",
+          "additions": 90,
+          "deletions": 20,
+          "firstReviewAt": "2026-06-22T20:00:00Z"
+        },
+        {
+          "repo": "nimbus-app",
+          "number": 7203,
+          "author": "frank",
+          "createdAt": "2026-06-24T09:00:00Z",
+          "mergedAt": "2026-06-25T07:00:00Z",
+          "additions": 110,
+          "deletions": 30,
+          "firstReviewAt": "2026-06-24T21:00:00Z"
+        }
+      ],
+      "deploys": [
+        {
+          "repo": "nimbus-app",
+          "builtAt": "2026-06-18T09:00:00Z",
+          "deployedAt": "2026-06-19T15:00:00Z",
+          "isRevert": false
+        },
+        {
+          "repo": "nimbus-svc",
+          "builtAt": "2026-06-22T09:00:00Z",
+          "deployedAt": "2026-06-23T15:00:00Z",
+          "isRevert": false
+        },
+        {
+          "repo": "nimbus-app",
+          "builtAt": "2026-06-25T09:00:00Z",
+          "deployedAt": "2026-06-26T15:00:00Z",
+          "isRevert": true
+        }
+      ],
+      "issues": [
+        {
+          "key": "NIM-301",
+          "type": "Story",
+          "status": "Done",
+          "createdAt": "2026-06-17T09:00:00Z",
+          "inProgressAt": "2026-06-18T09:00:00Z",
+          "doneAt": "2026-06-20T17:00:00Z",
+          "resolvedAt": "2026-06-20T17:00:00Z",
+          "storyPoints": 3,
+          "labels": ["app"]
+        },
+        {
+          "key": "NIM-302",
+          "type": "Bug",
+          "status": "Done",
+          "createdAt": "2026-06-20T09:00:00Z",
+          "inProgressAt": "2026-06-21T09:00:00Z",
+          "doneAt": "2026-06-23T15:00:00Z",
+          "resolvedAt": "2026-06-23T15:00:00Z",
+          "storyPoints": 5,
+          "labels": ["bug"]
+        },
+        {
+          "key": "NIM-303",
+          "type": "Story",
+          "status": "Done",
+          "createdAt": "2026-06-23T09:00:00Z",
+          "inProgressAt": "2026-06-24T09:00:00Z",
+          "doneAt": "2026-06-26T15:00:00Z",
+          "resolvedAt": "2026-06-26T15:00:00Z",
+          "storyPoints": 2,
+          "labels": ["svc"]
+        }
+      ],
+      "threads": [
+        {
+          "requesterRole": "Customer",
+          "firstResponseMinutes": 60,
+          "resolutionStatus": "Resolved",
+          "tags": ["billing"]
+        },
+        {
+          "requesterRole": "Engineer",
+          "firstResponseMinutes": 90,
+          "resolutionStatus": "Resolved",
+          "tags": ["deploy"]
+        },
+        {
+          "requesterRole": "Customer",
+          "firstResponseMinutes": 120,
+          "resolutionStatus": "Resolved",
+          "tags": ["login"]
+        },
+        {
+          "requesterRole": "PM",
+          "firstResponseMinutes": null,
+          "resolutionStatus": "Open",
+          "tags": ["roadmap"]
+        }
+      ]
+    },
+    {
+      "team": "Team Orion",
+      "repos": ["acme/orion-core"],
+      "teamMembers": ["grace", "heidi"],
+      "jiraProjectKey": "ORI",
+      "sprintName": "Orion Sprint 8",
+      "prs": [
+        {
+          "repo": "orion-core",
+          "number": 9301,
+          "author": "grace",
+          "createdAt": "2026-06-18T09:00:00Z",
+          "mergedAt": "2026-06-20T17:00:00Z",
+          "additions": 200,
+          "deletions": 60,
+          "firstReviewAt": "2026-06-19T15:00:00Z"
+        },
+        {
+          "repo": "orion-core",
+          "number": 9302,
+          "author": "heidi",
+          "createdAt": "2026-06-21T09:00:00Z",
+          "mergedAt": "2026-06-24T01:00:00Z",
+          "additions": 180,
+          "deletions": 50,
+          "firstReviewAt": "2026-06-22T20:00:00Z"
+        }
+      ],
+      "deploys": [
+        {
+          "repo": "orion-core",
+          "builtAt": "2026-06-16T09:00:00Z",
+          "deployedAt": "2026-06-19T17:00:00Z",
+          "isRevert": false
+        },
+        {
+          "repo": "orion-core",
+          "builtAt": "2026-06-24T09:00:00Z",
+          "deployedAt": "2026-06-27T17:00:00Z",
+          "isRevert": true
+        }
+      ],
+      "issues": [
+        {
+          "key": "ORI-201",
+          "type": "Story",
+          "status": "Done",
+          "createdAt": "2026-06-16T09:00:00Z",
+          "inProgressAt": "2026-06-18T09:00:00Z",
+          "doneAt": "2026-06-22T17:00:00Z",
+          "resolvedAt": "2026-06-22T17:00:00Z",
+          "storyPoints": 2,
+          "labels": ["core"]
+        },
+        {
+          "key": "ORI-202",
+          "type": "Bug",
+          "status": "Done",
+          "createdAt": "2026-06-20T09:00:00Z",
+          "inProgressAt": "2026-06-23T09:00:00Z",
+          "doneAt": "2026-06-27T17:00:00Z",
+          "resolvedAt": "2026-06-27T17:00:00Z",
+          "storyPoints": 3,
+          "labels": ["bug"]
+        }
+      ],
+      "threads": [
+        {
+          "requesterRole": "Customer",
+          "firstResponseMinutes": 150,
+          "resolutionStatus": "Resolved",
+          "tags": ["outage"]
+        },
+        {
+          "requesterRole": "Customer",
+          "firstResponseMinutes": 210,
+          "resolutionStatus": "Resolved",
+          "tags": ["billing"]
+        },
+        {
+          "requesterRole": "Engineer",
+          "firstResponseMinutes": null,
+          "resolutionStatus": "Open",
+          "tags": ["deploy"]
+        },
+        {
+          "requesterRole": "Customer",
+          "firstResponseMinutes": null,
+          "resolutionStatus": "Unanswered",
+          "tags": ["login"]
+        }
+      ]
+    }
+  ]
+}

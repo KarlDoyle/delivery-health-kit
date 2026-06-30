@@ -1,5 +1,5 @@
 import type { ILogger } from "../logger.js";
-import type { DeliveryReport } from "../types.js";
+import type { DeliveryReport, DeliveryScorecard } from "../types.js";
 
 /**
  * Slack output.
@@ -69,6 +69,30 @@ export function renderSlackBlocks(report: DeliveryReport): SlackBlock[] {
     );
   }
 
+  return blocks;
+}
+
+/** Pure: multi-site scorecard → Slack Block Kit blocks (ranked, with the drag). */
+export function renderScorecardSlack(sc: DeliveryScorecard): SlackBlock[] {
+  const blocks: SlackBlock[] = [
+    BlockKit.header(`Delivery Scorecard — ${sc.sites.length} teams`),
+    BlockKit.context(`Last ${sc.periodDays} days · mode: ${sc.mode} · ranked healthiest-first`),
+    BlockKit.divider(),
+  ];
+  const lines = sc.sites
+    .map((s, i) => {
+      const r = s.report;
+      const dora = r.dora ? r.dora.classes.deploymentFrequency : "—";
+      const cycle = r.github ? `${r.github.avgCycleTimeHours}h` : "—";
+      const support = r.support ? `${r.support.resolutionRatePct}%` : "—";
+      return `${i + 1}. *${s.team}* — score *${s.score}* · DORA ${dora} · cycle ${cycle} · support ${support}`;
+    })
+    .join("\n");
+  blocks.push(BlockKit.section(lines));
+  const worst = sc.sites[sc.sites.length - 1];
+  if (worst && sc.sites.length > 1) {
+    blocks.push(BlockKit.context(`Biggest drag: ${worst.team} (${worst.score})`));
+  }
   return blocks;
 }
 
