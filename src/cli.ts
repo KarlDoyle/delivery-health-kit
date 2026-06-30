@@ -1,6 +1,12 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { type ILogger, type LogLevel, createLogger, createSilentLogger } from "./logger.js";
+import {
+  type SprintInput,
+  computeSprintHealth,
+  renderSprintHealthMarkdown,
+} from "./reads/sprint-health.js";
 import { type AssembleInput, assembleReport } from "./report/assemble.js";
 import { renderMarkdown, renderScorecardMarkdown } from "./report/markdown.js";
 import { assembleScorecard } from "./report/scorecard.js";
@@ -38,13 +44,15 @@ export function parseArgs(argv: string[]): ParsedArgs {
 const HELP = `Delivery Health Kit (dhk)
 
 Usage:
-  dhk report [options]      Build the consolidated EM report (one team)
-  dhk scorecard [options]   Compare many teams in one ranked scorecard
+  dhk report [options]        Build the consolidated EM report (one team)
+  dhk scorecard [options]     Compare many teams in one ranked scorecard
+  dhk sprint-health [options] The lead "read": verdict + scorecard + flags
 
 Options:
   --offline                 Use committed synthetic fixtures (default)
   --live                    Fetch live signals from env-configured sources (report only)
-  --format <markdown|slack> Output format (default: markdown)
+  --format <markdown|slack> Output format (default: markdown; sprint-health: markdown|json)
+  --in <path>               Sprint figures JSON (sprint-health; default: a demo fixture)
   --out <path>              Write to a file instead of stdout
   --fixtures <dir>          Override the fixtures directory
   --quiet                   Suppress logs
@@ -52,10 +60,10 @@ Options:
 
 Examples:
   dhk report                              # offline markdown to stdout
-  dhk report --out output/report.md       # offline markdown to a file
   dhk report --format slack               # offline Slack Block Kit (JSON)
   dhk scorecard                           # many teams → one ranked view
-  dhk scorecard --format slack            # scorecard as Slack Block Kit
+  dhk sprint-health                       # the lead Read from demo figures
+  dhk sprint-health --in my-sprint.json   # your own pasted sprint numbers
 `;
 
 function renderOutput(report: DeliveryReport, format: string): string {
@@ -182,6 +190,26 @@ export async function runScorecard(flags: Record<string, string | boolean>): Pro
   return output;
 }
 
+/** Default Sprint Health input fixture, resolved relative to this module. */
+function defaultSprintInputPath(): string {
+  return fileURLToPath(new URL("../fixtures/sprint-input.json", import.meta.url));
+}
+
+export async function runSprintHealth(flags: Record<string, string | boolean>): Promise<string> {
+  const inPath = typeof flags.in === "string" ? flags.in : defaultSprintInputPath();
+  const input = JSON.parse(await readFile(inPath, "utf8")) as SprintInput;
+  const read = computeSprintHealth(input);
+  const format = typeof flags.format === "string" ? flags.format : "markdown";
+  const output =
+    format === "json" ? JSON.stringify(read, null, 2) : renderSprintHealthMarkdown(read);
+
+  if (typeof flags.out === "string") {
+    await mkdir(dirname(flags.out), { recursive: true });
+    await writeFile(flags.out, output, "utf8");
+  }
+  return output;
+}
+
 export async function main(argv: string[]): Promise<number> {
   const { command, flags } = parseArgs(argv);
 
@@ -198,6 +226,12 @@ export async function main(argv: string[]): Promise<number> {
 
   if (command === "scorecard") {
     const output = await runScorecard(flags);
+    if (typeof flags.out !== "string") process.stdout.write(`${output}\n`);
+    return 0;
+  }
+
+  if (command === "sprint-health") {
+    const output = await runSprintHealth(flags);
     if (typeof flags.out !== "string") process.stdout.write(`${output}\n`);
     return 0;
   }

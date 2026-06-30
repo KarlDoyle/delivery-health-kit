@@ -93,6 +93,28 @@ Biggest drag: Team Orion (40) — weakest dimension: PR flow.
 
 Multi-site fixtures live in `fixtures/scorecard.json` (one window, N teams).
 
+## Sprint Health Read
+
+The lead "read" of the Delivery Health Check product line. Paste a sprint's
+figures, get a one-screen verdict + scorecard + the concerns to flag — written
+for an EM who doesn't know delivery metrics.
+
+```bash
+dhk sprint-health                      # the lead Read from a demo sprint
+dhk sprint-health --in my-sprint.json  # your own pasted figures
+dhk sprint-health --format json        # machine-readable
+```
+
+**Data constant, AI is the flavour.** The formulas, the 🟢/🟡/🔴 bands, and the
+one-word verdict (Hero / Laser-Focus / Solid / Chaos) are computed
+**deterministically in code** (`src/reads/sprint-health.ts`) — same figures, same
+grade, every time. An LLM can write nicer prose on top, but it never decides the
+maths or the verdict. (Example: a sprint can hit 95% completion yet still be
+**Chaos** if 30% of the work was injected mid-sprint — the read catches that.)
+
+Input: `committed`, `completed`, `completedPlannedWork`, `addedMidSprint`,
+`carriedOver` (see `fixtures/sprint-input.json`).
+
 ## What needs live credentials
 
 The offline demo needs **nothing**. Live mode (`--live`) reads config from the
