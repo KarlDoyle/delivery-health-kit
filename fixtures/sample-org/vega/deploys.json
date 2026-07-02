@@ -1,0 +1,58 @@
+[
+  {
+    "repo": "billing",
+    "builtAt": "2026-06-16T19:26:25.994Z",
+    "deployedAt": "2026-06-18T20:16:57.353Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "billing"
+  },
+  {
+    "repo": "notifications",
+    "builtAt": "2026-06-20T05:54:26.806Z",
+    "deployedAt": "2026-06-23T19:12:50.744Z",
+    "isRevert": false,
+    "isFix": true,
+    "service": "notifications"
+  },
+  {
+    "repo": "notifications",
+    "builtAt": "2026-06-25T15:39:45.801Z",
+    "deployedAt": "2026-06-27T14:22:04.377Z",
+    "isRevert": false,
+    "isFix": true,
+    "service": "notifications"
+  },
+  {
+    "repo": "billing",
+    "builtAt": "2026-06-26T00:37:20.300Z",
+    "deployedAt": "2026-06-29T10:04:12.049Z",
+    "isRevert": false,
+    "isFix": true,
+    "service": "billing"
+  },
+  {
+    "repo": "notifications",
+    "builtAt": "2026-06-16T01:59:49.686Z",
+    "deployedAt": "2026-06-17T14:27:50.641Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "notifications"
+  },
+  {
+    "repo": "notifications",
+    "builtAt": "2026-06-27T08:49:40.699Z",
+    "deployedAt": "2026-06-29T11:51:45.701Z",
+    "isRevert": false,
+    "isFix": true,
+    "service": "notifications"
+  },
+  {
+    "repo": "legacy-sync",
+    "builtAt": "2026-06-21T15:58:26.208Z",
+    "deployedAt": "2026-06-22T11:49:39.176Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "legacy-sync"
+  }
+]

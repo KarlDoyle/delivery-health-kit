@@ -1,9 +1,10 @@
 {
-  "name": "delivery-health-kit",
-  "version": "0.1.0",
-  "description": "One CLI that pulls delivery signals (GitHub / Jira / Slack) and produces an EM report — DORA + sprint + support metrics → Markdown / Slack. Runs fully offline against committed synthetic fixtures.",
+  "name": "eng-baseline",
+  "version": "0.2.0",
+  "description": "Engineering-health insight your team installs in five minutes — DORA, delivery and on-call metrics as DX Core 4, team-level only, and your data never leaves your machine. Runs fully offline against committed synthetic fixtures.",
   "type": "module",
-  "license": "MIT",
+  "license": "UNLICENSED",
+  "private": true,
   "packageManager": "pnpm@11.5.2",
   "bin": {
     "dhk": "./dist/index.js"
@@ -20,6 +21,9 @@
     "test": "vitest run --coverage",
     "test:watch": "vitest",
     "build": "tsc -p tsconfig.build.json",
+    "e2e": "bash scripts/e2e-smoke.sh",
+    "size": "node scripts/check-size.mjs",
+    "review": "node scripts/review.mjs --rubric docs/review-rubric.md",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {

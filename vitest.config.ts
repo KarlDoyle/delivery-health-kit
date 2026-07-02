@@ -21,14 +21,15 @@ export default defineConfig({
       reporter: ["text", "html"],
       exclude: ["dist/**", "build/**", "scripts/**", "tests/**", "**/*.config.*", "**/*.d.ts"],
       // Ratchet, not a stretch goal. Set at/just-below the coverage measured on
-      // 2026-06-29 (stmts 67.38 / branch 77.96 / funcs 66.66 / lines 67.38) so the
+      // 2026-07-02 (stmts 74.95 / branch 80.26 / funcs 78.48 / lines 74.95) so the
       // repo is green now and coverage can only go up. Raise these as you add
-      // tests; never lower them. See ai-starter playbook/testing-and-coverage.md.
+      // tests; never lower them. Enforced in CI via `pnpm test` (vitest run
+      // --coverage). See ai-starter playbook/testing-and-coverage.md.
       thresholds: {
-        statements: 65,
-        branches: 75,
-        functions: 64,
-        lines: 65,
+        statements: 73,
+        branches: 78,
+        functions: 76,
+        lines: 73,
       },
     },
   },

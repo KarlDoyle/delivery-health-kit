@@ -1,0 +1,35 @@
+[
+  {
+    "id": "ORI-INC-1",
+    "title": "Cache stampede on catalog refresh (checkout)",
+    "status": "resolved",
+    "createdAt": "2026-06-23T18:06:34.293Z",
+    "acknowledgedAt": "2026-06-23T18:23:16.129Z",
+    "resolvedAt": "2026-06-23T19:36:58.114Z",
+    "urgency": "low",
+    "severity": "P3",
+    "service": "checkout"
+  },
+  {
+    "id": "ORI-INC-2",
+    "title": "Connection pool exhausted (checkout)",
+    "status": "resolved",
+    "createdAt": "2026-06-25T00:19:58.181Z",
+    "acknowledgedAt": "2026-06-25T00:44:55.367Z",
+    "resolvedAt": "2026-06-25T02:03:01.271Z",
+    "urgency": "low",
+    "severity": "P4",
+    "service": "payments"
+  },
+  {
+    "id": "ORI-INC-3",
+    "title": "Connection pool exhausted (payments)",
+    "status": "resolved",
+    "createdAt": "2026-06-18T19:11:16.324Z",
+    "acknowledgedAt": "2026-06-18T19:33:06.212Z",
+    "resolvedAt": "2026-06-18T20:22:24.125Z",
+    "urgency": "high",
+    "severity": "P1",
+    "service": "payments"
+  }
+]

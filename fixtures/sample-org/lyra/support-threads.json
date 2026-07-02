@@ -1,0 +1,146 @@
+[
+  {
+    "requesterRole": "Data",
+    "firstResponseMinutes": 305,
+    "resolutionStatus": "Resolved",
+    "tags": ["login"]
+  },
+  {
+    "requesterRole": "Engineering",
+    "firstResponseMinutes": 411,
+    "resolutionStatus": "Resolved",
+    "tags": ["billing"]
+  },
+  {
+    "requesterRole": "Sales",
+    "firstResponseMinutes": 286,
+    "resolutionStatus": "Open",
+    "tags": ["api"]
+  },
+  {
+    "requesterRole": "Engineering",
+    "firstResponseMinutes": 257,
+    "resolutionStatus": "Resolved",
+    "tags": ["login"]
+  },
+  {
+    "requesterRole": "Data",
+    "firstResponseMinutes": 160,
+    "resolutionStatus": "Resolved",
+    "tags": ["permissions"]
+  },
+  {
+    "requesterRole": "Data",
+    "firstResponseMinutes": 301,
+    "resolutionStatus": "Resolved",
+    "tags": ["api"]
+  },
+  {
+    "requesterRole": "Engineering",
+    "firstResponseMinutes": 60,
+    "resolutionStatus": "Open",
+    "tags": ["performance"]
+  },
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": 88,
+    "resolutionStatus": "Resolved",
+    "tags": ["permissions"]
+  },
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": 383,
+    "resolutionStatus": "Resolved",
+    "tags": ["permissions"]
+  },
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": 23,
+    "resolutionStatus": "Resolved",
+    "tags": ["permissions"]
+  },
+  {
+    "requesterRole": "Data",
+    "firstResponseMinutes": null,
+    "resolutionStatus": "Unanswered",
+    "tags": ["billing"]
+  },
+  {
+    "requesterRole": "Engineering",
+    "firstResponseMinutes": 168,
+    "resolutionStatus": "Resolved",
+    "tags": ["login"]
+  },
+  {
+    "requesterRole": "Engineering",
+    "firstResponseMinutes": 365,
+    "resolutionStatus": "Resolved",
+    "tags": ["performance"]
+  },
+  {
+    "requesterRole": "Engineering",
+    "firstResponseMinutes": 14,
+    "resolutionStatus": "Resolved",
+    "tags": ["export"]
+  },
+  {
+    "requesterRole": "Sales",
+    "firstResponseMinutes": 390,
+    "resolutionStatus": "Resolved",
+    "tags": ["api"]
+  },
+  {
+    "requesterRole": "Customer Support",
+    "firstResponseMinutes": 327,
+    "resolutionStatus": "Open",
+    "tags": ["login"]
+  },
+  {
+    "requesterRole": "Sales",
+    "firstResponseMinutes": 370,
+    "resolutionStatus": "Resolved",
+    "tags": ["billing"]
+  },
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": 264,
+    "resolutionStatus": "Resolved",
+    "tags": ["performance"]
+  },
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": 162,
+    "resolutionStatus": "Resolved",
+    "tags": ["api"]
+  },
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": 299,
+    "resolutionStatus": "Resolved",
+    "tags": ["login"]
+  },
+  {
+    "requesterRole": "Customer Support",
+    "firstResponseMinutes": 212,
+    "resolutionStatus": "Open",
+    "tags": ["login"]
+  },
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": null,
+    "resolutionStatus": "Unanswered",
+    "tags": ["performance"]
+  },
+  {
+    "requesterRole": "Engineering",
+    "firstResponseMinutes": null,
+    "resolutionStatus": "Unanswered",
+    "tags": ["export"]
+  },
+  {
+    "requesterRole": "Customer Support",
+    "firstResponseMinutes": 13,
+    "resolutionStatus": "Resolved",
+    "tags": ["export"]
+  }
+]

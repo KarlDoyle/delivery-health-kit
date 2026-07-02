@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
-# Pre-push gate (Node) — the ai-starter standard.
+# Pre-push gate (Node) — the ai-starter standard, relay-grade: mirrors CI
+# exactly ("green here = green there").
 #
-# Runs the same checks CI runs, locally, before code leaves the machine:
+# Runs the same checks CI's verify job runs, locally, before code leaves the
+# machine:
 #   1. typecheck
-#   2. tests (includes tests/secret-scan.test.ts)
+#   2. lint
+#   3. tests (includes tests/secret-scan.test.ts + the coverage ratchet)
+#   4. build + size ratchet
 # Blocks the push on failure so drift can't reach the remote.
 #
 # Enabled via `git config core.hooksPath .githooks`, set automatically by the
@@ -33,15 +37,30 @@ if [ ! -d node_modules ]; then
   exit 0
 fi
 
-echo "pre-push: typecheck + tests…"
+echo "pre-push: typecheck + lint + tests + build (mirrors CI)…"
 
 if ! $PM typecheck; then
   echo "pre-push: typecheck failed — push aborted." >&2
   exit 1
 fi
 
+if ! $PM lint; then
+  echo "pre-push: lint failed — push aborted." >&2
+  exit 1
+fi
+
 if ! $PM test; then
   echo "pre-push: tests failed — push aborted." >&2
+  exit 1
+fi
+
+if ! $PM build; then
+  echo "pre-push: build failed — push aborted." >&2
+  exit 1
+fi
+
+if ! $PM size; then
+  echo "pre-push: size ratchet failed — push aborted." >&2
   exit 1
 fi
 

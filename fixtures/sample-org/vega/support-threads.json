@@ -1,0 +1,44 @@
+[
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": 11,
+    "resolutionStatus": "Resolved",
+    "tags": ["api"]
+  },
+  {
+    "requesterRole": "Sales",
+    "firstResponseMinutes": 5,
+    "resolutionStatus": "Resolved",
+    "tags": ["export"]
+  },
+  {
+    "requesterRole": "Customer Support",
+    "firstResponseMinutes": 54,
+    "resolutionStatus": "Resolved",
+    "tags": ["login"]
+  },
+  {
+    "requesterRole": "Data",
+    "firstResponseMinutes": 37,
+    "resolutionStatus": "Open",
+    "tags": ["permissions"]
+  },
+  {
+    "requesterRole": "Product",
+    "firstResponseMinutes": 77,
+    "resolutionStatus": "Resolved",
+    "tags": ["performance"]
+  },
+  {
+    "requesterRole": "Data",
+    "firstResponseMinutes": 86,
+    "resolutionStatus": "Open",
+    "tags": ["login"]
+  },
+  {
+    "requesterRole": "Engineering",
+    "firstResponseMinutes": 28,
+    "resolutionStatus": "Resolved",
+    "tags": ["login"]
+  }
+]

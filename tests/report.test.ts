@@ -62,13 +62,21 @@ describe("offline report assembly (end-to-end from fixtures)", () => {
 });
 
 describe("renderers", () => {
-  it("renders markdown with all sections and an offline note", async () => {
+  it("renders markdown as DX Core 4 with the badge and an offline note", async () => {
     const md = renderMarkdown(await buildOfflineReport());
     expect(md).toContain("# Delivery Health — Team Atlas");
-    expect(md).toContain("## DORA");
-    expect(md).toContain("## Sprint / Jira");
-    expect(md).toContain("## PR flow (GitHub)");
-    expect(md).toContain("## Support (Slack)");
+    // The four Core 4 dimensions, in order.
+    expect(md).toContain("## Speed");
+    expect(md).toContain("## Effectiveness");
+    expect(md).toContain("## Quality");
+    expect(md).toContain("## Impact");
+    // The product-enforced stance is visible on the output itself.
+    expect(md).toContain("team-level only · your data stays on your machine");
+    // Effectiveness is honestly labelled as proxies, not an invented score.
+    expect(md).toContain("DevEx pulse survey");
+    // Quality carries the CFR basis label and the rework rate.
+    expect(md).toContain("revert-based proxy");
+    expect(md).toContain("Rework rate");
     expect(md).toContain("**TL;DR:**");
     expect(md).toContain("Generated offline from synthetic fixtures");
   });
@@ -76,8 +84,10 @@ describe("renderers", () => {
   it("renders Slack Block Kit blocks", async () => {
     const blocks = renderSlackBlocks(await buildOfflineReport());
     expect(blocks[0]).toMatchObject({ type: "header" });
-    expect(blocks.some((b) => JSON.stringify(b).includes("DORA"))).toBe(true);
+    expect(blocks.some((b) => JSON.stringify(b).includes("Speed"))).toBe(true);
+    expect(blocks.some((b) => JSON.stringify(b).includes("Quality"))).toBe(true);
     expect(blocks.some((b) => JSON.stringify(b).includes("Support"))).toBe(true);
+    expect(blocks.some((b) => JSON.stringify(b).includes("team-level only"))).toBe(true);
   });
 
   it("omits sections whose source produced no data", () => {
@@ -87,7 +97,8 @@ describe("renderers", () => {
       now: Date.parse("2026-06-29T12:00:00Z"),
     });
     const md = renderMarkdown(report);
-    expect(md).not.toContain("## DORA");
+    expect(md).not.toContain("## Speed");
+    expect(md).not.toContain("## Quality");
     expect(md).toContain("# Delivery Health — Empty");
   });
 });

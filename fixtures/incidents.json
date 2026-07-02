@@ -1,0 +1,76 @@
+[
+  {
+    "id": "INC-0",
+    "title": "Legacy queue backlog (out of window)",
+    "status": "resolved",
+    "createdAt": "2026-06-01T10:00:00Z",
+    "acknowledgedAt": "2026-06-01T10:30:00Z",
+    "resolvedAt": "2026-06-01T14:00:00Z",
+    "urgency": "high",
+    "severity": "P2",
+    "service": "web"
+  },
+  {
+    "id": "INC-1",
+    "title": "Web 5xx spike after deploy",
+    "status": "resolved",
+    "createdAt": "2026-06-19T11:00:00Z",
+    "acknowledgedAt": "2026-06-19T11:10:00Z",
+    "resolvedAt": "2026-06-19T12:00:00Z",
+    "urgency": "high",
+    "severity": "P1",
+    "service": "web"
+  },
+  {
+    "id": "INC-2",
+    "title": "API latency degradation",
+    "status": "resolved",
+    "createdAt": "2026-06-21T03:00:00Z",
+    "acknowledgedAt": "2026-06-21T03:20:00Z",
+    "resolvedAt": "2026-06-21T05:00:00Z",
+    "urgency": "high",
+    "severity": "P2",
+    "service": "api"
+  },
+  {
+    "id": "INC-3",
+    "title": "Stale cache serving old assets",
+    "status": "resolved",
+    "createdAt": "2026-06-23T14:00:00Z",
+    "acknowledgedAt": "2026-06-23T14:30:00Z",
+    "resolvedAt": "2026-06-23T16:00:00Z",
+    "urgency": "low",
+    "severity": "P3",
+    "service": "web"
+  },
+  {
+    "id": "INC-4",
+    "title": "Checkout failing after revert",
+    "status": "resolved",
+    "createdAt": "2026-06-26T18:30:00Z",
+    "acknowledgedAt": "2026-06-26T18:35:00Z",
+    "resolvedAt": "2026-06-26T19:00:00Z",
+    "urgency": "high",
+    "severity": "P1",
+    "service": "web"
+  },
+  {
+    "id": "INC-5",
+    "title": "Batch job overran window",
+    "status": "resolved",
+    "createdAt": "2026-06-27T10:00:00Z",
+    "acknowledgedAt": "2026-06-27T10:15:00Z",
+    "resolvedAt": "2026-06-27T11:00:00Z",
+    "urgency": "low",
+    "severity": "P4",
+    "service": "api"
+  },
+  {
+    "id": "INC-6",
+    "title": "Elevated error noise on web",
+    "status": "triggered",
+    "createdAt": "2026-06-28T09:00:00Z",
+    "urgency": "low",
+    "service": "web"
+  }
+]

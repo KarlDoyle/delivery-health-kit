@@ -1,0 +1,72 @@
+[
+  {
+    "id": "ORI-S1",
+    "title": "Unhandled promise rejection in worker",
+    "count": 71,
+    "userCount": 37,
+    "firstSeen": "2026-06-19T07:37:18.844Z",
+    "lastSeen": "2026-06-25T15:20:19.716Z",
+    "level": "info",
+    "project": "payments"
+  },
+  {
+    "id": "ORI-S2",
+    "title": "Timeout contacting payment gateway",
+    "count": 114,
+    "userCount": 22,
+    "firstSeen": "2026-06-08T11:42:10.940Z",
+    "lastSeen": "2026-06-23T11:09:14.945Z",
+    "level": "info",
+    "project": "payments"
+  },
+  {
+    "id": "ORI-S3",
+    "title": "Cache stampede on catalog refresh",
+    "count": 115,
+    "userCount": 19,
+    "firstSeen": "2026-06-06T23:00:00.402Z",
+    "lastSeen": "2026-06-19T14:13:47.704Z",
+    "level": "error",
+    "project": "checkout"
+  },
+  {
+    "id": "ORI-S4",
+    "title": "Deprecated API usage detected",
+    "count": 189,
+    "userCount": 15,
+    "firstSeen": "2026-06-16T01:18:49.117Z",
+    "lastSeen": "2026-06-23T10:43:36.108Z",
+    "level": "error",
+    "project": "checkout"
+  },
+  {
+    "id": "ORI-S5",
+    "title": "Cache stampede on catalog refresh",
+    "count": 148,
+    "userCount": 28,
+    "firstSeen": "2026-06-10T22:26:55.169Z",
+    "lastSeen": "2026-06-21T12:28:15.939Z",
+    "level": "error",
+    "project": "checkout"
+  },
+  {
+    "id": "ORI-S6",
+    "title": "Timeout contacting payment gateway",
+    "count": 87,
+    "userCount": 5,
+    "firstSeen": "2026-06-21T18:30:22.978Z",
+    "lastSeen": "2026-06-27T01:33:47.804Z",
+    "level": "info",
+    "project": "checkout"
+  },
+  {
+    "id": "ORI-S7",
+    "title": "Cache stampede on catalog refresh",
+    "count": 34,
+    "userCount": 32,
+    "firstSeen": "2026-06-11T16:47:03.537Z",
+    "lastSeen": "2026-06-28T06:21:49.063Z",
+    "level": "error",
+    "project": "payments"
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "VEG-S1",
+    "title": "TypeError: cannot read properties of undefined",
+    "count": 33,
+    "userCount": 20,
+    "firstSeen": "2026-05-25T22:18:35.334Z",
+    "lastSeen": "2026-06-24T12:56:11.626Z",
+    "level": "error",
+    "project": "notifications"
+  },
+  {
+    "id": "VEG-S2",
+    "title": "Unhandled promise rejection in worker",
+    "count": 130,
+    "userCount": 24,
+    "firstSeen": "2026-06-14T17:29:21.048Z",
+    "lastSeen": "2026-06-22T14:23:32.650Z",
+    "level": "error",
+    "project": "legacy-sync"
+  },
+  {
+    "id": "VEG-S3",
+    "title": "Connection pool exhausted",
+    "count": 42,
+    "userCount": 9,
+    "firstSeen": "2026-06-15T15:44:36.273Z",
+    "lastSeen": "2026-06-22T16:01:12.400Z",
+    "level": "error",
+    "project": "notifications"
+  },
+  {
+    "id": "VEG-S4",
+    "title": "Connection pool exhausted",
+    "count": 125,
+    "userCount": 26,
+    "firstSeen": "2026-06-20T19:38:18.917Z",
+    "lastSeen": "2026-06-28T06:19:21.515Z",
+    "level": "warning",
+    "project": "legacy-sync"
+  },
+  {
+    "id": "VEG-S5",
+    "title": "Timeout contacting payment gateway",
+    "count": 106,
+    "userCount": 34,
+    "firstSeen": "2026-06-14T11:53:56.759Z",
+    "lastSeen": "2026-06-22T02:36:45.632Z",
+    "level": "error",
+    "project": "billing"
+  },
+  {
+    "id": "VEG-S6",
+    "title": "Cache stampede on catalog refresh",
+    "count": 182,
+    "userCount": 20,
+    "firstSeen": "2026-06-09T07:52:21.652Z",
+    "lastSeen": "2026-06-16T08:15:13.379Z",
+    "level": "warning",
+    "project": "notifications"
+  },
+  {
+    "id": "VEG-S7",
+    "title": "Cache stampede on catalog refresh",
+    "count": 115,
+    "userCount": 34,
+    "firstSeen": "2026-06-26T02:42:18.898Z",
+    "lastSeen": "2026-06-27T01:02:36.723Z",
+    "level": "error",
+    "project": "legacy-sync"
+  }
+]

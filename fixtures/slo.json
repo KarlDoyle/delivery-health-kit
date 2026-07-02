@@ -1,0 +1,38 @@
+[
+  {
+    "name": "web",
+    "availabilityPct": 99.97,
+    "availabilityTargetPct": 99.9,
+    "meetingAvailability": true,
+    "p95Ms": 320,
+    "p99Ms": 800,
+    "latencyThresholdMs": 500,
+    "meetingLatency": true,
+    "totalRequests": 1200000,
+    "failedRequests": 360
+  },
+  {
+    "name": "api",
+    "availabilityPct": 99.5,
+    "availabilityTargetPct": 99.9,
+    "meetingAvailability": false,
+    "p95Ms": 450,
+    "p99Ms": 950,
+    "latencyThresholdMs": 500,
+    "meetingLatency": true,
+    "totalRequests": 800000,
+    "failedRequests": 4000
+  },
+  {
+    "name": "worker",
+    "availabilityPct": 99.95,
+    "availabilityTargetPct": 99.5,
+    "meetingAvailability": true,
+    "p95Ms": 700,
+    "p99Ms": 1400,
+    "latencyThresholdMs": 600,
+    "meetingLatency": false,
+    "totalRequests": 200000,
+    "failedRequests": 100
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "org": "Nimbus Labs",
+  "asOf": "2026-06-29T12:00:00Z",
+  "periodDays": 14,
+  "teams": [
+    {
+      "team": "Orion",
+      "repos": ["nimbus/checkout", "nimbus/payments"],
+      "teamMembers": ["ada", "grace", "linus", "edsger"],
+      "jiraProjectKey": "ORI",
+      "sprintName": "Orion Sprint 31"
+    },
+    {
+      "team": "Lyra",
+      "repos": ["nimbus/catalog", "nimbus/search"],
+      "teamMembers": ["katherine", "alan", "barbara"],
+      "jiraProjectKey": "LYR",
+      "sprintName": "Lyra Sprint 27"
+    },
+    {
+      "team": "Vega",
+      "repos": ["nimbus/billing", "nimbus/notifications", "nimbus/legacy-sync"],
+      "teamMembers": ["margaret", "donald", "john", "radia", "vint"],
+      "jiraProjectKey": "VEG",
+      "sprintName": "Vega Sprint 19"
+    }
+  ]
+}

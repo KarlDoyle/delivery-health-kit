@@ -1,0 +1,57 @@
+[
+  {
+    "id": "LYR-INC-1",
+    "title": "Timeout contacting payment gateway (catalog)",
+    "status": "resolved",
+    "createdAt": "2026-06-22T22:05:48.759Z",
+    "acknowledgedAt": "2026-06-22T22:22:18.211Z",
+    "resolvedAt": "2026-06-23T00:18:21.261Z",
+    "urgency": "high",
+    "severity": "P1",
+    "service": "catalog"
+  },
+  {
+    "id": "LYR-INC-2",
+    "title": "Connection pool exhausted (catalog)",
+    "status": "resolved",
+    "createdAt": "2026-06-20T16:20:09.326Z",
+    "acknowledgedAt": "2026-06-20T16:52:43.820Z",
+    "resolvedAt": "2026-06-20T18:49:20.177Z",
+    "urgency": "high",
+    "severity": "P2",
+    "service": "search"
+  },
+  {
+    "id": "LYR-INC-3",
+    "title": "Unhandled promise rejection in worker (catalog)",
+    "status": "resolved",
+    "createdAt": "2026-06-16T22:40:59.731Z",
+    "acknowledgedAt": "2026-06-16T22:44:13.074Z",
+    "resolvedAt": "2026-06-17T01:03:46.321Z",
+    "urgency": "high",
+    "severity": "P2",
+    "service": "search"
+  },
+  {
+    "id": "LYR-INC-4",
+    "title": "TypeError: cannot read properties of undefined (search)",
+    "status": "resolved",
+    "createdAt": "2026-06-18T19:12:16.460Z",
+    "acknowledgedAt": "2026-06-18T19:29:18.373Z",
+    "resolvedAt": "2026-06-18T20:13:04.305Z",
+    "urgency": "low",
+    "severity": "P4",
+    "service": "search"
+  },
+  {
+    "id": "LYR-INC-5",
+    "title": "Unhandled promise rejection in worker (catalog)",
+    "status": "resolved",
+    "createdAt": "2026-06-17T08:28:51.888Z",
+    "acknowledgedAt": "2026-06-17T08:54:02.357Z",
+    "resolvedAt": "2026-06-17T11:31:17.025Z",
+    "urgency": "high",
+    "severity": "P2",
+    "service": "search"
+  }
+]

@@ -11,7 +11,8 @@ permissions:
 # Sequential quality gates — cheapest, fastest signal first; each step only runs
 # if the previous one passed. This is the same order the local pre-push hook
 # runs, so "green here" means "green there". Lifted from moss/relay and
-# generalised. Target: a fast, boring, always-the-same pipeline.
+# generalised. The separate e2e job (relay pattern) drives the BUILT CLI only
+# after the unit gates pass.
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -39,10 +40,42 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      # 3. Tests — unit + the secret-scan boundary test.
-      - name: Test
+      # 3. Tests — unit + secret-scan, WITH the coverage ratchet (the recorded
+      #    thresholds in vitest.config.ts bite here, not just locally).
+      - name: Test (coverage ratchet enforced)
         run: pnpm test
 
-      # 4. Build last — the most expensive step.
+      # 4. Build + size ratchet — leanness can't quietly erode.
       - name: Build
         run: pnpm build
+
+      - name: Size ratchet
+        run: pnpm size
+
+  e2e:
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      # The small, high-value smoke set against the BUILT CLI: help, the
+      # never-empty demo, report, digest, scorecard, sheets rows — what a user
+      # actually runs on day one.
+      - name: E2E smoke (built CLI)
+        run: pnpm e2e

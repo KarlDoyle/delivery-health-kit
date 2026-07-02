@@ -28,12 +28,32 @@ export interface GitHubMetrics {
 }
 
 // --- DORA ---
+
+/**
+ * How change-failure rate was derived. DORA's definition is "deploys causing
+ * degraded service"; without incident data the honest stand-in is reverts.
+ * The renderers surface this label so the two are never silently conflated.
+ */
+export type CfrBasis = "incident-linked" | "revert-proxy";
+
 export interface DoraMetrics {
   deploymentFrequencyPerDay: number;
   leadTimeHours: number;
   changeFailureRatePct: number;
+  cfrBasis: CfrBasis;
+  /**
+   * Rework rate (DORA 2024 stability factor): flagged fix/revert deploys as a
+   * share of all deploys. Flag-based only — no file-overlap heuristics.
+   */
+  reworkRatePct: number;
   totalDeploys: number;
   totalReverts: number;
+  totalFixDeploys: number;
+  /**
+   * Failed-deployment recovery time (DORA 2024 rename of MTTR): incident
+   * create→resolve, median + p90. Only present when incident data is connected.
+   */
+  recoveryTime?: { medianMinutes: number; p90Minutes: number };
   periodDays: number;
   classes: {
     deploymentFrequency: DORAClass;
@@ -71,6 +91,85 @@ export interface SupportMetrics {
   requesterMix: Record<string, number>;
   topThemes: { theme: string; count: number }[];
   targets: { medianFrtMinutes: number; resolutionRatePct: number };
+}
+
+// --- Reliability (the `dhk digest` half) ---
+
+/** avg / median / p90 of a set of durations, in minutes. */
+export interface TimeMetrics {
+  avgMinutes: number;
+  medianMinutes: number;
+  p90Minutes: number;
+}
+
+/**
+ * PagerDuty incident metrics — team-level only. On-call load is reported per
+ * service and by out-of-hours share, never per responder.
+ */
+export interface PagerDutyMetrics {
+  totalIncidents: number;
+  active: number;
+  resolved: number;
+  byUrgency: { high: number; low: number };
+  bySeverity: Record<string, number>;
+  /** Time to detect: create → acknowledge. */
+  ttd: TimeMetrics;
+  /** Failed-deployment recovery time basis: create → resolve. */
+  ttm: TimeMetrics;
+  onCall: {
+    byService: Record<string, number>;
+    /** Share of incidents created outside configured working hours (0–100). */
+    outOfHoursPct: number;
+    busiestService: string | null;
+  };
+}
+
+/** Sentry error-tracking metrics (error-budget context). */
+export interface SentryMetrics {
+  totalIssues: number;
+  /** Issues first seen inside the report window. */
+  newIssues: number;
+  byProject: Record<string, number>;
+  byLevel: { error: number; warning: number; info: number };
+}
+
+/** One service's SLO position (from Prometheus or compatible). */
+export interface ServiceSlo {
+  name: string;
+  availabilityPct: number;
+  availabilityTargetPct: number;
+  meetingAvailability: boolean;
+  p95Ms: number;
+  p99Ms: number;
+  latencyThresholdMs: number;
+  meetingLatency: boolean;
+  totalRequests: number;
+  failedRequests: number;
+  /**
+   * True when the queries returned no signal (endpoint unreachable, no series).
+   * Rendered as "no data" and excluded from attainment — an infrastructure
+   * problem must never read as an SLO breach (or a pass).
+   */
+  noData?: boolean;
+}
+
+export interface SloMetrics {
+  services: ServiceSlo[];
+  /** Share of measurable services meeting both SLOs (0–100); no-data excluded. */
+  attainmentPct: number;
+}
+
+/** The reliability report (`dhk digest`). Shares the record model with `report`. */
+export interface ReliabilityReport {
+  generatedAt: string;
+  team: string;
+  periodDays: number;
+  mode: "offline" | "live";
+  incidents?: PagerDutyMetrics;
+  errors?: SentryMetrics;
+  slo?: SloMetrics;
+  /** Present when deploys + incidents both exist: the incident-linked CFR. */
+  dora?: DoraMetrics;
 }
 
 /** The consolidated report. Any block may be absent if its source had no data. */

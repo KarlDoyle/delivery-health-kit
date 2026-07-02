@@ -1,0 +1,106 @@
+[
+  {
+    "repo": "catalog",
+    "builtAt": "2026-06-27T18:23:43.173Z",
+    "deployedAt": "2026-06-28T12:12:40.755Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "catalog"
+  },
+  {
+    "repo": "catalog",
+    "builtAt": "2026-06-20T23:50:23.684Z",
+    "deployedAt": "2026-06-21T17:28:09.181Z",
+    "isRevert": false,
+    "isFix": true,
+    "service": "catalog"
+  },
+  {
+    "repo": "search",
+    "builtAt": "2026-06-23T06:43:45.616Z",
+    "deployedAt": "2026-06-24T10:14:46.198Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "search"
+  },
+  {
+    "repo": "search",
+    "builtAt": "2026-06-25T04:04:56.551Z",
+    "deployedAt": "2026-06-26T05:57:41.665Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "search"
+  },
+  {
+    "repo": "catalog",
+    "builtAt": "2026-06-17T02:30:11.404Z",
+    "deployedAt": "2026-06-17T06:03:57.734Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "catalog"
+  },
+  {
+    "repo": "search",
+    "builtAt": "2026-06-24T23:23:09.507Z",
+    "deployedAt": "2026-06-25T15:09:36.855Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "search"
+  },
+  {
+    "repo": "catalog",
+    "builtAt": "2026-06-19T07:39:09.933Z",
+    "deployedAt": "2026-06-20T01:24:19.674Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "catalog"
+  },
+  {
+    "repo": "catalog",
+    "builtAt": "2026-06-18T23:56:19.239Z",
+    "deployedAt": "2026-06-19T05:01:40.791Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "catalog"
+  },
+  {
+    "repo": "catalog",
+    "builtAt": "2026-06-24T16:51:36.671Z",
+    "deployedAt": "2026-06-25T02:14:19.934Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "catalog"
+  },
+  {
+    "repo": "catalog",
+    "builtAt": "2026-06-25T04:42:15.659Z",
+    "deployedAt": "2026-06-25T18:16:51.051Z",
+    "isRevert": false,
+    "isFix": true,
+    "service": "catalog"
+  },
+  {
+    "repo": "catalog",
+    "builtAt": "2026-06-21T08:23:23.010Z",
+    "deployedAt": "2026-06-21T19:44:24.307Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "catalog"
+  },
+  {
+    "repo": "search",
+    "builtAt": "2026-06-22T01:27:33.380Z",
+    "deployedAt": "2026-06-23T00:21:50.704Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "search"
+  },
+  {
+    "repo": "catalog",
+    "builtAt": "2026-06-16T21:55:10.991Z",
+    "deployedAt": "2026-06-17T20:41:33.026Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "catalog"
+  }
+]

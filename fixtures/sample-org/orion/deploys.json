@@ -1,0 +1,178 @@
+[
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-27T14:27:28.338Z",
+    "deployedAt": "2026-06-28T11:31:18.664Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "payments"
+  },
+  {
+    "repo": "checkout",
+    "builtAt": "2026-06-24T03:56:23.873Z",
+    "deployedAt": "2026-06-24T10:55:01.626Z",
+    "isRevert": false,
+    "isFix": true,
+    "service": "checkout"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-28T18:27:26.813Z",
+    "deployedAt": "2026-06-29T10:05:17.059Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "payments"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-22T03:27:13.119Z",
+    "deployedAt": "2026-06-22T10:08:10.809Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "payments"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-26T09:50:07.760Z",
+    "deployedAt": "2026-06-26T16:25:38.283Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "payments"
+  },
+  {
+    "repo": "checkout",
+    "builtAt": "2026-06-20T19:56:31.271Z",
+    "deployedAt": "2026-06-21T22:51:44.264Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "checkout"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-18T15:43:13.689Z",
+    "deployedAt": "2026-06-19T13:45:54.304Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "payments"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-18T01:45:54.563Z",
+    "deployedAt": "2026-06-18T20:31:38.727Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "payments"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-27T01:08:28.614Z",
+    "deployedAt": "2026-06-28T07:58:37.648Z",
+    "isRevert": false,
+    "isFix": true,
+    "service": "payments"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-21T08:24:16.686Z",
+    "deployedAt": "2026-06-21T21:57:00.278Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "payments"
+  },
+  {
+    "repo": "checkout",
+    "builtAt": "2026-06-21T22:14:31.883Z",
+    "deployedAt": "2026-06-22T08:40:41.120Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "checkout"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-25T00:50:29.359Z",
+    "deployedAt": "2026-06-25T12:51:02.400Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "payments"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-16T01:17:33.176Z",
+    "deployedAt": "2026-06-16T15:48:45.759Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "payments"
+  },
+  {
+    "repo": "checkout",
+    "builtAt": "2026-06-28T03:08:25.809Z",
+    "deployedAt": "2026-06-28T06:39:17.764Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "checkout"
+  },
+  {
+    "repo": "checkout",
+    "builtAt": "2026-06-28T04:09:39.836Z",
+    "deployedAt": "2026-06-28T08:35:34.114Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "checkout"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-24T02:53:23.850Z",
+    "deployedAt": "2026-06-25T06:38:28.404Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "payments"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-27T07:31:55.220Z",
+    "deployedAt": "2026-06-28T03:17:54.014Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "payments"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-16T20:24:19.055Z",
+    "deployedAt": "2026-06-17T13:13:06.661Z",
+    "isRevert": false,
+    "isFix": true,
+    "service": "payments"
+  },
+  {
+    "repo": "payments",
+    "builtAt": "2026-06-24T13:43:38.822Z",
+    "deployedAt": "2026-06-24T22:46:28.230Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "payments"
+  },
+  {
+    "repo": "checkout",
+    "builtAt": "2026-06-29T05:20:42.859Z",
+    "deployedAt": "2026-06-29T17:49:33.796Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "checkout"
+  },
+  {
+    "repo": "checkout",
+    "builtAt": "2026-06-23T08:54:21.732Z",
+    "deployedAt": "2026-06-24T10:31:42.092Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "checkout"
+  },
+  {
+    "repo": "checkout",
+    "builtAt": "2026-06-18T20:14:42.604Z",
+    "deployedAt": "2026-06-19T08:09:09.706Z",
+    "isRevert": false,
+    "isFix": false,
+    "service": "checkout"
+  }
+]

@@ -1,0 +1,101 @@
+[
+  {
+    "id": "VEG-INC-1",
+    "title": "Cache stampede on catalog refresh (notifications)",
+    "status": "resolved",
+    "createdAt": "2026-06-17T21:34:19.023Z",
+    "acknowledgedAt": "2026-06-17T22:11:45.410Z",
+    "resolvedAt": "2026-06-18T06:55:35.510Z",
+    "urgency": "low",
+    "severity": "P3",
+    "service": "billing"
+  },
+  {
+    "id": "VEG-INC-2",
+    "title": "Connection pool exhausted (legacy-sync)",
+    "status": "resolved",
+    "createdAt": "2026-06-23T04:42:34.337Z",
+    "acknowledgedAt": "2026-06-23T04:52:37.497Z",
+    "resolvedAt": "2026-06-23T10:33:33.360Z",
+    "urgency": "low",
+    "severity": "P3",
+    "service": "legacy-sync"
+  },
+  {
+    "id": "VEG-INC-3",
+    "title": "Deprecated API usage detected (legacy-sync)",
+    "status": "resolved",
+    "createdAt": "2026-06-28T17:18:26.577Z",
+    "acknowledgedAt": "2026-06-28T17:42:50.834Z",
+    "resolvedAt": "2026-06-28T20:08:32.866Z",
+    "urgency": "low",
+    "severity": "P4",
+    "service": "legacy-sync"
+  },
+  {
+    "id": "VEG-INC-4",
+    "title": "Cache stampede on catalog refresh (notifications)",
+    "status": "resolved",
+    "createdAt": "2026-06-17T23:51:13.370Z",
+    "acknowledgedAt": "2026-06-18T00:08:27.557Z",
+    "resolvedAt": "2026-06-18T02:08:52.712Z",
+    "urgency": "high",
+    "severity": "P2",
+    "service": "notifications"
+  },
+  {
+    "id": "VEG-INC-5",
+    "title": "Cache stampede on catalog refresh (notifications)",
+    "status": "resolved",
+    "createdAt": "2026-06-24T08:57:05.487Z",
+    "acknowledgedAt": "2026-06-24T09:23:49.111Z",
+    "resolvedAt": "2026-06-24T19:01:02.039Z",
+    "urgency": "high",
+    "severity": "P2",
+    "service": "billing"
+  },
+  {
+    "id": "VEG-INC-6",
+    "title": "Connection pool exhausted (legacy-sync)",
+    "status": "resolved",
+    "createdAt": "2026-06-16T11:41:15.823Z",
+    "acknowledgedAt": "2026-06-16T12:17:16.389Z",
+    "resolvedAt": "2026-06-16T20:35:33.940Z",
+    "urgency": "high",
+    "severity": "P2",
+    "service": "notifications"
+  },
+  {
+    "id": "VEG-INC-7",
+    "title": "Cache stampede on catalog refresh (legacy-sync)",
+    "status": "resolved",
+    "createdAt": "2026-06-28T22:10:06.213Z",
+    "acknowledgedAt": "2026-06-28T22:47:42.287Z",
+    "resolvedAt": "2026-06-29T08:18:07.623Z",
+    "urgency": "low",
+    "severity": "P3",
+    "service": "legacy-sync"
+  },
+  {
+    "id": "VEG-INC-8",
+    "title": "TypeError: cannot read properties of undefined (legacy-sync)",
+    "status": "resolved",
+    "createdAt": "2026-06-27T13:25:24.629Z",
+    "acknowledgedAt": "2026-06-27T13:40:11.560Z",
+    "resolvedAt": "2026-06-27T14:07:05.469Z",
+    "urgency": "low",
+    "severity": "P3",
+    "service": "billing"
+  },
+  {
+    "id": "VEG-INC-9",
+    "title": "TypeError: cannot read properties of undefined (legacy-sync)",
+    "status": "resolved",
+    "createdAt": "2026-06-16T00:41:21.796Z",
+    "acknowledgedAt": "2026-06-16T01:08:58.023Z",
+    "resolvedAt": "2026-06-16T09:04:05.377Z",
+    "urgency": "low",
+    "severity": "P3",
+    "service": "legacy-sync"
+  }
+]

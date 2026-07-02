@@ -1,0 +1,72 @@
+[
+  {
+    "id": "LYR-S1",
+    "title": "Deprecated API usage detected",
+    "count": 55,
+    "userCount": 16,
+    "firstSeen": "2026-06-20T13:28:00.289Z",
+    "lastSeen": "2026-06-24T14:46:41.063Z",
+    "level": "error",
+    "project": "catalog"
+  },
+  {
+    "id": "LYR-S2",
+    "title": "Timeout contacting payment gateway",
+    "count": 149,
+    "userCount": 35,
+    "firstSeen": "2026-05-31T18:54:42.148Z",
+    "lastSeen": "2026-06-17T20:36:22.006Z",
+    "level": "error",
+    "project": "search"
+  },
+  {
+    "id": "LYR-S3",
+    "title": "Cache stampede on catalog refresh",
+    "count": 6,
+    "userCount": 22,
+    "firstSeen": "2026-06-05T10:09:43.056Z",
+    "lastSeen": "2026-06-22T14:28:02.204Z",
+    "level": "error",
+    "project": "search"
+  },
+  {
+    "id": "LYR-S4",
+    "title": "Deprecated API usage detected",
+    "count": 119,
+    "userCount": 11,
+    "firstSeen": "2026-05-28T17:57:01.999Z",
+    "lastSeen": "2026-06-23T14:06:16.943Z",
+    "level": "error",
+    "project": "catalog"
+  },
+  {
+    "id": "LYR-S5",
+    "title": "Deprecated API usage detected",
+    "count": 181,
+    "userCount": 16,
+    "firstSeen": "2026-06-14T20:20:38.744Z",
+    "lastSeen": "2026-06-24T20:04:03.032Z",
+    "level": "error",
+    "project": "search"
+  },
+  {
+    "id": "LYR-S6",
+    "title": "TypeError: cannot read properties of undefined",
+    "count": 117,
+    "userCount": 30,
+    "firstSeen": "2026-06-06T15:40:37.595Z",
+    "lastSeen": "2026-06-18T18:18:38.882Z",
+    "level": "error",
+    "project": "catalog"
+  },
+  {
+    "id": "LYR-S7",
+    "title": "TypeError: cannot read properties of undefined",
+    "count": 200,
+    "userCount": 39,
+    "firstSeen": "2026-06-16T09:03:20.138Z",
+    "lastSeen": "2026-06-23T23:52:24.967Z",
+    "level": "error",
+    "project": "catalog"
+  }
+]

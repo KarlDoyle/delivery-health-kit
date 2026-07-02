@@ -1,0 +1,38 @@
+[
+  {
+    "name": "billing",
+    "availabilityPct": 99.4,
+    "availabilityTargetPct": 99.5,
+    "meetingAvailability": false,
+    "p95Ms": 719,
+    "p99Ms": 1668,
+    "latencyThresholdMs": 500,
+    "meetingLatency": false,
+    "totalRequests": 1119347,
+    "failedRequests": 6752
+  },
+  {
+    "name": "notifications",
+    "availabilityPct": 99.57,
+    "availabilityTargetPct": 99.5,
+    "meetingAvailability": true,
+    "p95Ms": 438,
+    "p99Ms": 804,
+    "latencyThresholdMs": 800,
+    "meetingLatency": true,
+    "totalRequests": 1374169,
+    "failedRequests": 5970
+  },
+  {
+    "name": "legacy-sync",
+    "availabilityPct": 99.18,
+    "availabilityTargetPct": 99.5,
+    "meetingAvailability": false,
+    "p95Ms": 358,
+    "p99Ms": 779,
+    "latencyThresholdMs": 300,
+    "meetingLatency": false,
+    "totalRequests": 548161,
+    "failedRequests": 4473
+  }
+]

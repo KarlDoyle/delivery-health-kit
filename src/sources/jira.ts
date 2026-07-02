@@ -22,6 +22,13 @@ export interface RawIssue {
   /** Status-transition timestamps (from changelog in live mode). */
   inProgressAt?: string | null;
   doneAt?: string | null;
+  // --- Sprint-scope tracking (for the full sprint model; all optional) ---
+  /** True if the issue was in the sprint at sprint start (planned work). */
+  plannedAtSprintStart?: boolean;
+  /** When the issue was pulled into the sprint mid-flight, if it was. */
+  addedToSprintAt?: string | null;
+  /** When the issue was removed from the sprint mid-flight, if it was. */
+  removedFromSprintAt?: string | null;
 }
 
 export interface CategorizationConfig {
@@ -85,10 +92,12 @@ function leadTimeHours(issue: RawIssue): number | null {
   return (new Date(issue.doneAt).getTime() - new Date(issue.inProgressAt).getTime()) / HOUR_MS;
 }
 
+/** Nearest-rank (ceil) percentile — the one convention used across the kit
+ * (same as `timeMetrics` in dora.ts), so one report never mixes definitions. */
 function percentile(sorted: number[], p: number): number {
   if (sorted.length === 0) return 0;
-  const idx = Math.floor(sorted.length * p);
-  return sorted[Math.min(idx, sorted.length - 1)] ?? 0;
+  const idx = Math.ceil(sorted.length * p) - 1;
+  return sorted[Math.min(Math.max(0, idx), sorted.length - 1)] ?? 0;
 }
 
 export function emptyJiraMetrics(): JiraMetrics {
@@ -99,6 +108,44 @@ export function emptyJiraMetrics(): JiraMetrics {
     leadTime: { avgHours: 0, medianHours: 0, p90Hours: 0 },
     workDistribution: { productDelivery: 0, bugs: 0, techDebt: 0, exploration: 0, other: 0 },
     byType: {},
+  };
+}
+
+import type { SprintInput } from "../reads/sprint-health.js";
+
+/**
+ * Derive the full sprint-model input (six-way planned/added × completed/
+ * removed/carried buckets) from issues carrying sprint-scope fields. Ported
+ * from the legacy metrics vocabulary: planned_completed, added_completed,
+ * planned_removed, added_removed, carried_over. Weights by story points when
+ * present, else by issue count.
+ */
+export function deriveSprintInput(issues: RawIssue[], sprintName?: string): SprintInput {
+  const weight = (i: RawIssue): number => i.storyPoints ?? 1;
+  const isPlanned = (i: RawIssue): boolean => i.plannedAtSprintStart ?? !i.addedToSprintAt;
+  const isAdded = (i: RawIssue): boolean => !isPlanned(i);
+  const isRemoved = (i: RawIssue): boolean => Boolean(i.removedFromSprintAt);
+  const isCompleted = (i: RawIssue): boolean => Boolean(i.resolvedAt) && !isRemoved(i);
+  const sum = (list: RawIssue[]): number => list.reduce((s, i) => s + weight(i), 0);
+
+  const planned = issues.filter(isPlanned);
+  const added = issues.filter(isAdded);
+  const plannedCompleted = planned.filter(isCompleted);
+  const addedCompleted = added.filter(isCompleted);
+  const plannedRemoved = planned.filter(isRemoved);
+  const addedRemoved = added.filter(isRemoved);
+  const carriedOver = planned.filter((i) => !isCompleted(i) && !isRemoved(i));
+
+  return {
+    sprintName,
+    committed: sum(planned),
+    completed: sum(plannedCompleted) + sum(addedCompleted),
+    completedPlannedWork: sum(plannedCompleted),
+    addedMidSprint: sum(added),
+    carriedOver: sum(carriedOver),
+    addedCompleted: sum(addedCompleted),
+    plannedRemoved: sum(plannedRemoved),
+    addedRemoved: sum(addedRemoved),
   };
 }
 

@@ -69,7 +69,8 @@
     "repo": "web",
     "builtAt": "2026-06-26T18:00:00Z",
     "deployedAt": "2026-06-26T19:30:00Z",
-    "isRevert": false
+    "isRevert": false,
+    "isFix": true
   },
   {
     "repo": "api",

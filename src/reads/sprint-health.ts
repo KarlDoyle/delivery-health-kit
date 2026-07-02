@@ -23,6 +23,13 @@ export interface SprintInput {
   addedMidSprint: number;
   /** Committed work not finished (carried into the next sprint). */
   carriedOver: number;
+  // --- Full sprint model (optional; ported from the legacy metrics vocabulary) ---
+  /** Of `addedMidSprint`, how much was completed (for added completion). */
+  addedCompleted?: number;
+  /** Planned work removed from the sprint mid-flight. */
+  plannedRemoved?: number;
+  /** Added work removed again before sprint end. */
+  addedRemoved?: number;
 }
 
 /** 🟢 / 🟡 / 🔴. */
@@ -120,6 +127,35 @@ export function computeSprintHealth(input: SprintInput): SprintHealthRead {
       higherIsBetter: true,
     },
   ];
+
+  // Full sprint model (only when the extra buckets are supplied) — ported from
+  // the legacy metrics vocabulary: added completion and the churn index.
+  if (input.addedCompleted !== undefined) {
+    const addedCompletion = safeDiv(input.addedCompleted, input.addedMidSprint);
+    metrics.push({
+      key: "addedCompletion",
+      label: "Added-work completion",
+      value: addedCompletion,
+      band: bandHigher(addedCompletion),
+      higherIsBetter: true,
+    });
+  }
+  if (input.plannedRemoved !== undefined || input.addedRemoved !== undefined) {
+    // Churn = everything that moved (added in, planned out, added out) over the
+    // sprint's total scope (committed + added), per the legacy definition.
+    const churn = safeDiv(
+      input.addedMidSprint + (input.plannedRemoved ?? 0) + (input.addedRemoved ?? 0),
+      input.committed + input.addedMidSprint,
+    );
+    metrics.push({
+      key: "churn",
+      label: "Churn index",
+      value: churn,
+      band: bandLower(churn),
+      higherIsBetter: false,
+    });
+  }
+
   const band = (key: string): Band => metrics.find((m) => m.key === key)?.band ?? "red";
 
   const { verdict, verdictReason } = nameSprint(band, carryoverRate);
@@ -217,6 +253,101 @@ function pickFixFirst(metrics: SprintMetric[]): string {
     default:
       return "Tighten estimates so predictability climbs next sprint.";
   }
+}
+
+// --- Multi-sprint trend (ported from the legacy metrics hero/chaos/laser logic) ---
+
+export interface SprintTrend {
+  perSprint: SprintHealthRead[];
+  /** Highest planned completion with carryover ≤10% (tie → first); null if none qualify. */
+  heroIndex: number | null;
+  /** Highest scope creep (tie → first). */
+  chaosIndex: number | null;
+  /** Highest execution focus (tie → first). */
+  laserFocusIndex: number | null;
+}
+
+function argmax(values: number[]): number | null {
+  let bestIdx: number | null = null;
+  let bestVal = Number.NEGATIVE_INFINITY;
+  values.forEach((v, i) => {
+    if (v > bestVal) {
+      bestVal = v;
+      bestIdx = i;
+    }
+  });
+  return bestIdx;
+}
+
+/**
+ * Compare a run of sprints and name the standouts. Deterministic, like
+ * everything else here: same inputs, same answer.
+ */
+export function computeSprintTrend(inputs: SprintInput[]): SprintTrend {
+  const perSprint = inputs.map(computeSprintHealth);
+  if (inputs.length === 0) {
+    return { perSprint, heroIndex: null, chaosIndex: null, laserFocusIndex: null };
+  }
+
+  const completion = inputs.map((i) => safeDiv(i.completed, i.committed));
+  const creep = inputs.map((i) => safeDiv(i.addedMidSprint, i.committed));
+  const focus = inputs.map((i) => safeDiv(i.completedPlannedWork, i.completed));
+  const carryover = inputs.map((i) => safeDiv(i.carriedOver, i.committed));
+
+  // Hero: best completion among sprints that also kept carryover ≤10%.
+  const heroCandidates = completion.map((c, i) =>
+    (carryover[i] ?? 1) <= 0.1 ? c : Number.NEGATIVE_INFINITY,
+  );
+  const heroIndex = heroCandidates.some((c) => c !== Number.NEGATIVE_INFINITY)
+    ? argmax(heroCandidates)
+    : null;
+
+  // Standout callouts require the standout to actually stand out: a clean run
+  // of sprints gets no "most chaotic", and only a genuinely-focused sprint
+  // (green band) earns "laser focus" — otherwise every run names both.
+  const maxCreep = Math.max(...creep);
+  const maxFocus = Math.max(...focus);
+
+  return {
+    perSprint,
+    heroIndex,
+    chaosIndex: maxCreep >= 0.1 ? argmax(creep) : null,
+    laserFocusIndex: maxFocus >= 0.9 ? argmax(focus) : null,
+  };
+}
+
+/** Render the multi-sprint trend as one-screen Markdown. */
+export function renderSprintTrendMarkdown(trend: SprintTrend): string {
+  const lines: string[] = ["# Sprint Trend", ""];
+  if (trend.perSprint.length === 0) {
+    return `${lines.join("\n")}\nNo sprints supplied.\n`;
+  }
+  lines.push("| Sprint | Verdict | Completion | Creep | Carryover | Predictability |");
+  lines.push("| --- | --- | --- | --- | --- | --- |");
+  trend.perSprint.forEach((r, i) => {
+    const get = (key: string): string => {
+      const m = r.metrics.find((x) => x.key === key);
+      return m ? `${Math.round(m.value * 100)}% ${bandEmoji(m.band)}` : "—";
+    };
+    const name = r.sprintName ?? `Sprint ${i + 1}`;
+    lines.push(
+      `| ${name} | ${r.verdict} | ${get("completion")} | ${get("creep")} | ${get("carryover")} | ${get("predictability")} |`,
+    );
+  });
+  const nameAt = (idx: number | null): string | null => {
+    if (idx === null) return null;
+    return trend.perSprint[idx]?.sprintName ?? `Sprint ${idx + 1}`;
+  };
+  const callouts: string[] = [];
+  const hero = nameAt(trend.heroIndex);
+  const chaos = nameAt(trend.chaosIndex);
+  const laser = nameAt(trend.laserFocusIndex);
+  if (hero) callouts.push(`**Hero sprint:** ${hero} — delivered the plan with little spillover.`);
+  if (laser)
+    callouts.push(`**Laser focus:** ${laser} — highest share of delivered work that was planned.`);
+  if (chaos) callouts.push(`**Most chaotic:** ${chaos} — most mid-sprint scope added.`);
+  if (callouts.length) lines.push("", ...callouts);
+  return `${lines.join("\n")}\n`;
 }
 
 /** Render the read as the canonical one-screen Markdown output. */

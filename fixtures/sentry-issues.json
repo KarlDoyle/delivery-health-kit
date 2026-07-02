@@ -1,0 +1,52 @@
+[
+  {
+    "id": "S1",
+    "title": "TypeError: cannot read properties of undefined",
+    "count": 42,
+    "userCount": 8,
+    "firstSeen": "2026-06-20T14:30:00Z",
+    "lastSeen": "2026-06-28T09:15:00Z",
+    "level": "error",
+    "project": "frontend"
+  },
+  {
+    "id": "S2",
+    "title": "Connection pool exhausted",
+    "count": 17,
+    "userCount": 3,
+    "firstSeen": "2026-05-01T10:00:00Z",
+    "lastSeen": "2026-06-27T22:40:00Z",
+    "level": "error",
+    "project": "backend"
+  },
+  {
+    "id": "S3",
+    "title": "Deprecated API usage detected",
+    "count": 15,
+    "userCount": 5,
+    "firstSeen": "2026-06-25T10:00:00Z",
+    "lastSeen": "2026-06-29T08:45:00Z",
+    "level": "warning",
+    "project": "frontend"
+  },
+  {
+    "id": "S4",
+    "title": "Retry succeeded after transient failure",
+    "count": 120,
+    "userCount": 0,
+    "firstSeen": "2026-04-01T09:00:00Z",
+    "lastSeen": "2026-06-16T11:00:00Z",
+    "level": "info",
+    "project": "backend"
+  },
+  {
+    "id": "S5",
+    "title": "Old build warning (out of window)",
+    "count": 3,
+    "userCount": 1,
+    "firstSeen": "2026-06-01T09:00:00Z",
+    "lastSeen": "2026-06-10T09:00:00Z",
+    "level": "error",
+    "project": "backend"
+  }
+]

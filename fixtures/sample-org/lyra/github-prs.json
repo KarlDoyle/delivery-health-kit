@@ -1,0 +1,178 @@
+[
+  {
+    "repo": "catalog",
+    "number": 100,
+    "author": "alan",
+    "createdAt": "2026-06-27T18:23:43.173Z",
+    "mergedAt": "2026-06-28T10:15:04.635Z",
+    "additions": 102,
+    "deletions": 15,
+    "firstReviewAt": "2026-06-27T20:23:17.722Z",
+    "title": "Batch nightly reconciliation"
+  },
+  {
+    "repo": "catalog",
+    "number": 101,
+    "author": "katherine",
+    "createdAt": "2026-06-20T23:50:23.684Z",
+    "mergedAt": "2026-06-21T15:57:34.298Z",
+    "additions": 272,
+    "deletions": 14,
+    "firstReviewAt": null,
+    "title": "fix: race in queue consumer"
+  },
+  {
+    "repo": "search",
+    "number": 102,
+    "author": "katherine",
+    "createdAt": "2026-06-23T06:43:45.616Z",
+    "mergedAt": "2026-06-24T09:30:04.133Z",
+    "additions": 199,
+    "deletions": 36,
+    "firstReviewAt": "2026-06-23T14:30:58.341Z",
+    "title": "Refactor session cache"
+  },
+  {
+    "repo": "search",
+    "number": 103,
+    "author": "katherine",
+    "createdAt": "2026-06-25T04:04:56.551Z",
+    "mergedAt": "2026-06-26T04:44:53.591Z",
+    "additions": 30,
+    "deletions": 82,
+    "firstReviewAt": "2026-06-25T08:39:28.160Z",
+    "title": "Upgrade framework minor version"
+  },
+  {
+    "repo": "catalog",
+    "number": 104,
+    "author": "alan",
+    "createdAt": "2026-06-17T02:30:11.404Z",
+    "mergedAt": "2026-06-17T05:30:29.134Z",
+    "additions": 322,
+    "deletions": 118,
+    "firstReviewAt": "2026-06-17T08:49:31.842Z",
+    "title": "Improve empty-state rendering"
+  },
+  {
+    "repo": "search",
+    "number": 105,
+    "author": "alan",
+    "createdAt": "2026-06-24T23:23:09.507Z",
+    "mergedAt": "2026-06-25T13:43:22.253Z",
+    "additions": 286,
+    "deletions": 93,
+    "firstReviewAt": "2026-06-25T04:53:33.702Z",
+    "title": "Add audit log for admin actions"
+  },
+  {
+    "repo": "catalog",
+    "number": 106,
+    "author": "barbara",
+    "createdAt": "2026-06-19T07:39:09.933Z",
+    "mergedAt": "2026-06-19T23:45:29.687Z",
+    "additions": 104,
+    "deletions": 88,
+    "firstReviewAt": null,
+    "title": "Upgrade framework minor version"
+  },
+  {
+    "repo": "catalog",
+    "number": 107,
+    "author": "alan",
+    "createdAt": "2026-06-18T23:56:19.239Z",
+    "mergedAt": "2026-06-19T03:14:06.085Z",
+    "additions": 233,
+    "deletions": 111,
+    "firstReviewAt": "2026-06-19T01:49:31.176Z",
+    "title": "Batch nightly reconciliation"
+  },
+  {
+    "repo": "catalog",
+    "number": 108,
+    "author": "barbara",
+    "createdAt": "2026-06-24T16:51:36.671Z",
+    "mergedAt": "2026-06-25T00:31:52.280Z",
+    "additions": 129,
+    "deletions": 62,
+    "firstReviewAt": "2026-06-24T19:22:31.053Z",
+    "title": "Improve empty-state rendering"
+  },
+  {
+    "repo": "catalog",
+    "number": 109,
+    "author": "barbara",
+    "createdAt": "2026-06-25T04:42:15.659Z",
+    "mergedAt": "2026-06-25T16:21:28.110Z",
+    "additions": 165,
+    "deletions": 8,
+    "firstReviewAt": null,
+    "title": "fix: null check on optional address"
+  },
+  {
+    "repo": "catalog",
+    "number": 110,
+    "author": "alan",
+    "createdAt": "2026-06-21T08:23:23.010Z",
+    "mergedAt": "2026-06-21T18:22:18.003Z",
+    "additions": 86,
+    "deletions": 115,
+    "firstReviewAt": "2026-06-21T13:08:51.644Z",
+    "title": "Batch nightly reconciliation"
+  },
+  {
+    "repo": "search",
+    "number": 111,
+    "author": "alan",
+    "createdAt": "2026-06-22T01:27:33.380Z",
+    "mergedAt": "2026-06-22T23:00:57.984Z",
+    "additions": 218,
+    "deletions": 12,
+    "firstReviewAt": "2026-06-22T06:07:14.717Z",
+    "title": "Upgrade framework minor version"
+  },
+  {
+    "repo": "catalog",
+    "number": 112,
+    "author": "barbara",
+    "createdAt": "2026-06-16T21:55:10.991Z",
+    "mergedAt": "2026-06-17T18:55:02.720Z",
+    "additions": 183,
+    "deletions": 106,
+    "firstReviewAt": "2026-06-17T05:51:58.631Z",
+    "title": "Upgrade framework minor version"
+  },
+  {
+    "repo": "catalog",
+    "number": 113,
+    "author": "barbara",
+    "createdAt": "2026-06-16T07:41:35.525Z",
+    "mergedAt": null,
+    "additions": 192,
+    "deletions": 29,
+    "firstReviewAt": "2026-06-16T13:39:27.783Z",
+    "title": "fix: race in queue consumer"
+  },
+  {
+    "repo": "catalog",
+    "number": 114,
+    "author": "katherine",
+    "createdAt": "2026-06-24T11:06:11.597Z",
+    "mergedAt": null,
+    "additions": 282,
+    "deletions": 87,
+    "firstReviewAt": null,
+    "title": "hotfix: rollback flag for slow query"
+  },
+  {
+    "repo": "catalog",
+    "number": 115,
+    "author": "alan",
+    "createdAt": "2026-06-22T06:17:14.281Z",
+    "mergedAt": null,
+    "additions": 53,
+    "deletions": 89,
+    "firstReviewAt": "2026-06-22T07:03:52.725Z",
+    "title": "Reduce bundle size for dashboard"
+  }
+]

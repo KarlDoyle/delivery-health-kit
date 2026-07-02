@@ -1,189 +1,136 @@
-# Delivery Health Kit
+# Baseline (`dhk`)
 
-One CLI that pulls delivery signals — **GitHub, Jira, Slack, and DORA** — and
-produces a single engineering-manager report: DORA + sprint + support metrics,
-rendered to **Markdown** or **Slack Block Kit**.
+**Engineering-health insight your team installs in five minutes.** DORA,
+delivery and on-call metrics, organised as **DX Core 4** — **team-level only,
+and your data never leaves your machine.**
 
-It consolidates three previously-separate eng-intelligence tools (a metrics
-pipeline, a sprint-report generator, and a Slack support-intel scanner) into one
-coherent kit, and it **runs fully offline** against committed synthetic fixtures —
-no credentials, no company data, no network.
-
-```bash
-pnpm install
-pnpm report          # offline demo → Markdown on stdout
-```
-
-## What it does
-
-| Signal | Source | Metrics |
-| --- | --- | --- |
-| **DORA** | deploy events (BigQuery/Drone live) | deployment frequency, lead time, change-failure rate, + Elite/High/Medium/Low class |
-| **Sprint / flow** | Jira | tickets closed/created, story points, lead time (avg/median/p90), work distribution (product/bugs/tech-debt/exploration) |
-| **PR flow** | GitHub | PRs merged, cycle time, time-to-first-review, PR size, by-repo |
-| **Support** | Slack support channel | requests, median first-response, resolution rate, unanswered, late (>4h), requester mix, top themes |
-
-Every source is a **pure compute function**; one assembler stitches them into a
-single report model; renderers emit Markdown or Slack. Offline and live use the
-exact same assembly path — only the inputs differ.
-
-## Offline demo
-
-`pnpm report` reads `fixtures/*.json` (synthetic, committed), anchors its date
-window to the fixtures' `asOf`, and prints a report. Output is deterministic.
-
-```
-# Delivery Health — Team Atlas
-
-_Period: last 14 days · generated 2026-06-29 · mode: offline_
-
-**TL;DR:** 8 tickets / 29 pts · 8 PRs merged · DORA: deploy elite · 12 support requests.
-
-## DORA
-| Metric | Value | Class |
-| --- | --- | --- |
-| Deployment frequency | 1/day | Elite |
-| Lead time for changes | 2.7h | Elite |
-| Change failure rate | 14.3% | Elite |
-...
-## Support (Slack)
-- Requests: 12
-- Median first response: 41.5 min (target < 60 min) [on target]
-- Resolution rate: 75% (target ≥ 80%) [below target]
-- Unanswered: 2 · Late (>4h): 2
-```
-
-### CLI
+_Product name: **Baseline** (npm: `eng-baseline`) · CLI binary: `dhk` · the
+2025 DORA report's finding is the framing: AI is a mirror — this is the tool
+that shows a team its real baseline._
 
 ```bash
-dhk report                          # offline markdown → stdout (default)
-dhk report --out output/report.md   # write to a file
-dhk report --format slack           # Slack Block Kit JSON → stdout
-dhk report --fixtures ./my-data     # point at a different fixtures dir
-dhk report --live                   # live mode (needs creds, see below)
+pnpm install && pnpm dhk demo    # a full dashboard before any credential
+pnpm dhk connect github          # paste one token → your own report (~2 min)
 ```
 
-(During development use `pnpm dhk report …`; after `pnpm build` the `dhk` bin is
-`dist/index.js`.)
+No Docker, no blueprint wizard, no account, no SSO, no data-scope step, no seat
+pricing. The first run opens on a fully-populated sample org so the value is
+visible before you connect anything; one GitHub token later you're looking at
+your own team.
 
-## Scorecard — many teams, one view
+## The guarantees (product-enforced, not policy)
 
-`dhk report` is one team; `dhk scorecard` points at **many** teams and ranks them
-in a single comparison, flagging the biggest drag. Same engine — each team goes
-through the exact same `assembleReport` + `compute*` maths; the scorecard only
-adds a transparent composite health score (the mean of whichever of DORA /
-PR-flow / support health a team has data for; sprint is shown but not scored, as
-it has no normalised target).
+- **Team-level only.** No per-person metric exists in the data model — a
+  leaderboard cannot be built from this tool. On-call load is per service and
+  out-of-hours share, never per responder.
+- **Local-first.** All computation happens on your machine. Offline mode makes
+  zero network calls; live mode calls only the APIs you connected. No telemetry.
+- **No single-metric optimisation.** Every view is a balanced Core-4 set
+  (SPACE guardrail); a badge on every output says so.
+- **Honest numbers.** CFR is labelled with its basis (incident-linked vs
+  revert-proxy); Effectiveness proxies carry a "survey not connected" note; the
+  verdict bands are deterministic code, never an LLM.
 
-```bash
-dhk scorecard                  # offline markdown, ranked healthiest-first
-dhk scorecard --format slack   # Slack Block Kit JSON
-dhk scorecard --out sc.md      # write to a file
-```
+## What you get
 
-```
-| Rank | Team | Score | DORA (deploy) | Cycle time | Sprint | Support |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | Team Atlas | 97 | High | 5h | 3 closed / 16 pts | 100% |
-| 2 | Team Nimbus | 71 | High | 22h | 3 closed / 10 pts | 75% |
-| 3 | Team Orion | 40 | High | 2.5d | 2 closed / 5 pts | 50% |
+**`dhk report` — the delivery report (DX Core 4):**
 
-Biggest drag: Team Orion (40) — weakest dimension: PR flow.
-```
+| Dimension | Metrics |
+| --- | --- |
+| **Speed** | deployment frequency · lead time for changes (DORA 2024 classes) · PR cycle time · time-to-first-review |
+| **Effectiveness** | PR/batch size · ticket lead time percentiles — labelled system-side proxies (full measure = DevEx pulse survey, optional later) |
+| **Quality** | change failure rate (incident-linked when PagerDuty is connected, labelled proxy otherwise) · rework rate (DORA 2024) · failed-deployment recovery time (median + p90) |
+| **Impact** | feature-vs-maintenance split · tickets/story points · support drag (unplanned load) |
 
-Multi-site fixtures live in `fixtures/scorecard.json` (one window, N teams).
+**`dhk digest` — the reliability digest:**
 
-## Sprint Health Read
+| Section | Metrics |
+| --- | --- |
+| **Incidents** (PagerDuty) | count · urgency/severity mix · time-to-detect · recovery time (create→resolve, median/p90) · on-call load by service + out-of-hours share |
+| **Errors** (Sentry) | unresolved issues · new this period · by project/level |
+| **SLOs** (Prometheus) | per-service availability + p95 latency vs targets · attainment roll-up |
 
-The lead "read" of the Delivery Health Check product line. Paste a sprint's
-figures, get a one-screen verdict + scorecard + the concerns to flag — written
-for an EM who doesn't know delivery metrics.
+Plus: `dhk scorecard` (many teams ranked in one view), `dhk sprint-health`
+(one-sprint verdict: Hero / Laser-Focus / Solid / Chaos), `dhk sprint-trend`
+(a run of sprints: hero/chaos/laser-focus callouts, full six-bucket sprint
+model with churn index), `dhk support-drag`, `dhk risky-ticket`.
 
-```bash
-dhk sprint-health                      # the lead Read from a demo sprint
-dhk sprint-health --in my-sprint.json  # your own pasted figures
-dhk sprint-health --format json        # machine-readable
-```
+Output formats: **Markdown** (default), **Slack Block Kit** (`--format slack`),
+**Google Sheets rows** (`--format sheets`, `--push` to append to a Sheet).
 
-**Data constant, AI is the flavour.** The formulas, the 🟢/🟡/🔴 bands, and the
-one-word verdict (Hero / Laser-Focus / Solid / Chaos) are computed
-**deterministically in code** (`src/reads/sprint-health.ts`) — same figures, same
-grade, every time. An LLM can write nicer prose on top, but it never decides the
-maths or the verdict. (Example: a sprint can hit 95% completion yet still be
-**Chaos** if 30% of the work was injected mid-sprint — the read catches that.)
+## The 5-minute path
 
-Input: `committed`, `completed`, `completedPlannedWork`, `addedMidSprint`,
-`carriedOver` (see `fixtures/sprint-input.json`).
+1. `dhk` — no config? The sample-org demo renders: a Core-4 report, a
+   reliability digest, and a 3-team scorecard. Never an empty screen.
+2. `dhk connect github` — paste a repo-read token; it validates, auto-discovers
+   your repos, saves config (`~/.config/dhk/config.json`, 0600), and **runs
+   your first real report right there**.
+3. A setup checklist shows what each further connection unlocks:
+   `GitHub ✓ · Jira ○ · PagerDuty ○ · Sentry ○ · Prometheus ○` — one source is
+   enough; each one enriches.
 
-## More reads (same data-constant engine)
+Zero-config defaults, correct-after not configure-before: repos = all
+discoverable; deploys = merges to your default branch (orgs with a real deploy
+log configure `bigquery-dora` instead); incident = PagerDuty triggered.
 
-Two more of the Delivery Health Check reads are now built to the same standard —
-bands + verdict in code, the AI only writes prose:
+## Adapts to your stack (the adapter principle)
 
-```bash
-dhk support-drag    # Read 2: is this team a hidden help desk? (verdict + scorecard + hidden-load hours)
-dhk risky-ticket    # Read 4: the 3–5 tickets worth raising in a retro, blameless, with the reason
-```
+The metric maths is the standard — DORA 2024, DX Core 4, SPACE — and never
+varies by org. Everything org-specific is config with sensible presets:
 
-- **Support-Drag** reuses the tested `sources/support.ts` connector and grades FRT / resolution /
-  unanswered / late against benchmarks — **team-level only, never per-person**.
-- **Risky-Ticket** flags each ticket (stale, no estimate, no reviewers, blocked, reopened, slow
-  review), scores by count + severity, and surfaces the shortlist + a blameless talk-track.
+- **Deploy signal:** merges-to-main (default, zero-config) · BigQuery deploy
+  log (your table/query, your schema) · fix/revert flags from PR titles.
+- **Prometheus metric shape:** `micrometer` preset (Spring) ·
+  `prometheus-http` preset (client_golang) · or name your own series + labels.
+- **Jira taxonomy:** work-categorisation types/labels are configurable;
+  sprint-scope fields are optional and derived when present.
+- **Hosts:** self-hosted Sentry, regional PagerDuty, any PromQL endpoint.
 
-Both take `--in <file>` / `--format json` and ship with a demo fixture. The 4th read (On-Call) is
-designed but not yet built to this standard.
+## Offline by default, live when connected
 
-## What needs live credentials
-
-The offline demo needs **nothing**. Live mode (`--live`) reads config from the
-environment (copy `.env.example`). What is wired today vs. what is stubbed:
+Every compute function is pure; fixtures and live fetchers feed the same
+assembly path. `pnpm test` (79 tests) exercises all the maths offline against
+hand-checked fixtures — no network, no credentials, mocked fetch for every live
+path. The committed `fixtures/sample-org/` (fictional "Nimbus Labs", 3 teams ×
+7 sources) is generated deterministically by `scripts/generate-sample-org.mjs`.
 
 | Source | Live status | Needs |
 | --- | --- | --- |
-| **GitHub** | Fetcher wired end-to-end (`fetchGitHubPRs`) and called by `--live` | `GITHUB_TOKEN`, `GITHUB_REPOS`, `TEAM_MEMBERS` |
-| **Jira** | Compute is live-ready; the REST fetcher is documented but not bundled into `--live` yet | `JIRA_*` |
-| **DORA** | Compute runs on normalized deploy events; the live source is BigQuery/Drone (no `@google-cloud/bigquery` dependency is bundled — add it for live) | `GCP_PROJECT_ID`, `BIGQUERY_DATASET` |
-| **Slack** | `renderSlackBlocks` is live; `postSlackReport` dynamically imports `@slack/web-api` (optional, not installed) | `SLACK_BOT_TOKEN`, channel id, `pnpm add @slack/web-api` |
-
-This split is deliberate: all the **maths and report assembly are exercised
-offline** by tests; the only untested-here surface is the network I/O.
-
-## How it was built (consolidation)
-
-Source material lived under `~/Dev/`. Reused vs. rewritten:
-
-- **Reused (lifted, adapted to the shared `ILogger` / pure-compute shape):**
-  the `simple-logger` and `fetch-with-retry` primitives; the GitHub PR
-  aggregation maths; the Jira work-categorization rules and lead-time
-  percentiles; the DORA class thresholds; the Slack Block Kit builders — all from
-  `consolidation/_extracted_capabilities/`.
-- **Rewritten:** the Slack support-intel metrics (ported from the Python
-  `slack-support-intel.py` to TypeScript, same team-level metrics and targets);
-  the sprint throughput idea from `sprint_report_generator.py`; and the entire
-  consolidation layer (assembler, renderers, CLI, fixtures) — new.
-- **Not ported:** the large Python `metrics` pipeline (kept as reference; its
-  responsibilities are covered by the leaner source modules here).
+| GitHub | wired (`connect github`) | token with repo read |
+| PagerDuty | wired (`connect pagerduty`) | read-only API key |
+| Sentry | wired (`connect sentry`) | org + auth token |
+| Prometheus | wired (`connect prometheus` + per-service SLO config) | PromQL URL |
+| BigQuery deploys | wired (config: table or custom query) | GCP project + token |
+| Jira | compute + sprint model ready; REST fetcher documented, not bundled | `connect jira` stores creds |
+| Slack post / Sheets push | wired (optional peer dep / REST) | bot token / OAuth token |
 
 ## Development
 
 ```bash
-pnpm typecheck   # tsc --noEmit
-pnpm lint        # biome
-pnpm test        # vitest (offline; covers every compute fn + report assembly)
-pnpm build       # tsc → dist/
+pnpm typecheck && pnpm lint && pnpm test   # the gates CI runs
+pnpm build && pnpm size && pnpm e2e        # built-CLI smoke + size ratchet
+pnpm review                                # standing reviewer (local Ollama)
 ```
 
-**Coverage (ratchet).** Measured 2026-06-29 (`vitest run --coverage`, `src/`):
-**statements 67.38%, branches 77.96%, functions 66.66%, lines 67.38%**. Vitest
-thresholds are set just below those numbers in `vitest.config.ts`, and `pnpm test`
-runs with `--coverage`, so the floor can only rise. Rationale: ai-starter
-`playbook/testing-and-coverage.md`.
+Built on the `ai-starter` standard: sequential CI gates (typecheck → lint →
+test → build) plus a separate **e2e job** driving the built CLI, a **coverage
+ratchet enforced in CI** (thresholds recorded in `vitest.config.ts`, floor only
+rises), a **size ratchet**, a `pre-push` hook that mirrors CI exactly, a
+committed secret-scan test, and the standing reviewer
+(`scripts/review.mjs` + `docs/review-rubric.md`).
 
-Scaffolded on the `ai-starter` Node standard: sequential CI gates
-(typecheck → lint → test → build), a `pre-push` hook mirroring CI, a committed
-secret-scan test, Biome, and Vitest. `pnpm install` wires the git hooks path
-automatically.
+## Status & roadmap
+
+- ✅ v1: demo-first onboarding, GitHub → Core-4 report, reliability digest,
+  scorecard, sprint model, Markdown/Slack/Sheets output.
+- ◻ Jira live fetcher bundled into `--live`.
+- ◻ DevEx pulse survey (completes Core 4's Effectiveness/DXI).
+- ◻ "AI-readiness" view (2025 DORA capabilities: version-control maturity,
+  small batches, platform quality).
+- ◻ Benchmarks vs DORA tiers · period/trend comparison · export/API for
+  internal developer portals.
 
 ## License
 
-MIT.
+Unlicensed (all rights reserved) while private — licensing is decided at
+go-public.

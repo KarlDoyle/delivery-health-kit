@@ -1,6 +1,8 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-  "vcs": { "enabled": false },
+  "vcs": {
+    "enabled": false
+  },
   "files": {
     "ignoreUnknown": true,
     "ignore": [
@@ -12,7 +14,8 @@
       ".pnpm-store",
       "output",
       "*.code-workspace",
-      "pnpm-lock.yaml"
+      "pnpm-lock.yaml",
+      "scripts/review.mjs"
     ]
   },
   "formatter": {
@@ -22,7 +25,9 @@
     "lineWidth": 100,
     "lineEnding": "lf"
   },
-  "organizeImports": { "enabled": true },
+  "organizeImports": {
+    "enabled": true
+  },
   "linter": {
     "enabled": true,
     "rules": {

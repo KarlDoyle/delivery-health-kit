@@ -1,5 +1,5 @@
 import type { ILogger } from "../logger.js";
-import type { DeliveryReport, DeliveryScorecard } from "../types.js";
+import type { DeliveryReport, DeliveryScorecard, ReliabilityReport } from "../types.js";
 
 /**
  * Slack output.
@@ -27,19 +27,26 @@ export const BlockKit = {
   },
 };
 
-/** Pure: report → Slack Block Kit blocks. */
+/** The product-enforced stance, shown on every output. */
+const BADGE = "team-level only · your data stays on your machine";
+
+/** Pure: report → Slack Block Kit blocks (organised as DX Core 4). */
 export function renderSlackBlocks(report: DeliveryReport): SlackBlock[] {
   const blocks: SlackBlock[] = [
     BlockKit.header(`Delivery Health — ${report.team}`),
-    BlockKit.context(`Last ${report.periodDays} days · mode: ${report.mode}`),
+    BlockKit.context(`Last ${report.periodDays} days · mode: ${report.mode} · ${BADGE}`),
     BlockKit.divider(),
   ];
 
   if (report.dora) {
     const d = report.dora;
+    const cfrLabel = d.cfrBasis === "incident-linked" ? "incident-linked" : "revert proxy";
     blocks.push(
       BlockKit.section(
-        `*DORA*\n• Deploy frequency: ${d.deploymentFrequencyPerDay}/day (${d.classes.deploymentFrequency})\n• Lead time: ${d.leadTimeHours}h (${d.classes.leadTime})\n• Change failure: ${d.changeFailureRatePct}% (${d.classes.changeFailureRate})`,
+        `*Speed*\n• Deploy frequency: ${d.deploymentFrequencyPerDay}/day (${d.classes.deploymentFrequency})\n• Lead time: ${d.leadTimeHours}h (${d.classes.leadTime})`,
+      ),
+      BlockKit.section(
+        `*Quality*\n• Change failure: ${d.changeFailureRatePct}% (${cfrLabel}, ${d.classes.changeFailureRate})\n• Rework rate: ${d.reworkRatePct}%`,
       ),
     );
   }
@@ -55,7 +62,7 @@ export function renderSlackBlocks(report: DeliveryReport): SlackBlock[] {
     const g = report.github;
     blocks.push(
       BlockKit.section(
-        `*PR flow*\n• Merged: ${g.totalMerged}\n• Cycle time: ${g.avgCycleTimeHours}h\n• Time to first review: ${g.avgTimeToFirstReviewHours}h`,
+        `*PR flow*\n• Merged: ${g.totalMerged}\n• Cycle time: ${g.avgCycleTimeHours}h\n• Time to first review: ${g.avgTimeToFirstReviewHours}h\n• Avg PR size: ${g.avgPRSize} lines`,
       ),
     );
   }
@@ -69,6 +76,56 @@ export function renderSlackBlocks(report: DeliveryReport): SlackBlock[] {
     );
   }
 
+  return blocks;
+}
+
+/** Pure: reliability digest → Slack Block Kit blocks. */
+export function renderDigestSlack(digest: ReliabilityReport): SlackBlock[] {
+  const blocks: SlackBlock[] = [
+    BlockKit.header(`Reliability Digest — ${digest.team}`),
+    BlockKit.context(`Last ${digest.periodDays} days · mode: ${digest.mode} · ${BADGE}`),
+    BlockKit.divider(),
+  ];
+
+  if (digest.dora) {
+    const d = digest.dora;
+    const cfrLabel = d.cfrBasis === "incident-linked" ? "incident-linked" : "revert proxy";
+    const recovery = d.recoveryTime
+      ? `\n• Recovery time: median ${d.recoveryTime.medianMinutes} min · p90 ${d.recoveryTime.p90Minutes} min`
+      : "";
+    blocks.push(
+      BlockKit.section(
+        `*Change failure*\n• CFR: ${d.changeFailureRatePct}% (${cfrLabel}, ${d.classes.changeFailureRate})\n• Rework rate: ${d.reworkRatePct}%${recovery}`,
+      ),
+    );
+  }
+  if (digest.incidents) {
+    const m = digest.incidents;
+    blocks.push(
+      BlockKit.section(
+        `*Incidents*\n• Total: ${m.totalIncidents} (${m.active} active)\n• Recovery (create→resolve): median ${m.ttm.medianMinutes} min · p90 ${m.ttm.p90Minutes} min\n• Out of hours: ${m.onCall.outOfHoursPct}%${m.onCall.busiestService ? `\n• Busiest service: ${m.onCall.busiestService}` : ""}`,
+      ),
+    );
+  }
+  if (digest.errors) {
+    const e = digest.errors;
+    blocks.push(
+      BlockKit.section(
+        `*Errors*\n• Unresolved: ${e.totalIssues} (${e.newIssues} new)\n• ${e.byLevel.error} error / ${e.byLevel.warning} warning`,
+      ),
+    );
+  }
+  if (digest.slo) {
+    const s = digest.slo;
+    const breaching = s.services
+      .filter((svc) => !(svc.meetingAvailability && svc.meetingLatency))
+      .map((svc) => svc.name);
+    blocks.push(
+      BlockKit.section(
+        `*SLOs*\n• Attainment: ${s.attainmentPct}% of ${s.services.length} services${breaching.length ? `\n• Breaching: ${breaching.join(", ")}` : ""}`,
+      ),
+    );
+  }
   return blocks;
 }
 

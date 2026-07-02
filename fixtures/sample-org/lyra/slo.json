@@ -1,0 +1,26 @@
+[
+  {
+    "name": "catalog",
+    "availabilityPct": 100,
+    "availabilityTargetPct": 99.95,
+    "meetingAvailability": true,
+    "p95Ms": 351,
+    "p99Ms": 599,
+    "latencyThresholdMs": 800,
+    "meetingLatency": true,
+    "totalRequests": 1002280,
+    "failedRequests": -40
+  },
+  {
+    "name": "search",
+    "availabilityPct": 99.66,
+    "availabilityTargetPct": 99.95,
+    "meetingAvailability": false,
+    "p95Ms": 629,
+    "p99Ms": 1483,
+    "latencyThresholdMs": 500,
+    "meetingLatency": false,
+    "totalRequests": 1303072,
+    "failedRequests": 4400
+  }
+]
