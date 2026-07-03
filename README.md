@@ -1,8 +1,13 @@
 # Baseline (`dhk`)
 
-**Engineering-health insight your team installs in five minutes.** DORA,
-delivery and on-call metrics, organised as **DX Core 4** — **team-level only,
-and your data never leaves your machine.**
+**Engineering-health insight your team installs in five minutes** — DORA,
+delivery and on-call metrics as DX Core 4, team-level only, your data never
+leaves your machine.
+
+![build](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
+![tests](https://img.shields.io/badge/tests-87-a78bfa?style=flat-square)
+![local-first](https://img.shields.io/badge/local--first-yes-a78bfa?style=flat-square)
+![licence](https://img.shields.io/badge/licence-UNLICENSED-slategray?style=flat-square)
 
 _Product name: **Baseline** (npm: `eng-baseline`) · CLI binary: `dhk` · the
 2025 DORA report's finding is the framing: AI is a mirror — this is the tool
@@ -17,6 +22,57 @@ No Docker, no blueprint wizard, no account, no SSO, no data-scope step, no seat
 pricing. The first run opens on a fully-populated sample org so the value is
 visible before you connect anything; one GitHub token later you're looking at
 your own team.
+
+## See it before you connect anything
+
+`pnpm dhk demo` runs fully offline against the committed sample org ("Nimbus
+Labs", 3 fictional teams) — no config, no network call. Real output, captured
+by actually running this command on 2026-07-03, unedited (the fixture's own
+`generated` timestamp below is fixed at its seeded `asOf` date, 2026-06-29, so
+every run prints the same deterministic figures — that's the point). Truncated
+here; the full run continues through Impact, then renders the reliability
+digest — incidents, errors, SLOs — from the same fixtures:
+
+```
+# Delivery Health — Orion
+
+_Period: last 14 days · generated 2026-06-29 · mode: offline_ · `team-level only · your data stays on your machine`
+
+**TL;DR:** 14 tickets / 51 pts · 22 PRs merged · DORA: deploy elite · 10 support requests.
+
+## Speed
+
+| Metric | Value | DORA class |
+| --- | --- | --- |
+| Deployment frequency | 1.5/day | Elite |
+| Lead time for changes | 15.5h | Elite |
+
+21 deploys over 14 days.
+
+- PR cycle time (open → merge): **14.2h** avg
+- Time to first review: **3.5h** avg (the feedback loop)
+- PRs merged: 22
+
+## Effectiveness
+
+- Avg PR size: **224 lines** (batch-size health — smaller flows faster)
+- Where the work landed: payments (14), checkout (8)
+- Ticket lead time (in-progress → done): avg 2.1d, median 2.6d, p90 3.6d
+
+> Effectiveness is fully measured with a DevEx pulse survey (DXI) — not yet connected.
+> The figures above are system-side proxies.
+
+## Quality
+
+| Metric | Value | DORA class |
+| --- | --- | --- |
+| Change failure rate (revert-based proxy) | 0% | Elite |
+| Rework rate (fix/revert deploys) | 14.3% | — |
+
+0 reverts, 3 fix/revert deploys of 21 total.
+
+_CFR shown as a revert-based proxy — connect PagerDuty for the incident-linked figure._
+```
 
 ## The guarantees (product-enforced, not policy)
 
@@ -89,7 +145,7 @@ varies by org. Everything org-specific is config with sensible presets:
 ## Offline by default, live when connected
 
 Every compute function is pure; fixtures and live fetchers feed the same
-assembly path. `pnpm test` (79 tests) exercises all the maths offline against
+assembly path. `pnpm test` (87 tests) exercises all the maths offline against
 hand-checked fixtures — no network, no credentials, mocked fetch for every live
 path. The committed `fixtures/sample-org/` (fictional "Nimbus Labs", 3 teams ×
 7 sources) is generated deterministically by `scripts/generate-sample-org.mjs`.
@@ -129,6 +185,30 @@ committed secret-scan test, and the standing reviewer
   small batches, platform quality).
 - ◻ Benchmarks vs DORA tiers · period/trend comparison · export/API for
   internal developer portals.
+
+## Part of the suite
+
+One engine, many products — eight local-first developer tools, one build
+standard, one safety philosophy.
+
+- **[moss](../moss)** — local-first AI CLI: routes prompts across model
+  providers, runs safety-gated skills, all on your machine.
+- **[relay](../relay)** — calm, confident Smartling translation review, right
+  in your browser; only ever does what you could do by hand.
+- **[quarry](../quarry)** — local-first code-RAG: ask any codebase a question,
+  answered and cited from the code itself, no cloud, no API key.
+- **[marshal](../marshal)** — code-grounded ticket intelligence built on
+  Quarry: routes and rewrites raw tickets into ready-to-work specs.
+- **delivery-health-kit (Baseline, `dhk`)** — engineering-health insight your
+  team installs in five minutes; DORA and delivery metrics, data never leaves
+  your machine.
+- **[ai-starter](../ai-starter)** — three opinionated starter templates so
+  every new project begins with the right shape.
+- **[document-migration-pipeline](../document-migration-pipeline)** —
+  local-first pipeline that turns scattered non-code files into inspectable,
+  reviewed Markdown.
+- **[sweep](../sweep)** — a macOS CLI that plans (never auto-executes) the
+  cleanup of your account traces across sites you're leaving behind.
 
 ## License
 
