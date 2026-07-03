@@ -19,7 +19,15 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
-      exclude: ["dist/**", "build/**", "scripts/**", "tests/**", "**/*.config.*", "**/*.d.ts"],
+      exclude: [
+        "dist/**",
+        "build/**",
+        "scripts/**",
+        "tests/**",
+        "**/*.config.*",
+        "**/*.d.ts",
+        ".claude/**",
+      ],
       // Ratchet, not a stretch goal. Set at/just-below the coverage measured on
       // 2026-07-02 (stmts 74.95 / branch 80.26 / funcs 78.48 / lines 74.95) so the
       // repo is green now and coverage can only go up. Raise these as you add
