@@ -14,6 +14,11 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     include: ["tests/**/*.test.ts", "src/**/*.test.ts"],
+    // Linked git worktrees (e.g. `.cx-m1-5/`, used for parallel branch work)
+    // live as ordinary subdirectories of the repo root. Without this exclude,
+    // vitest's default test discovery walks into them and re-runs (and
+    // double-counts) whatever branch happens to be checked out there.
+    exclude: ["**/node_modules/**", "**/.*/**"],
     environment: "node",
     globals: true,
     coverage: {
@@ -27,6 +32,11 @@ export default defineConfig({
         "**/*.config.*",
         "**/*.d.ts",
         ".claude/**",
+        // Any linked worktree checked out as a dot-prefixed subdirectory
+        // (e.g. `.cx-m1-5/`) — its whole source tree would otherwise be
+        // swept into v8's "all files" collection at 0% coverage, since it's
+        // a duplicate checkout the current test run never touches.
+        "**/.*/**",
       ],
       // Ratchet, not a stretch goal. Set at/just-below the coverage measured on
       // 2026-07-02 (stmts 74.95 / branch 80.26 / funcs 78.48 / lines 74.95) so the
