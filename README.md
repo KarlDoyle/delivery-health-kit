@@ -5,7 +5,7 @@ delivery and on-call metrics as DX Core 4, team-level only, your data never
 leaves your machine.
 
 ![build](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
-![tests](https://img.shields.io/badge/tests-87-a78bfa?style=flat-square)
+![tests](https://img.shields.io/badge/tests-107-a78bfa?style=flat-square)
 ![local-first](https://img.shields.io/badge/local--first-yes-a78bfa?style=flat-square)
 ![licence](https://img.shields.io/badge/licence-UNLICENSED-slategray?style=flat-square)
 
