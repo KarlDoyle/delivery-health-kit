@@ -1,3 +1,8 @@
+---
+last_reviewed: "2026-07-02"
+review_frequency: "monthly"
+---
+
 # STATE — delivery-health-kit (dhk)
 
 _Build executed 2026-07-02 from KARL_CONTEXT `Projects/delivery-health-kit/BUILD-PACKET.md`
