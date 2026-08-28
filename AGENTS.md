@@ -7,7 +7,7 @@ The canonical agent instructions for this repo (CLAUDE.md defers here).
 The consolidated **Engineering Delivery & Reliability product**: one CLI —
 `dhk report` (delivery, as DX Core 4) + `dhk digest` (reliability) — local-first,
 team-level only, five-minute onboarding. Built 2026-07-02 by executing
-`KARL_CONTEXT/Projects/delivery-health-kit/BUILD-PACKET.md`; the build record,
+`Taisce/Projects/delivery-health-kit/BUILD-PACKET.md`; the build record,
 decisions and harvest map live in `STATE.md` (read it before big changes).
 
 ## Stack
@@ -78,7 +78,7 @@ pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm size && pnpm e2e
   expected values by hand and update `tests/*.test.ts` comments.
 - `fixtures/sample-org/` is generated — edit the generator, not the JSON.
 
-## For the KARL_CONTEXT hub
+## For the Taisce hub
 
 `STATE.md` holds: the build record, the staged product-name decision, the
 expert-council metric decisions, the harvest map (what came from

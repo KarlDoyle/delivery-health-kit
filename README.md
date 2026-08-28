@@ -1,7 +1,7 @@
 # Baseline (`dhk`)
 
-**Engineering-health insight your team installs in five minutes** — DORA,
-delivery and on-call metrics as DX Core 4, team-level only, your data never
+**One report on how the team is delivering, from the tools you already
+use** — team-level only, one source is enough to start, and the data never
 leaves your machine.
 
 ![build](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
