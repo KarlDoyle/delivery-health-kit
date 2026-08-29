@@ -145,7 +145,7 @@ varies by org. Everything org-specific is config with sensible presets:
 ## Offline by default, live when connected
 
 Every compute function is pure; fixtures and live fetchers feed the same
-assembly path. `pnpm test` (87 tests) exercises all the maths offline against
+assembly path. `pnpm test` (107 tests) exercises all the maths offline against
 hand-checked fixtures — no network, no credentials, mocked fetch for every live
 path. The committed `fixtures/sample-org/` (fictional "Nimbus Labs", 3 teams ×
 7 sources) is generated deterministically by `scripts/generate-sample-org.mjs`.
