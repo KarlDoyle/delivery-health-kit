@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
-  type SprintInput,
   computeSprintHealth,
   computeSprintTrend,
   renderSprintTrendMarkdown,
+  type SprintInput,
 } from "../src/reads/sprint-health.js";
-import { type RawIssue, deriveSprintInput } from "../src/sources/jira.js";
+import { deriveSprintInput, type RawIssue } from "../src/sources/jira.js";
 
 describe("full sprint model (churn + added completion)", () => {
   const input: SprintInput = {

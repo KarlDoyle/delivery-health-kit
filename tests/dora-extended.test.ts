@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
-  type DeployEvent,
   computeDoraMetrics,
+  type DeployEvent,
   deployEventsFromPRs,
   timeMetrics,
 } from "../src/sources/dora.js";

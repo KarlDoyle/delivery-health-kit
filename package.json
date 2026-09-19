@@ -10,7 +10,7 @@
     "dhk": "./dist/index.js"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "scripts": {
     "dhk": "node --import tsx/esm src/index.ts",
@@ -27,11 +27,12 @@
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@types/node": "^22.10.0",
-    "@vitest/coverage-v8": "^2.1.9",
+    "@biomejs/biome": "2.5.14",
+    "@types/node": "^24.13.5",
+    "@vitest/coverage-v8": "^5.0.1",
     "tsx": "^4.23.13",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "typescript": "7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
   }
 }

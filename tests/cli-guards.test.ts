@@ -53,7 +53,6 @@ describe("corrupt config fails loud", () => {
     process.env.DHK_CONFIG_DIR = dir;
   });
   afterEach(() => {
-    // biome-ignore lint/performance/noDelete: the env var must actually be removed.
     delete process.env.DHK_CONFIG_DIR;
     rmSync(dir, { recursive: true, force: true });
   });

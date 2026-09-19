@@ -3,25 +3,24 @@ import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   type ConnectableSource,
-  type UserConfig,
-  configPath,
   loadUserConfig,
   saveUserConfig,
   setupChecklist,
+  type UserConfig,
 } from "./config.js";
 import { fetchWithRetry } from "./http.js";
-import { type ILogger, type LogLevel, createLogger, createSilentLogger } from "./logger.js";
+import { createLogger, createSilentLogger, type ILogger, type LogLevel } from "./logger.js";
 import {
-  type RiskyTicketInput,
   computeRiskyTickets,
+  type RiskyTicketInput,
   renderRiskyTicketMarkdown,
 } from "./reads/risky-ticket.js";
 import {
-  type SprintInput,
   computeSprintHealth,
   computeSprintTrend,
   renderSprintHealthMarkdown,
   renderSprintTrendMarkdown,
+  type SprintInput,
 } from "./reads/sprint-health.js";
 import { computeSupportDrag, renderSupportDragMarkdown } from "./reads/support-drag.js";
 import {
@@ -37,10 +36,10 @@ import {
 } from "./report/markdown.js";
 import { assembleScorecard } from "./report/scorecard.js";
 import {
-  type SheetsCell,
   appendSheetsRows,
   renderDigestSheetsRows,
   renderSheetsRows,
+  type SheetsCell,
 } from "./report/sheets.js";
 import { renderDigestSlack, renderScorecardSlack, renderSlackBlocks } from "./report/slack.js";
 import { deployEventsFromPRs } from "./sources/dora.js";
@@ -50,7 +49,7 @@ import {
   loadSampleOrg,
   loadScorecardFixtures,
 } from "./sources/fixtures.js";
-import { type GitHubLiveConfig, fetchGitHubPRs } from "./sources/github.js";
+import { fetchGitHubPRs, type GitHubLiveConfig } from "./sources/github.js";
 import { fetchPagerDutyIncidents } from "./sources/pagerduty.js";
 import { fetchServiceSlo } from "./sources/prometheus-slo.js";
 import { fetchSentryIssues } from "./sources/sentry.js";

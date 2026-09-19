@@ -38,16 +38,25 @@ export default defineConfig({
         // a duplicate checkout the current test run never touches.
         "**/.*/**",
       ],
-      // Ratchet, not a stretch goal. Set at/just-below the coverage measured on
-      // 2026-07-02 (stmts 74.95 / branch 80.26 / funcs 78.48 / lines 74.95) so the
-      // repo is green now and coverage can only go up. Raise these as you add
-      // tests; never lower them. Enforced in CI via `pnpm test` (vitest run
-      // --coverage). See ai-starter playbook/testing-and-coverage.md.
+      // Ratchet, not a stretch goal. Raise these as you add tests; never lower
+      // them. Enforced in CI via `pnpm test` (vitest run --coverage). See
+      // ai-starter playbook/testing-and-coverage.md.
+      //
+      // Re-measured 2026-09-19 on @vitest/coverage-v8 5.x. That release counts
+      // AST-aware: the branch denominator went 791 → 1077 and the function
+      // denominator 176 → 300, because inline ternaries, `??` and default
+      // parameters are now counted individually. The same code therefore scored
+      // 65.64% branches under the new counter and 82.04% under the old one — a
+      // change of unit, not a regression. Rather than move the branch number,
+      // the gap was closed with real tests (logger, http retry, the live GitHub
+      // and PagerDuty fetchers, and every absent-source rendering branch), so
+      // `branches` stays at 78 and the rest ratchet UP to just below the newly
+      // measured 85.50 / 78.45 / 88.33 / 84.60.
       thresholds: {
-        statements: 73,
+        statements: 85,
         branches: 78,
-        functions: 76,
-        lines: 73,
+        functions: 88,
+        lines: 84,
       },
     },
   },

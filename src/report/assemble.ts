@@ -1,14 +1,14 @@
-import { type DeployEvent, computeDoraMetrics } from "../sources/dora.js";
-import { type RawPR, computeGitHubMetrics } from "../sources/github.js";
-import { type RawIssue, computeJiraMetrics } from "../sources/jira.js";
+import { computeDoraMetrics, type DeployEvent } from "../sources/dora.js";
+import { computeGitHubMetrics, type RawPR } from "../sources/github.js";
+import { computeJiraMetrics, type RawIssue } from "../sources/jira.js";
 import {
+  computePagerDutyMetrics,
   type RawIncident,
   type WorkingHours,
-  computePagerDutyMetrics,
 } from "../sources/pagerduty.js";
 import { computeSloMetrics } from "../sources/prometheus-slo.js";
-import { type RawSentryIssue, computeSentryMetrics } from "../sources/sentry.js";
-import { type SupportThread, computeSupportMetrics } from "../sources/support.js";
+import { computeSentryMetrics, type RawSentryIssue } from "../sources/sentry.js";
+import { computeSupportMetrics, type SupportThread } from "../sources/support.js";
 import type { DeliveryConfig, DeliveryReport, ReliabilityReport, ServiceSlo } from "../types.js";
 
 /**

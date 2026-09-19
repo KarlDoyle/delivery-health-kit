@@ -1,21 +1,23 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.14/schema.json",
   "vcs": {
     "enabled": false
   },
   "files": {
     "ignoreUnknown": true,
-    "ignore": [
-      "node_modules",
-      "dist",
-      "build",
-      ".next",
-      "coverage",
-      ".pnpm-store",
-      "output",
-      "*.code-workspace",
-      "pnpm-lock.yaml",
-      "scripts/review.mjs"
+    "includes": [
+      "**",
+      "!.claude/worktrees",
+      "!**/node_modules",
+      "!**/dist",
+      "!**/build",
+      "!**/.next",
+      "!**/coverage",
+      "!**/.pnpm-store",
+      "!**/output",
+      "!**/*.code-workspace",
+      "!**/pnpm-lock.yaml",
+      "!**/scripts/review.mjs"
     ]
   },
   "formatter": {
@@ -25,13 +27,11 @@
     "lineWidth": 100,
     "lineEnding": "lf"
   },
-  "organizeImports": {
-    "enabled": true
-  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "suspicious": {
         "noExplicitAny": "error",
         "noConsole": "off"

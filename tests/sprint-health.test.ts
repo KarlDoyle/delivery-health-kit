@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
-  type SprintInput,
   computeSprintHealth,
   renderSprintHealthMarkdown,
+  type SprintInput,
 } from "../src/reads/sprint-health.js";
 
 const band = (read: ReturnType<typeof computeSprintHealth>, key: string) =>

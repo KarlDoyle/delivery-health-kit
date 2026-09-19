@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
-  type DeployEvent,
   classifyChangeFailureRate,
   classifyDeploymentFrequency,
   classifyLeadTime,
   computeDoraMetrics,
+  type DeployEvent,
 } from "../src/sources/dora.js";
-import { type RawPR, computeGitHubMetrics } from "../src/sources/github.js";
-import { type RawIssue, categorizeWork, computeJiraMetrics } from "../src/sources/jira.js";
-import { type SupportThread, computeSupportMetrics } from "../src/sources/support.js";
+import { computeGitHubMetrics, type RawPR } from "../src/sources/github.js";
+import { categorizeWork, computeJiraMetrics, type RawIssue } from "../src/sources/jira.js";
+import { computeSupportMetrics, type SupportThread } from "../src/sources/support.js";
 import type { DeliveryConfig } from "../src/types.js";
 
 const NOW = Date.parse("2026-06-29T12:00:00Z");

@@ -11,7 +11,7 @@
  * which removes the HR/privacy objection that kills most Slack analytics.
  */
 
-import { type SupportThread, computeSupportMetrics } from "../sources/support.js";
+import { computeSupportMetrics, type SupportThread } from "../sources/support.js";
 import { type Band, bandEmoji } from "./sprint-health.js";
 
 export interface SupportDragMetric {

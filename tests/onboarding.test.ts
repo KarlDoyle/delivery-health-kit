@@ -12,7 +12,6 @@ beforeEach(() => {
   process.env.DHK_CONFIG_DIR = dir;
 });
 afterEach(() => {
-  // biome-ignore lint/performance/noDelete: assigning undefined would coerce to the string "undefined" on process.env — the var must actually be removed.
   delete process.env.DHK_CONFIG_DIR;
   rmSync(dir, { recursive: true, force: true });
 });

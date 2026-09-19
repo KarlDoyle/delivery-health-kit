@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
-  type RiskyTicketInput,
   computeRiskyTickets,
+  type RiskyTicketInput,
   renderRiskyTicketMarkdown,
 } from "../src/reads/risky-ticket.js";
 
