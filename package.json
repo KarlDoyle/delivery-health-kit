@@ -30,7 +30,7 @@
     "@biomejs/biome": "1.9.4",
     "@types/node": "^22.10.0",
     "@vitest/coverage-v8": "^2.1.9",
-    "tsx": "^4.19.2",
+    "tsx": "^4.23.13",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }
