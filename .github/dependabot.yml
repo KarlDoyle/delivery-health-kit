@@ -9,6 +9,11 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    # @types/node tracks the RUNTIME, not the newest release: engines says Node 24 (the
+    # Active LTS), so the types stay on 24. Revisit when Node 26 becomes LTS (28 Oct 2026).
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       npm-minor-patch:
         patterns: ["*"]
