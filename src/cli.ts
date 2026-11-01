@@ -301,7 +301,7 @@ async function buildLive(
   const bigQueryAuthToken = env.BIGQUERY_AUTH_TOKEN ?? user?.bigquery?.authToken;
   const bigQueryTable = env.BIGQUERY_TABLE ?? user?.bigquery?.table;
   const bigQueryQuery = env.BIGQUERY_QUERY ?? user?.bigquery?.query;
-  let deploys: Awaited<ReturnType<typeof fetchBigQueryDeploys>> | undefined;
+  let deploys: NonNullable<Awaited<ReturnType<typeof fetchBigQueryDeploys>>> | undefined;
   if (bigQueryProjectId && bigQueryAuthToken && (bigQueryTable || bigQueryQuery)) {
     const bigQueryDeploys = await fetchBigQueryDeploys(
       {
