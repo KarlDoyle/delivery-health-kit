@@ -41,14 +41,18 @@ export function renderSlackBlocks(report: DeliveryReport): SlackBlock[] {
   if (report.dora) {
     const d = report.dora;
     const cfrLabel = d.cfrBasis === "incident-linked" ? "incident-linked" : "revert proxy";
-    blocks.push(
-      BlockKit.section(
-        `*Speed*\n• Deploy frequency: ${d.deploymentFrequencyPerDay}/day (${d.classes.deploymentFrequency})\n• Lead time: ${d.leadTimeHours}h (${d.classes.leadTime})`,
-      ),
-      BlockKit.section(
-        `*Quality*\n• Change failure: ${d.changeFailureRatePct}% (${cfrLabel}, ${d.classes.changeFailureRate})\n• Rework rate: ${d.reworkRatePct}%`,
-      ),
-    );
+    if (d.noData) {
+      blocks.push(BlockKit.section("*DORA*\n• No deployment data for this measurement window."));
+    } else {
+      blocks.push(
+        BlockKit.section(
+          `*Speed*\n• Deploy frequency: ${d.deploymentFrequencyPerDay}/day (${d.classes.deploymentFrequency})\n• Lead time: ${d.leadTimeHours}h (${d.classes.leadTime})`,
+        ),
+        BlockKit.section(
+          `*Quality*\n• Change failure: ${d.changeFailureRatePct}% (${cfrLabel}, ${d.classes.changeFailureRate})\n• Rework rate: ${d.reworkRatePct}%`,
+        ),
+      );
+    }
   }
   if (report.jira) {
     const j = report.jira;
@@ -95,7 +99,9 @@ export function renderDigestSlack(digest: ReliabilityReport): SlackBlock[] {
       : "";
     blocks.push(
       BlockKit.section(
-        `*Change failure*\n• CFR: ${d.changeFailureRatePct}% (${cfrLabel}, ${d.classes.changeFailureRate})\n• Rework rate: ${d.reworkRatePct}%${recovery}`,
+        d.noData
+          ? "*DORA*\n• No deployment data for this measurement window."
+          : `*Change failure*\n• CFR: ${d.changeFailureRatePct}% (${cfrLabel}, ${d.classes.changeFailureRate})\n• Rework rate: ${d.reworkRatePct}%${recovery}`,
       ),
     );
   }
@@ -139,7 +145,7 @@ export function renderScorecardSlack(sc: DeliveryScorecard): SlackBlock[] {
   const lines = sc.sites
     .map((s, i) => {
       const r = s.report;
-      const dora = r.dora ? r.dora.classes.deploymentFrequency : "—";
+      const dora = r.dora ? (r.dora.noData ? "no data" : r.dora.classes.deploymentFrequency) : "—";
       const cycle = r.github ? `${r.github.avgCycleTimeHours}h` : "—";
       const support = r.support ? `${r.support.resolutionRatePct}%` : "—";
       return `${i + 1}. *${s.team}* — score *${s.score}* · DORA ${dora} · cycle ${cycle} · support ${support}`;
