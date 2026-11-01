@@ -71,7 +71,9 @@ describe("scoreReport", () => {
 
   it("excludes DORA when the deployment window has no data", () => {
     const r = healthyReport();
-    r.dora = { ...r.dora!, noData: true, totalDeploys: 0 };
+    const dora = r.dora;
+    if (!dora) throw new Error("Expected DORA metrics in healthy report");
+    r.dora = { ...dora, noData: true, totalDeploys: 0 };
     const { parts } = scoreReport(r);
     expect(parts).not.toHaveProperty("dora");
     expect(parts).toHaveProperty("prFlow");
