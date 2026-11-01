@@ -47,12 +47,15 @@ export async function fetchBigQueryDeploys(
     return null;
   }
 
+  const periodDays = Number.isFinite(config.periodDays)
+    ? Math.max(1, Math.round(config.periodDays))
+    : 14;
   const query =
     config.query ??
     `SELECT repo, built_at, deployed_at, is_revert,
         IFNULL(is_fix, FALSE) AS is_fix, IFNULL(service, repo) AS service
       FROM \`${config.table}\`
-      WHERE deployed_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${Math.max(1, Math.round(config.periodDays))} DAY)
+      WHERE deployed_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${periodDays} DAY)
       ORDER BY deployed_at DESC`;
   const baseUrl = `https://bigquery.googleapis.com/bigquery/v2/projects/${encodeURIComponent(config.projectId)}/queries`;
   const request = async (url: string, init?: RequestInit): Promise<BigQueryResponse | null> => {
@@ -96,7 +99,7 @@ export async function fetchBigQueryDeploys(
   });
   if (!page) return null;
 
-  const rows: BigQueryRow[] = [...(page.rows ?? [])];
+  const rows: BigQueryRow[] = [];
   const jobId = page.jobReference?.jobId;
   const jobUrl = jobId ? new URL(`${baseUrl}/${encodeURIComponent(jobId)}`) : null;
   if (jobUrl && page.jobReference?.location) {
@@ -114,7 +117,6 @@ export async function fetchBigQueryDeploys(
       await new Promise((resolve) => setTimeout(resolve, 500));
       const polled = await request(jobUrl.toString());
       if (!polled) return null;
-      rows.push(...(polled.rows ?? []));
       page = polled;
       if (page.jobComplete !== false) {
         complete = true;
@@ -127,6 +129,7 @@ export async function fetchBigQueryDeploys(
     }
   }
 
+  rows.push(...(page.rows ?? []));
   let pageToken = page.pageToken;
   const seenTokens = new Set<string>();
   // BigQuery pages are bounded; the guard protects against broken/repeating tokens.
