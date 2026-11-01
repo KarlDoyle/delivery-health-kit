@@ -62,7 +62,8 @@ Output formats: **Markdown** (default), **Slack Block Kit** (`--format slack`) a
 
 1. Run `dhk` with no configuration to explore the sample report, reliability digest and three-team scorecard.
 2. Run `dhk connect github`; the CLI validates a repo-read token, discovers repositories, saves local configuration and runs the first report.
-3. Add other sources as needed. One source is enough to start; each additional connection enriches the report.
+3. For deployment data from BigQuery, run `dhk connect bigquery` and provide a GCP project, OAuth access token and deployment table (`dataset.table` or `project.dataset.table`). A custom SQL query can be supplied with `--query` or `BIGQUERY_QUERY` instead.
+4. Add other sources as needed. BigQuery takes precedence over GitHub merge-based deployment estimates when configured; if the BigQuery query fails, the CLI warns and falls back to GitHub merges.
 
 Configuration is stored locally at `~/.config/dhk/config.json` with restrictive file permissions.
 
@@ -70,7 +71,7 @@ Configuration is stored locally at `~/.config/dhk/config.json` with restrictive 
 
 The metric definitions are intended to remain consistent; organisation-specific details are configured through adapters and presets.
 
-- **Deploy signal:** live reports currently use merges to the default branch as a deployment proxy. A BigQuery deploy-event fetcher is implemented and tested in isolation, but is not yet wired into the live CLI.
+- **Deploy signal:** live reports use a configured BigQuery deploy log when available; otherwise, merges to the default branch remain the zero-configuration deployment proxy.
 - **Prometheus metric shape:** Micrometer and client_golang presets, or custom series and labels.
 - **Jira taxonomy:** configurable work-categorisation types and labels; sprint-scope fields are optional.
 - **Hosts:** self-hosted Sentry, regional PagerDuty and PromQL-compatible endpoints.
@@ -83,7 +84,7 @@ The metric definitions are intended to remain consistent; organisation-specific 
 | PagerDuty | Live integration | Read-only API key |
 | Sentry | Live integration | Organisation and auth token |
 | Prometheus | Live integration, with per-service SLO configuration | PromQL URL |
-| BigQuery deploys | Fetcher implemented and unit-tested; not yet integrated into `dhk report --live` | GCP project, OAuth token and configured table/query (CLI wiring planned) |
+| BigQuery deploys | Live integration; paginated query results; falls back to GitHub merges on query failure | GCP project, OAuth access token and table or custom query |
 | Jira | Computation and sprint model ready; REST fetcher documented but not bundled | Jira credentials |
 | Slack / Google Sheets | Optional output integrations | Bot token / OAuth token |
 
@@ -131,7 +132,7 @@ The demo uses committed synthetic data in `fixtures/sample-org/`, generated dete
 - ✅ Demo-first onboarding and GitHub → Core-4 report.
 - ✅ Reliability digest, scorecard and sprint model.
 - ✅ Markdown, Slack and Sheets output paths.
-- ◻ Wire the BigQuery deploy fetcher into `dhk report --live` with secure configuration.
+- ✅ BigQuery deployment logs integrated into live reporting with secure local configuration and GitHub fallback.
 - ◻ Bundle the Jira live fetcher into `--live`.
 - ◻ Add a DevEx pulse survey to complete the Effectiveness/DXI measure.
 - ◻ Explore an AI-readiness view based on DORA capability signals.
