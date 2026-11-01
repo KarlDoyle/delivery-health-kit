@@ -428,7 +428,111 @@ describe("prometheus-slo (mocked fetch — no real Prometheus/GCP calls)", () =>
     expect(seenQueries.some((q) => q.includes('path!~"/health"'))).toBe(true);
   });
 
-  it("returns 0 for a scalar query and logs a warning when the fetch rejects", async () => {
+  it("marks noData and does not pass availability when the error-rate query fails", async () => {
+    const mockFetch: typeof globalThis.fetch = async (input) => {
+      const query = new URL(String(input)).searchParams.get("query") ?? "";
+      if (query.includes('status=~"5.."')) return new Response("unavailable", { status: 503 });
+      const value = query.startsWith("histogram_quantile(0.95")
+        ? "120"
+        : query.startsWith("histogram_quantile(0.99")
+          ? "250"
+          : query.includes("increase(")
+            ? "1000"
+            : "100";
+      return new Response(
+        JSON.stringify({ status: "success", data: { result: [{ value: [0, value] }] } }),
+        { status: 200 },
+      );
+    };
+    const result = await fetchServiceSlo(
+      { queryUrl: "https://prom.example.com/api/v1/query" },
+      { name: "web", selector: 'job="web"', availabilityTargetPct: 99, latencyThresholdMs: 500 },
+      { logger, fetch: mockFetch },
+    );
+    expect(result.noData).toBe(true);
+    expect(result.availabilityPct).toBe(0);
+    expect(result.meetingAvailability).toBe(false);
+  });
+
+  it("marks noData when Prometheus returns an API-level query error", async () => {
+    const mockFetch: typeof globalThis.fetch = async (input) => {
+      const query = new URL(String(input)).searchParams.get("query") ?? "";
+      if (query.includes('status=~"5.."')) {
+        return new Response(
+          JSON.stringify({ status: "error", errorType: "bad_data", error: "invalid query" }),
+          { status: 200 },
+        );
+      }
+      return new Response(
+        JSON.stringify({ status: "success", data: { result: [{ value: [0, "100"] }] } }),
+        { status: 200 },
+      );
+    };
+    const result = await fetchServiceSlo(
+      { queryUrl: "https://prom.example.com/api/v1/query" },
+      { name: "web", selector: 'job="web"', availabilityTargetPct: 99, latencyThresholdMs: 500 },
+      { logger, fetch: mockFetch },
+    );
+    expect(result.noData).toBe(true);
+    expect(result.meetingAvailability).toBe(false);
+  });
+
+  it("treats malformed scalar values as unavailable data", async () => {
+    const mockFetch: typeof globalThis.fetch = async (input) => {
+      const query = new URL(String(input)).searchParams.get("query") ?? "";
+      const value = query.includes('status=~"5.."')
+        ? "NaN"
+        : query.startsWith("histogram_quantile(0.95")
+          ? "120"
+          : query.startsWith("histogram_quantile(0.99")
+            ? "250"
+            : "100";
+      return new Response(
+        JSON.stringify({ status: "success", data: { result: [{ value: [0, value] }] } }),
+        { status: 200 },
+      );
+    };
+    const result = await fetchServiceSlo(
+      { queryUrl: "https://prom.example.com/api/v1/query" },
+      { name: "web", selector: 'job="web"', availabilityTargetPct: 99, latencyThresholdMs: 500 },
+      { logger, fetch: mockFetch },
+    );
+    expect(result.noData).toBe(true);
+    expect(result.meetingAvailability).toBe(false);
+  });
+
+  it("treats empty error-series as zero errors while preserving valid availability", async () => {
+    const mockFetch: typeof globalThis.fetch = async (input) => {
+      const query = new URL(String(input)).searchParams.get("query") ?? "";
+      if (query.includes('status=~"5.."')) {
+        return new Response(JSON.stringify({ status: "success", data: { result: [] } }), {
+          status: 200,
+        });
+      }
+      const value = query.startsWith("histogram_quantile(0.95")
+        ? "120"
+        : query.startsWith("histogram_quantile(0.99")
+          ? "250"
+          : query.includes("increase(")
+            ? "1000"
+            : "100";
+      return new Response(
+        JSON.stringify({ status: "success", data: { result: [{ value: [0, value] }] } }),
+        { status: 200 },
+      );
+    };
+    const result = await fetchServiceSlo(
+      { queryUrl: "https://prom.example.com/api/v1/query" },
+      { name: "web", selector: 'job="web"', availabilityTargetPct: 99, latencyThresholdMs: 500 },
+      { logger, fetch: mockFetch },
+    );
+    expect(result.noData).toBe(false);
+    expect(result.failedRequests).toBe(0);
+    expect(result.availabilityPct).toBe(100);
+    expect(result.meetingAvailability).toBe(true);
+  });
+
+  it("marks noData and logs a warning when the fetch rejects", async () => {
     const warn = vi.fn();
     const failingFetch: typeof globalThis.fetch = async () => {
       throw new Error("timeout");
