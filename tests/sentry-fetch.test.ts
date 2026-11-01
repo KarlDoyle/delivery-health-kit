@@ -38,8 +38,8 @@ describe("Sentry pagination URL validation", () => {
     const { requests } = await runPagination(link(next));
 
     expect(requests).toHaveLength(2);
-    expect(requests[1].url).toBe(next);
-    expect(requests[1].authorization).toBe("Bearer sentry-test-token");
+    expect(requests[1]!.url).toBe(next);
+    expect(requests[1]!.authorization).toBe("Bearer sentry-test-token");
   });
 
   it("resolves a relative next link against the current API endpoint", async () => {
@@ -47,8 +47,8 @@ describe("Sentry pagination URL validation", () => {
     const { requests } = await runPagination(link(next));
 
     expect(requests).toHaveLength(2);
-    expect(new URL(requests[1].url).searchParams.get("cursor")).toBe("next");
-    expect(requests[1].url).toContain("/api/0/organizations/acme/issues/");
+    expect(new URL(requests[1]!.url).searchParams.get("cursor")).toBe("next");
+    expect(requests[1]!.url).toContain("/api/0/organizations/acme/issues/");
   });
 
   it.each([
@@ -60,7 +60,7 @@ describe("Sentry pagination URL validation", () => {
 
     expect(issues).toEqual([]);
     expect(requests).toHaveLength(1);
-    expect(requests[0].authorization).toBe("Bearer sentry-test-token");
+    expect(requests[0]!.authorization).toBe("Bearer sentry-test-token");
   });
 
   it("ignores malformed next URLs without making another request", async () => {
