@@ -42,8 +42,8 @@ import {
   type SheetsCell,
 } from "./report/sheets.js";
 import { renderDigestSlack, renderScorecardSlack, renderSlackBlocks } from "./report/slack.js";
-import { deployEventsFromPRs } from "./sources/dora.js";
 import { fetchBigQueryDeploys } from "./sources/bigquery-dora.js";
+import { deployEventsFromPRs } from "./sources/dora.js";
 import {
   loadDigestFixtures,
   loadFixtures,
@@ -732,7 +732,9 @@ async function connectSimple(
       flag("table") ??
       process.env.BIGQUERY_TABLE ??
       existing.bigquery?.table ??
-      (query ? undefined : await prompt("BigQuery table (dataset.table or project.dataset.table): "));
+      (query
+        ? undefined
+        : await prompt("BigQuery table (dataset.table or project.dataset.table): "));
     if (!projectId.trim() || !authToken.trim()) {
       throw new Error("BigQuery requires a GCP project ID and OAuth access token.");
     }
@@ -768,7 +770,14 @@ export async function runConnect(
 ): Promise<string> {
   const logger = makeLogger(flags);
   const source = (positional[0] ?? "") as ConnectableSource;
-  const valid: ConnectableSource[] = ["github", "jira", "pagerduty", "sentry", "prometheus", "bigquery"];
+  const valid: ConnectableSource[] = [
+    "github",
+    "jira",
+    "pagerduty",
+    "sentry",
+    "prometheus",
+    "bigquery",
+  ];
   if (!valid.includes(source)) {
     throw new Error(`Usage: dhk connect <${valid.join(" | ")}>`);
   }
