@@ -124,7 +124,14 @@ export async function saveUserConfig(
 }
 
 /** The connectable sources, in checklist order. One is enough to start. */
-export const CONNECTABLE_SOURCES = ["github", "jira", "pagerduty", "sentry", "prometheus", "bigquery"] as const;
+export const CONNECTABLE_SOURCES = [
+  "github",
+  "jira",
+  "pagerduty",
+  "sentry",
+  "prometheus",
+  "bigquery",
+] as const;
 export type ConnectableSource = (typeof CONNECTABLE_SOURCES)[number];
 
 const SOURCE_LABEL: Record<ConnectableSource, string> = {
