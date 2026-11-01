@@ -384,7 +384,12 @@ function summaryLine(r: DeliveryReport): string {
   const bits: string[] = [];
   if (r.jira) bits.push(`${r.jira.ticketsClosed} tickets / ${r.jira.storyPointsCompleted} pts`);
   if (r.github) bits.push(`${r.github.totalMerged} PRs merged`);
-  if (r.dora) bits.push(r.dora.noData ? "DORA: no deployment data" : `DORA: deploy ${r.dora.classes.deploymentFrequency.toLowerCase()}`);
+  if (r.dora)
+    bits.push(
+      r.dora.noData
+        ? "DORA: no deployment data"
+        : `DORA: deploy ${r.dora.classes.deploymentFrequency.toLowerCase()}`,
+    );
   if (r.support) bits.push(`${r.support.totalRequests} support requests`);
   return bits.length ? `**TL;DR:** ${bits.join(" · ")}.` : "";
 }
