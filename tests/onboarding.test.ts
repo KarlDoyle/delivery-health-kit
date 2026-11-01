@@ -119,7 +119,6 @@ describe("dhk connect github (mocked fetch — no real API calls)", () => {
       projectId: "acme-prod",
       authToken: "secret-token",
       table: "deploys.history",
-      query: undefined,
     });
     expect(out).toContain("BigQuery deploys ✓");
   });
