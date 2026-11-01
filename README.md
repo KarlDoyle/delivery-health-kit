@@ -12,6 +12,8 @@ It is designed to help engineering leaders understand how work flows, where fric
 
 _Product name: **Baseline** · CLI: `dhk` · npm publishing is currently disabled._
 
+**Status:** Release-ready, as assessed by the maintainer. The repository remains private, and the package is not published to npm.
+
 ## Try it
 
 ```bash
