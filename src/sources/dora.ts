@@ -64,6 +64,7 @@ export function classifyChangeFailureRate(ratePct: number): DORAClass {
 
 export function emptyDoraMetrics(periodDays: number): DoraMetrics {
   return {
+    noData: true,
     deploymentFrequencyPerDay: 0,
     leadTimeHours: 0,
     changeFailureRatePct: 0,
@@ -76,7 +77,7 @@ export function emptyDoraMetrics(periodDays: number): DoraMetrics {
     classes: {
       deploymentFrequency: "Low",
       leadTime: "Low",
-      changeFailureRate: "Elite",
+      changeFailureRate: "Low",
     },
   };
 }
