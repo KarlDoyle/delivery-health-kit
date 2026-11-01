@@ -37,6 +37,8 @@ export interface GitHubMetrics {
 export type CfrBasis = "incident-linked" | "revert-proxy";
 
 export interface DoraMetrics {
+  /** True when the measurement window contains no deployments. */
+  noData?: boolean;
   deploymentFrequencyPerDay: number;
   leadTimeHours: number;
   changeFailureRatePct: number;
