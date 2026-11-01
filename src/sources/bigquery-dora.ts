@@ -38,6 +38,11 @@ export async function fetchBigQueryDeploys(
     return null;
   }
 
+  if (!config.query && config.table && !/^[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_]+){1,2}$/.test(config.table)) {
+    logger?.warn("BigQuery table must be dataset.table or project.dataset.table");
+    return null;
+  }
+
   const query =
     config.query ??
     `SELECT repo, built_at, deployed_at, is_revert,
@@ -136,7 +141,7 @@ export async function fetchBigQueryDeploys(
     if (!repo || !builtAt || !deployedAt) continue;
     const builtAtIso = bqTimestampToIso(builtAt);
     const deployedAtIso = bqTimestampToIso(deployedAt);
-    if (!Number.isFinite(Date.parse(builtAtIso)) || !Number.isFinite(Date.parse(deployedAtIso))) continue;
+    if (!builtAtIso || !deployedAtIso) continue;
     out.push({
       repo,
       builtAt: builtAtIso,
@@ -150,10 +155,11 @@ export async function fetchBigQueryDeploys(
 }
 
 /** BigQuery returns TIMESTAMP as epoch seconds (string) or ISO; accept both. */
-function bqTimestampToIso(value: string): string {
+function bqTimestampToIso(value: string): string | null {
   const asNumber = Number(value);
   if (!Number.isNaN(asNumber) && value.trim() !== "") {
-    return new Date(asNumber * 1000).toISOString();
+    const date = new Date(asNumber * 1000);
+    return Number.isFinite(date.getTime()) ? date.toISOString() : null;
   }
-  return value;
+  return Number.isFinite(Date.parse(value)) ? value : null;
 }
