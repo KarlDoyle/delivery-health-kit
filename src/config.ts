@@ -53,6 +53,13 @@ export interface PrometheusConnection {
   }>;
 }
 
+export interface BigQueryConnection {
+  projectId: string;
+  authToken: string;
+  table?: string;
+  query?: string;
+}
+
 export interface SheetsConnection {
   spreadsheetId: string;
   range?: string;
@@ -67,6 +74,7 @@ export interface UserConfig {
   pagerduty?: PagerDutyConnection;
   sentry?: SentryConnection;
   prometheus?: PrometheusConnection;
+  bigquery?: BigQueryConnection;
   sheets?: SheetsConnection;
 }
 
@@ -116,7 +124,7 @@ export async function saveUserConfig(
 }
 
 /** The connectable sources, in checklist order. One is enough to start. */
-export const CONNECTABLE_SOURCES = ["github", "jira", "pagerduty", "sentry", "prometheus"] as const;
+export const CONNECTABLE_SOURCES = ["github", "jira", "pagerduty", "sentry", "prometheus", "bigquery"] as const;
 export type ConnectableSource = (typeof CONNECTABLE_SOURCES)[number];
 
 const SOURCE_LABEL: Record<ConnectableSource, string> = {
@@ -125,6 +133,7 @@ const SOURCE_LABEL: Record<ConnectableSource, string> = {
   pagerduty: "PagerDuty",
   sentry: "Sentry",
   prometheus: "Prometheus",
+  bigquery: "BigQuery deploys",
 };
 
 const SOURCE_UNLOCKS: Record<ConnectableSource, string> = {
@@ -133,6 +142,7 @@ const SOURCE_UNLOCKS: Record<ConnectableSource, string> = {
   pagerduty: "incidents + incident-linked CFR",
   sentry: "error budget",
   prometheus: "SLO attainment",
+  bigquery: "deployment frequency + lead time from your deploy log",
 };
 
 /**
