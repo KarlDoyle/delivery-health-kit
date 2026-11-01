@@ -43,6 +43,7 @@ import {
 } from "./report/sheets.js";
 import { renderDigestSlack, renderScorecardSlack, renderSlackBlocks } from "./report/slack.js";
 import { deployEventsFromPRs } from "./sources/dora.js";
+import { fetchBigQueryDeploys } from "./sources/bigquery-dora.js";
 import {
   loadDigestFixtures,
   loadFixtures,
@@ -101,7 +102,7 @@ Usage:
   dhk report [options]        Delivery report — DORA + PR flow, as DX Core 4
   dhk digest [options]        Reliability digest — incidents, errors, SLOs
   dhk connect <source>        Paste a token, see your own data (github | jira |
-                              pagerduty | sentry | prometheus)
+                              pagerduty | sentry | prometheus | bigquery)
   dhk scorecard [options]     Compare many teams in one ranked scorecard
   dhk sprint-health [options] Read 1: sprint verdict + scorecard + flags
   dhk sprint-trend [options]  Compare a run of sprints (hero / chaos / laser-focus)
@@ -296,9 +297,31 @@ async function buildLive(
     logger.warn("GitHub not connected; run `dhk connect github` (GitHub section omitted)");
   }
 
-  // Zero-config deploy signal: merges to the default branch are deploys.
-  // Orgs with a real deploy log configure that source instead (see README).
-  const deploys = prs ? deployEventsFromPRs(prs) : undefined;
+  const bigQueryProjectId = env.BIGQUERY_PROJECT_ID ?? user?.bigquery?.projectId;
+  const bigQueryAuthToken = env.BIGQUERY_AUTH_TOKEN ?? user?.bigquery?.authToken;
+  const bigQueryTable = env.BIGQUERY_TABLE ?? user?.bigquery?.table;
+  const bigQueryQuery = env.BIGQUERY_QUERY ?? user?.bigquery?.query;
+  let deploys: Awaited<ReturnType<typeof fetchBigQueryDeploys>> | undefined;
+  if (bigQueryProjectId && bigQueryAuthToken && (bigQueryTable || bigQueryQuery)) {
+    const bigQueryDeploys = await fetchBigQueryDeploys(
+      {
+        projectId: bigQueryProjectId,
+        authToken: bigQueryAuthToken,
+        table: bigQueryTable,
+        query: bigQueryQuery,
+        periodDays,
+      },
+      { logger, fetch: deps.fetch },
+    );
+    if (bigQueryDeploys !== null) {
+      deploys = bigQueryDeploys;
+      logger.info(`Using BigQuery deployment log (${deploys.length} events)`);
+    } else {
+      logger.warn("BigQuery unavailable; falling back to GitHub merge-based deployment proxy");
+    }
+  }
+  // GitHub merges remain the zero-configuration fallback when BigQuery is absent or unavailable.
+  if (deploys === undefined) deploys = prs ? deployEventsFromPRs(prs) : undefined;
 
   return assembleReport({ config, mode: "live", now: Date.now(), prs, deploys });
 }
@@ -693,6 +716,26 @@ async function connectSimple(
     logger.info(
       "Prometheus saved. Add per-service SLO definitions in the config file to unlock SLOs.",
     );
+  } else if (source === "bigquery") {
+    const projectId =
+      flag("project") ?? process.env.BIGQUERY_PROJECT_ID ?? existing.bigquery?.projectId ?? (await prompt("GCP project ID: "));
+    const authToken =
+      flag("auth-token") ??
+      process.env.BIGQUERY_AUTH_TOKEN ??
+      existing.bigquery?.authToken ??
+      (await prompt("Paste a BigQuery OAuth access token (e.g. gcloud auth print-access-token): "));
+    const table = flag("table") ?? process.env.BIGQUERY_TABLE ?? existing.bigquery?.table;
+    const query = flag("query") ?? process.env.BIGQUERY_QUERY ?? existing.bigquery?.query;
+    if (!projectId.trim() || !authToken.trim()) {
+      throw new Error("BigQuery requires a GCP project ID and OAuth access token.");
+    }
+    if (!table && !query) {
+      throw new Error("BigQuery requires --table or --query (or BIGQUERY_TABLE / BIGQUERY_QUERY).");
+    }
+    if (table && !query && !/^[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_]+){1,2}$/.test(table)) {
+      throw new Error("BigQuery table must be dataset.table or project.dataset.table.");
+    }
+    existing.bigquery = { projectId: projectId.trim(), authToken: authToken.trim(), table, query };
   } else if (source === "jira") {
     const baseUrl =
       flag("base-url") ?? (await prompt("Jira base URL (https://you.atlassian.net): "));
@@ -713,7 +756,7 @@ export async function runConnect(
 ): Promise<string> {
   const logger = makeLogger(flags);
   const source = (positional[0] ?? "") as ConnectableSource;
-  const valid: ConnectableSource[] = ["github", "jira", "pagerduty", "sentry", "prometheus"];
+  const valid: ConnectableSource[] = ["github", "jira", "pagerduty", "sentry", "prometheus", "bigquery"];
   if (!valid.includes(source)) {
     throw new Error(`Usage: dhk connect <${valid.join(" | ")}>`);
   }
