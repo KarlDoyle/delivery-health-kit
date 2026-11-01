@@ -157,7 +157,9 @@ export async function fetchBigQueryDeploys(
   for (const row of rows) {
     const fields = row.f;
     if (!Array.isArray(fields)) continue;
-    const [repo, builtAt, deployedAt, isRevert, isFix, service] = fields.map((field) => field?.v ?? null);
+    const [repo, builtAt, deployedAt, isRevert, isFix, service] = fields.map(
+      (field) => field?.v ?? null,
+    );
     if (!repo || !builtAt || !deployedAt) continue;
     const builtAtIso = bqTimestampToIso(builtAt);
     const deployedAtIso = bqTimestampToIso(deployedAt);
