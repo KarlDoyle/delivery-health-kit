@@ -12,7 +12,7 @@ team-level only, five-minute onboarding.
 
 TypeScript (ESM, NodeNext) · pnpm · Biome · Vitest · **zero runtime
 dependencies** (live paths use native fetch; optional integrations are dynamic
-imports or plain REST). Node ≥22. Licensed under MIT; `private: true` keeps
+imports or plain REST). Node ≥22.13. Licensed under MIT; `private: true` keeps
 the package from being published to npm.
 
 ## Architecture

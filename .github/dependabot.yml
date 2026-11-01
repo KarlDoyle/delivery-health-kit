@@ -9,11 +9,13 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
-    # @types/node tracks the RUNTIME, not the newest release: engines says Node 24 (the
-    # Active LTS), so the types stay on 24. Revisit when Node 26 becomes LTS (28 Oct 2026).
+    # Node 22 and 24 are both exercised in CI; runtime support starts at 22.13.
     ignore:
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+    allow:
+      - dependency-name: "@types/node"
+        dependency-type: "direct"
     groups:
       npm-minor-patch:
         patterns: ["*"]

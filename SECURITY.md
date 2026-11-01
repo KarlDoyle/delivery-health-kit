@@ -5,7 +5,7 @@
 dhk is **local-first by design**: all metric computation happens on your
 machine. In offline mode (the default, incl. `dhk demo`) the tool makes **zero
 network calls**. In `--live` mode it calls only the APIs you have explicitly
-connected (GitHub, Jira, PagerDuty, Sentry, Prometheus, Google Sheets) — your
+connected (GitHub, PagerDuty, Sentry, Prometheus, Google Sheets) — your
 delivery data is never sent to any other party, and there is no telemetry.
 
 ## Credentials
@@ -33,5 +33,7 @@ delivery data is never sent to any other party, and there is no telemetry.
 
 ## Reporting
 
-This repository is currently private/unpublished. Report concerns directly to
-the maintainer.
+For a vulnerability, use GitHub's **Report a vulnerability** action in the
+repository's Security tab when private vulnerability reporting is enabled. If
+that option is unavailable, contact the maintainer privately before opening a
+public issue. Please do not include credentials or customer data in a report.

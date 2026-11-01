@@ -16,6 +16,10 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22, 24]
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
@@ -26,7 +30,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version: "24"
+          node-version: ${{ matrix.node-version }}
           cache: "pnpm"
 
       - name: Install
@@ -55,6 +59,10 @@ jobs:
   e2e:
     needs: verify
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22, 24]
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
@@ -65,7 +73,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v7
         with:
-          node-version: "24"
+          node-version: ${{ matrix.node-version }}
           cache: "pnpm"
 
       - name: Install

@@ -10,7 +10,7 @@ It is designed to help engineering leaders understand how work flows, where fric
 ![local-first](https://img.shields.io/badge/local--first-yes-a78bfa?style=flat-square)
 ![licence](https://img.shields.io/badge/licence-MIT-green?style=flat-square)
 
-_Product name: **Baseline** · npm package: `eng-baseline` · CLI: `dhk`_
+_Product name: **Baseline** · CLI: `dhk` · npm publishing is currently disabled._
 
 ## Try it
 
@@ -19,7 +19,7 @@ pnpm install
 pnpm dhk demo
 ```
 
-Run the offline demo before connecting any services. Connect GitHub to generate a report from your own engineering data:
+Run the offline demo before connecting any services. To use your own engineering data, install the source checkout's dependencies and connect GitHub:
 
 ```bash
 pnpm dhk connect github
@@ -84,7 +84,7 @@ The metric definitions are intended to remain consistent; organisation-specific 
 | Sentry | Live integration | Organisation and auth token |
 | Prometheus | Live integration, with per-service SLO configuration | PromQL URL |
 | BigQuery deploys | Future optional deployment-event adapter; not currently integrated | GCP project, OAuth token and configured table/query |
-| Jira | Computation and sprint model ready; REST fetcher documented but not bundled | Jira credentials |
+| Jira | Work categorisation and sprint calculations are available; Jira REST ingestion is not implemented in the CLI | Jira credentials (not currently used by a live command) |
 | Slack / Google Sheets | Optional output integrations | Bot token / OAuth token |
 
 ## Engineering approach
