@@ -110,10 +110,12 @@ describe("dhk connect github (mocked fetch — no real API calls)", () => {
   });
 
   it("connects BigQuery and stores the OAuth token in owner-only config", async () => {
-    const out = await runConnect(
-      ["bigquery"],
-      { project: "acme-prod", "auth-token": "secret-token", table: "deploys.history", quiet: true },
-    );
+    const out = await runConnect(["bigquery"], {
+      project: "acme-prod",
+      "auth-token": "secret-token",
+      table: "deploys.history",
+      quiet: true,
+    });
     const saved = await loadUserConfig();
     expect(saved?.bigquery).toEqual({
       projectId: "acme-prod",
@@ -167,7 +169,9 @@ describe("dhk connect github (mocked fetch — no real API calls)", () => {
     const mockFetch: typeof globalThis.fetch = async (input) => {
       const url = String(input);
       if (url.includes("bigquery.googleapis.com")) {
-        return new Response(JSON.stringify({ error: { message: "access denied" } }), { status: 200 });
+        return new Response(JSON.stringify({ error: { message: "access denied" } }), {
+          status: 200,
+        });
       }
       if (url.includes("/repos/acme/web/pulls")) githubFallbackCalled = true;
       return new Response(JSON.stringify([]), { status: 200 });
