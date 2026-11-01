@@ -2,57 +2,40 @@ import { fetchWithRetry } from "../http.js";
 import type { ILogger } from "../logger.js";
 import type { DeployEvent } from "./dora.js";
 
-/**
- * Live DORA deploy-event source from a BigQuery deploy log.
- *
- * Harvested from service-health-bot/src/fetchers/bigquery.ts (the REST call +
- * row-parsing shape, tested there with MSW). Reshaped around the adapter
- * principle: the original hard-coded one org's `deployments.history` table and
- * aggregated in SQL; this one lets the org supply its own table (or a whole
- * custom query) and returns raw DeployEvents so the shared `computeDoraMetrics`
- * does the maths — one compute path for every source.
- *
- * Orgs without a deploy log don't need this at all: the zero-config default is
- * `deployEventsFromPRs` (merges-to-main = deploys) in dora.ts.
- */
-
+/** BigQuery REST API adapter for deployment history. */
 export interface BigQueryDoraConfig {
   projectId: string;
   authToken: string;
-  /**
-   * Fully-qualified table with the org's deploy history. Expected columns:
-   * repo (STRING), built_at (TIMESTAMP), deployed_at (TIMESTAMP),
-   * is_revert (BOOL), is_fix (BOOL, optional), service (STRING, optional).
-   */
   table?: string;
-  /**
-   * Escape hatch: a complete custom SQL query returning the columns above, for
-   * orgs whose schema doesn't match. Takes precedence over `table`.
-   */
+  /** Complete SQL returning repo, built_at, deployed_at, is_revert, is_fix, service. */
   query?: string;
   periodDays: number;
 }
 
 interface BigQueryRow {
-  f: Array<{ v: string | null }>;
+  f?: Array<{ v?: string | null }>;
+}
+
+interface BigQueryResponse {
+  rows?: BigQueryRow[];
+  pageToken?: string;
+  jobComplete?: boolean;
+  jobReference?: { jobId?: string; location?: string };
+  error?: { message?: string };
 }
 
 /**
- * Live fetch: deploy events for the window, normalized to DeployEvent[].
- * Not exercised offline — needs a GCP project + OAuth token.
+ * Fetch all deployment rows. Returns null on API/query failure, distinct from
+ * [] which is a successful query with no deployments.
  */
 export async function fetchBigQueryDeploys(
   config: BigQueryDoraConfig,
   options: { logger?: ILogger; fetch?: typeof globalThis.fetch } = {},
-): Promise<DeployEvent[]> {
+): Promise<DeployEvent[] | null> {
   const { logger } = options;
-  if (!config.projectId || !config.authToken) {
-    logger?.warn("BigQuery project / auth token not provided; skipping BigQuery source");
-    return [];
-  }
-  if (!config.table && !config.query) {
-    logger?.warn("BigQuery deploy table (or custom query) not configured; skipping");
-    return [];
+  if (!config.projectId || !config.authToken || (!config.table && !config.query)) {
+    logger?.warn("BigQuery needs a project, OAuth token and table or custom query; skipping");
+    return null;
   }
 
   const query =
@@ -60,37 +43,104 @@ export async function fetchBigQueryDeploys(
     `SELECT repo, built_at, deployed_at, is_revert,
         IFNULL(is_fix, FALSE) AS is_fix, IFNULL(service, repo) AS service
       FROM \`${config.table}\`
-      WHERE deployed_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${Math.round(config.periodDays)} DAY)
+      WHERE deployed_at >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL ${Math.max(1, Math.round(config.periodDays))} DAY)
       ORDER BY deployed_at DESC`;
-
-  const url = `https://bigquery.googleapis.com/bigquery/v2/projects/${config.projectId}/queries`;
-  const res = await fetchWithRetry(
-    url,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${config.authToken}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
+  const baseUrl = `https://bigquery.googleapis.com/bigquery/v2/projects/${encodeURIComponent(config.projectId)}/queries`;
+  const request = async (url: string, init?: RequestInit): Promise<BigQueryResponse | null> => {
+    const response = await fetchWithRetry(
+      url,
+      {
+        ...init,
+        headers: {
+          Authorization: `Bearer ${config.authToken}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          ...init?.headers,
+        },
       },
-      body: JSON.stringify({ query, useLegacySql: false }),
-    },
-    options,
-  ).catch((e) => {
-    logger?.warn("BigQuery fetch failed", { error: String(e) });
-    return null;
-  });
-  if (!res) return [];
+      options,
+    ).catch((error) => {
+      logger?.warn("BigQuery request failed", { error: String(error) });
+      return null;
+    });
+    if (!response) return null;
+    const body = (await response.json().catch(() => null)) as BigQueryResponse | null;
+    if (!body || typeof body !== "object" || body.error) {
+      logger?.warn("BigQuery returned an invalid response", { error: body?.error?.message });
+      return null;
+    }
+    return body;
+  };
 
-  const data = (await res.json()) as { rows?: BigQueryRow[] };
+  let page = await request(baseUrl, {
+    method: "POST",
+    body: JSON.stringify({ query, useLegacySql: false }),
+  });
+  if (!page) return null;
+
+  // A query can return before its job has completed. Poll the same job endpoint.
+  if (page.jobComplete === false) {
+    const jobId = page.jobReference?.jobId;
+    if (!jobId) {
+      logger?.warn("BigQuery query is incomplete but returned no job ID");
+      return null;
+    }
+    const pollUrl = new URL(`${baseUrl}/${encodeURIComponent(jobId)}`);
+    if (page.jobReference?.location) pollUrl.searchParams.set("location", page.jobReference.location);
+    let complete = false;
+    for (let attempt = 0; attempt < 30; attempt++) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const polled = await request(pollUrl.toString());
+      if (!polled) return null;
+      page = polled;
+      if (page.jobComplete !== false) {
+        complete = true;
+        break;
+      }
+    }
+    if (!complete) {
+      logger?.warn("BigQuery query did not complete before the polling limit");
+      return null;
+    }
+  }
+
+  const rows: BigQueryRow[] = [...(page.rows ?? [])];
+  let pageToken = page.pageToken;
+  const seenTokens = new Set<string>();
+  // BigQuery pages are bounded; the guard protects against broken/repeating tokens.
+  for (let pageNumber = 0; pageToken && pageNumber < 1000; pageNumber++) {
+    if (seenTokens.has(pageToken)) {
+      logger?.warn("BigQuery returned a repeated page token; stopping pagination");
+      return null;
+    }
+    seenTokens.add(pageToken);
+    const nextUrl = new URL(baseUrl);
+    nextUrl.searchParams.set("pageToken", pageToken);
+    if (page.jobReference?.location) nextUrl.searchParams.set("location", page.jobReference.location);
+    const next = await request(nextUrl.toString());
+    if (!next) return null;
+    rows.push(...(next.rows ?? []));
+    pageToken = next.pageToken;
+    page = next;
+  }
+  if (pageToken) {
+    logger?.warn("BigQuery pagination exceeded the 1000-page safety limit");
+    return null;
+  }
+
   const out: DeployEvent[] = [];
-  for (const row of data.rows ?? []) {
-    const [repo, builtAt, deployedAt, isRevert, isFix, service] = row.f.map((c) => c.v);
+  for (const row of rows) {
+    const fields = row.f;
+    if (!Array.isArray(fields)) continue;
+    const [repo, builtAt, deployedAt, isRevert, isFix, service] = fields.map((field) => field?.v ?? null);
     if (!repo || !builtAt || !deployedAt) continue;
+    const builtAtIso = bqTimestampToIso(builtAt);
+    const deployedAtIso = bqTimestampToIso(deployedAt);
+    if (!Number.isFinite(Date.parse(builtAtIso)) || !Number.isFinite(Date.parse(deployedAtIso))) continue;
     out.push({
       repo,
-      builtAt: bqTimestampToIso(builtAt),
-      deployedAt: bqTimestampToIso(deployedAt),
+      builtAt: builtAtIso,
+      deployedAt: deployedAtIso,
       isRevert: isRevert === "true",
       isFix: isFix === "true",
       service: service ?? repo,
