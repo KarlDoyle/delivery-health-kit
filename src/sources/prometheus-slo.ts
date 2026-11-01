@@ -142,15 +142,21 @@ export async function fetchServiceSlo(
   const totalCountQuery = `sum(increase(${count}{${service.selector}}[24h]))`;
   const errorCountQuery = `sum(increase(${count}{${service.selector}, ${statusLabel}=~"5.."}[24h]))`;
 
-  const [p95Result, p99Result, totalRateResult, errorRateResult, totalRequestsResult, failedRequestsResult] =
-    await Promise.all([
-      queryScalar(config, p95Query, options),
-      queryScalar(config, p99Query, options),
-      queryScalar(config, totalQuery, options),
-      queryScalar(config, errorQuery, options, true),
-      queryScalar(config, totalCountQuery, options),
-      queryScalar(config, errorCountQuery, options, true),
-    ]);
+  const [
+    p95Result,
+    p99Result,
+    totalRateResult,
+    errorRateResult,
+    totalRequestsResult,
+    failedRequestsResult,
+  ] = await Promise.all([
+    queryScalar(config, p95Query, options),
+    queryScalar(config, p99Query, options),
+    queryScalar(config, totalQuery, options),
+    queryScalar(config, errorQuery, options, true),
+    queryScalar(config, totalCountQuery, options),
+    queryScalar(config, errorCountQuery, options, true),
+  ]);
 
   // An empty error-series is a valid zero. A failed/malformed query is null
   // and must never be converted into a healthy-looking zero-error result.
