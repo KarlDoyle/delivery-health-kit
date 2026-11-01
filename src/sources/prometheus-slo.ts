@@ -92,20 +92,31 @@ async function queryScalar(
   config: PrometheusConfig,
   query: string,
   options: { logger?: ILogger; fetch?: typeof globalThis.fetch },
-): Promise<number> {
+  allowEmptyResult = false,
+): Promise<number | null> {
   const url = new URL(config.queryUrl);
   url.searchParams.append("query", query);
   const headers: Record<string, string> = { Accept: "application/json" };
   if (config.authToken) headers.Authorization = `Bearer ${config.authToken}`;
 
-  const res = await fetchWithRetry(url.toString(), { headers }, options).catch((e) => {
-    options.logger?.warn("Prometheus query failed", { error: String(e) });
+  try {
+    const res = await fetchWithRetry(url.toString(), { headers }, options);
+    const data = (await res.json()) as PromResult;
+    if (data.status !== "success" || !Array.isArray(data.data?.result)) {
+      throw new Error("Prometheus returned an unsuccessful or malformed query response");
+    }
+    const value = data.data.result[0]?.value?.[1];
+    if (value === undefined) {
+      if (allowEmptyResult && data.data.result.length === 0) return 0;
+      throw new Error("Prometheus query returned no scalar result");
+    }
+    const parsed = Number.parseFloat(value);
+    if (!Number.isFinite(parsed)) throw new Error("Prometheus query returned a non-finite scalar");
+    return parsed;
+  } catch (error) {
+    options.logger?.warn("Prometheus query failed", { error: String(error) });
     return null;
-  });
-  if (!res) return 0;
-  const data = (await res.json()) as PromResult;
-  const value = data.data?.result?.[0]?.value?.[1];
-  return value ? Number.parseFloat(value) || 0 : 0;
+  }
 }
 
 /**
@@ -131,21 +142,34 @@ export async function fetchServiceSlo(
   const totalCountQuery = `sum(increase(${count}{${service.selector}}[24h]))`;
   const errorCountQuery = `sum(increase(${count}{${service.selector}, ${statusLabel}=~"5.."}[24h]))`;
 
-  const [p95Ms, p99Ms, totalRate, errorRate, totalRequests, failedRequests] = await Promise.all([
-    queryScalar(config, p95Query, options),
-    queryScalar(config, p99Query, options),
-    queryScalar(config, totalQuery, options),
-    queryScalar(config, errorQuery, options),
-    queryScalar(config, totalCountQuery, options),
-    queryScalar(config, errorCountQuery, options),
-  ]);
+  const [p95Result, p99Result, totalRateResult, errorRateResult, totalRequestsResult, failedRequestsResult] =
+    await Promise.all([
+      queryScalar(config, p95Query, options),
+      queryScalar(config, p99Query, options),
+      queryScalar(config, totalQuery, options),
+      queryScalar(config, errorQuery, options, true),
+      queryScalar(config, totalCountQuery, options),
+      queryScalar(config, errorCountQuery, options, true),
+    ]);
 
-  // No signal anywhere → the endpoint is unreachable or the selector matches
-  // nothing. Mark it, rather than defaulting availability to a pass and
-  // latency to a fail (two wrongs that used to happen at once).
-  const noData = totalRate === 0 && p95Ms === 0 && totalRequests === 0;
+  // An empty error-series is a valid zero. A failed/malformed query is null
+  // and must never be converted into a healthy-looking zero-error result.
+  const noData =
+    p95Result === null ||
+    p99Result === null ||
+    totalRateResult === null ||
+    errorRateResult === null ||
+    totalRequestsResult === null ||
+    failedRequestsResult === null ||
+    totalRateResult <= 0;
 
-  const availabilityPct = totalRate > 0 ? ((totalRate - errorRate) / totalRate) * 100 : 100;
+  const p95Ms = p95Result ?? 0;
+  const p99Ms = p99Result ?? 0;
+  const totalRate = totalRateResult ?? 0;
+  const errorRate = errorRateResult ?? 0;
+  const totalRequests = totalRequestsResult ?? 0;
+  const failedRequests = failedRequestsResult ?? 0;
+  const availabilityPct = !noData ? ((totalRate - errorRate) / totalRate) * 100 : 0;
   const round2 = (n: number): number => Math.round(n * 100) / 100;
 
   return {
