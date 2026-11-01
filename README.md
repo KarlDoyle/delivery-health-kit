@@ -27,6 +27,22 @@ pnpm dhk connect github
 
 The committed sample organisation is fictional and deterministic. It lets you explore the report without credentials or network access.
 
+## Architecture at a glance
+
+```mermaid
+flowchart TD
+    A["Offline synthetic fixtures"] --> C["Source adapters and normalisation"]
+    B["Connected services: GitHub, PagerDuty, Sentry, Prometheus"] --> C
+    C --> D["Pure metric calculations"]
+    D --> E["Team-level assembly: delivery, reliability and sprint signals"]
+    E --> F["Reports, digests and scorecards"]
+    F --> G["Markdown"]
+    F --> H["Slack Block Kit"]
+    F --> I["Google Sheets rows"]
+```
+
+The same calculation path processes synthetic demo fixtures and live data from configured integrations. Calculations run locally; connecting services or pushing output explicitly exchanges data with those services. The diagram shows the core flow, not every optional integration or command.
+
 ## What it measures
 
 **`dhk report` — the delivery report (DX Core 4):**
@@ -86,6 +102,12 @@ The metric definitions are intended to remain consistent; organisation-specific 
 | BigQuery deploys | Future optional deployment-event adapter; not currently integrated | GCP project, OAuth token and configured table/query |
 | Jira | Work categorisation and sprint calculations are available; Jira REST ingestion is not implemented in the CLI | Jira credentials (not currently used by a live command) |
 | Slack / Google Sheets | Optional output integrations | Bot token / OAuth token |
+
+## Why this project exists
+
+In engineering management, the hard part of metrics is rarely producing another dashboard. It is deciding which signals support useful team conversations, identifying misleading proxies, and making improvements without creating individual performance surveillance. Baseline explores that problem as a small, testable, local-first tool rather than a prescriptive team-ranking system.
+
+**What it demonstrates:** metric definition and interpretation, trade-offs between useful proxies and authoritative data, clean separation of adapters and calculations, and delivery safeguards (reproducible fixtures, coverage thresholds, size checks and built-CLI smoke tests). The project is a portfolio implementation and learning exercise, not a claim that this exact tool was deployed at previous employers.
 
 ## Engineering approach
 
