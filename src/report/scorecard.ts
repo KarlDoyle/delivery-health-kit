@@ -56,7 +56,7 @@ function supportScore(s: SupportMetrics): number {
  */
 export function scoreReport(r: DeliveryReport): { score: number; parts: SiteScore["parts"] } {
   const parts: SiteScore["parts"] = {};
-  if (r.dora) parts.dora = doraScore(r.dora);
+  if (r.dora && !r.dora.noData) parts.dora = doraScore(r.dora);
   if (r.github) parts.prFlow = prFlowScore(r.github);
   if (r.support) parts.support = supportScore(r.support);
 
