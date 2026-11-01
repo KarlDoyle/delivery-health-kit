@@ -157,11 +157,7 @@ export async function fetchSentryIssues(
     }
     const linkHeader = res.headers.get("link");
     const nextUrl = nextPageUrl(linkHeader, first);
-    if (
-      linkHeader?.includes('rel="next"') &&
-      linkHeader.includes('results="true"') &&
-      !nextUrl
-    ) {
+    if (linkHeader?.includes('rel="next"') && linkHeader.includes('results="true"') && !nextUrl) {
       logger?.warn("Ignoring unsafe or malformed Sentry pagination link");
     }
     url = nextUrl;
