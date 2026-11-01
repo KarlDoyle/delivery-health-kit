@@ -6,16 +6,14 @@ The canonical agent instructions for this repo (CLAUDE.md defers here).
 
 The consolidated **Engineering Delivery & Reliability product**: one CLI —
 `dhk report` (delivery, as DX Core 4) + `dhk digest` (reliability) — local-first,
-team-level only, five-minute onboarding. Built 2026-07-02 by executing
-`Taisce/Projects/delivery-health-kit/BUILD-PACKET.md`; the build record,
-decisions and harvest map live in `STATE.md` (read it before big changes).
+team-level only, five-minute onboarding.
 
 ## Stack
 
 TypeScript (ESM, NodeNext) · pnpm · Biome · Vitest · **zero runtime
 dependencies** (live paths use native fetch; optional integrations are dynamic
-imports or plain REST). Node ≥22. `license: UNLICENSED, private: true` —
-licensing is a go-public decision; do not add a licence.
+imports or plain REST). Node ≥22. Licensed under MIT; `private: true` keeps
+the package from being published to npm.
 
 ## Architecture
 
@@ -52,7 +50,7 @@ scripts/                   # generate-sample-org.mjs e2e-smoke.sh check-size.mjs
    config with named presets — never hard-coded. No company residue.
 5. **Honest labels.** CFR carries `cfrBasis` (incident-linked vs revert-proxy);
    Effectiveness proxies carry the survey note; never render an invented score.
-6. **No secrets, no company data, no `/Users/...` paths** in committed files
+6. **No secrets, no company data, no personal absolute paths** in committed files
    (`tests/secret-scan.test.ts` enforces).
 7. Logs → **stderr**; report → **stdout**.
 
@@ -77,11 +75,3 @@ pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm size && pnpm e2e
   assert exact numbers against them. If you change a fixture, re-derive the
   expected values by hand and update `tests/*.test.ts` comments.
 - `fixtures/sample-org/` is generated — edit the generator, not the JSON.
-
-## For the Taisce hub
-
-`STATE.md` holds: the build record, the staged product-name decision, the
-expert-council metric decisions, the harvest map (what came from
-service-health-bot / eng-intel-toolkit / metrics), staged retirements, and the
-**"Harvest back to estate"** list — improvements worth folding into
-`ai-starter/_standard` and the wider estate. Audit passes should start there.
