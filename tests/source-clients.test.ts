@@ -26,7 +26,7 @@ describe("bigquery-dora (mocked fetch — no real GCP calls)", () => {
       { projectId: "", authToken: "", periodDays: 14 },
       { logger, fetch: unreachableFetch },
     );
-    expect(out).toEqual([]);
+    expect(out).toBeNull();
   });
 
   it("skips without calling fetch when neither table nor query is configured", async () => {
@@ -34,7 +34,7 @@ describe("bigquery-dora (mocked fetch — no real GCP calls)", () => {
       { projectId: "p", authToken: "t", periodDays: 14 },
       { logger, fetch: unreachableFetch },
     );
-    expect(out).toEqual([]);
+    expect(out).toBeNull();
   });
 
   it("parses BigQuery rows into DeployEvents (epoch timestamps, defaults filled in)", async () => {
@@ -142,7 +142,7 @@ describe("bigquery-dora (mocked fetch — no real GCP calls)", () => {
     expect(out).toEqual([]);
   });
 
-  it("returns an empty array and logs a warning when the network call fails", async () => {
+  it("returns null and logs a warning when the network call fails", async () => {
     const warn = vi.fn();
     const failingFetch: typeof globalThis.fetch = async () => {
       throw new Error("ECONNRESET");
@@ -151,8 +151,44 @@ describe("bigquery-dora (mocked fetch — no real GCP calls)", () => {
       { projectId: "p", authToken: "t", table: "t", periodDays: 14 },
       { logger: { ...logger, warn }, fetch: failingFetch },
     );
-    expect(out).toEqual([]);
+    expect(out).toBeNull();
     expect(warn).toHaveBeenCalled();
+  });
+
+  it("follows BigQuery page tokens and combines every result page", async () => {
+    const seen: string[] = [];
+    const mockFetch: typeof globalThis.fetch = async (input) => {
+      const url = new URL(String(input));
+      seen.push(url.toString());
+      if (url.searchParams.has("pageToken")) {
+        return new Response(JSON.stringify({ rows: [{ f: [{ v: "acme/api" }, { v: "1782000000" }, { v: "1782003600" }, { v: "false" }] }] }), { status: 200 });
+      }
+      return new Response(JSON.stringify({
+        jobComplete: true,
+        jobReference: { jobId: "job-1", location: "EU" },
+        pageToken: "page-2",
+        rows: [{ f: [{ v: "acme/web" }, { v: "1782000000" }, { v: "1782003600" }, { v: "false" }] }],
+      }), { status: 200 });
+    };
+    const out = await fetchBigQueryDeploys(
+      { projectId: "p", authToken: "t", table: "deploys.history", periodDays: 14 },
+      { logger, fetch: mockFetch },
+    );
+    expect(out).toHaveLength(2);
+    expect(out?.map((deploy) => deploy.repo)).toEqual(["acme/web", "acme/api"]);
+    expect(seen).toHaveLength(2);
+    expect(seen[1]).toContain("pageToken=page-2");
+    expect(seen[1]).toContain("location=EU");
+  });
+
+  it("returns null for a BigQuery API error even when HTTP status is 200", async () => {
+    const mockFetch: typeof globalThis.fetch = async () =>
+      new Response(JSON.stringify({ error: { message: "access denied" } }), { status: 200 });
+    const out = await fetchBigQueryDeploys(
+      { projectId: "p", authToken: "t", table: "deploys.history", periodDays: 14 },
+      { logger, fetch: mockFetch },
+    );
+    expect(out).toBeNull();
   });
 });
 
