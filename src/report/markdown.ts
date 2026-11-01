@@ -50,15 +50,19 @@ function speedSection(dora?: DoraMetrics, github?: GitHubMetrics): string | null
   if (!dora && !github) return null;
   const lines = ["## Speed", ""];
   if (dora) {
-    lines.push("| Metric | Value | DORA class |", "| --- | --- | --- |");
-    lines.push(
-      `| Deployment frequency | ${dora.deploymentFrequencyPerDay}/day | ${dora.classes.deploymentFrequency} |`,
-    );
-    lines.push(
-      `| Lead time for changes | ${hours(dora.leadTimeHours)} | ${dora.classes.leadTime} |`,
-    );
-    lines.push("");
-    lines.push(`${dora.totalDeploys} deploys over ${dora.periodDays} days.`);
+    if (dora.noData) {
+      lines.push("DORA: **No data** — no deployments in this measurement window.");
+    } else {
+      lines.push("| Metric | Value | DORA class |", "| --- | --- | --- |");
+      lines.push(
+        `| Deployment frequency | ${dora.deploymentFrequencyPerDay}/day | ${dora.classes.deploymentFrequency} |`,
+      );
+      lines.push(
+        `| Lead time for changes | ${hours(dora.leadTimeHours)} | ${dora.classes.leadTime} |`,
+      );
+      lines.push("");
+      lines.push(`${dora.totalDeploys} deploys over ${dora.periodDays} days.`);
+    }
   }
   if (github) {
     if (dora) lines.push("");
@@ -104,6 +108,10 @@ function effectivenessSection(github?: GitHubMetrics, jira?: JiraMetrics): strin
 function qualitySection(dora?: DoraMetrics): string | null {
   if (!dora) return null;
   const lines = ["## Quality", ""];
+  if (dora.noData) {
+    lines.push("No deployment data for this measurement window; quality metrics are unavailable.");
+    return lines.join("\n");
+  }
   lines.push("| Metric | Value | DORA class |", "| --- | --- | --- |");
   lines.push(
     `| Change failure rate (${cfrLabel(dora)}) | ${dora.changeFailureRatePct}% | ${dora.classes.changeFailureRate} |`,
@@ -293,7 +301,9 @@ export function renderDigestMarkdown(digest: ReliabilityReport): string {
       : "";
     parts.push(
       "",
-      `**TL;DR:** CFR ${d.changeFailureRatePct}% (${cfrLabel(d)}, ${d.classes.changeFailureRate})${recovery} · rework ${d.reworkRatePct}%.`,
+      d.noData
+        ? "**TL;DR:** DORA: no deployment data for this measurement window."
+        : `**TL;DR:** CFR ${d.changeFailureRatePct}% (${cfrLabel(d)}, ${d.classes.changeFailureRate})${recovery} · rework ${d.reworkRatePct}%.`,
     );
   }
 
@@ -341,7 +351,7 @@ export function renderScorecardMarkdown(sc: DeliveryScorecard): string {
   parts.push("| --- | --- | --- | --- | --- | --- | --- |");
   sc.sites.forEach((s, i) => {
     const r = s.report;
-    const dora = r.dora ? r.dora.classes.deploymentFrequency : "—";
+    const dora = r.dora ? (r.dora.noData ? "No data" : r.dora.classes.deploymentFrequency) : "—";
     const cycle = r.github ? hours(r.github.avgCycleTimeHours) : "—";
     const sprint = r.jira
       ? `${r.jira.ticketsClosed} closed / ${r.jira.storyPointsCompleted} pts`
@@ -374,7 +384,12 @@ function summaryLine(r: DeliveryReport): string {
   const bits: string[] = [];
   if (r.jira) bits.push(`${r.jira.ticketsClosed} tickets / ${r.jira.storyPointsCompleted} pts`);
   if (r.github) bits.push(`${r.github.totalMerged} PRs merged`);
-  if (r.dora) bits.push(`DORA: deploy ${r.dora.classes.deploymentFrequency.toLowerCase()}`);
+  if (r.dora)
+    bits.push(
+      r.dora.noData
+        ? "DORA: no deployment data"
+        : `DORA: deploy ${r.dora.classes.deploymentFrequency.toLowerCase()}`,
+    );
   if (r.support) bits.push(`${r.support.totalRequests} support requests`);
   return bits.length ? `**TL;DR:** ${bits.join(" · ")}.` : "";
 }

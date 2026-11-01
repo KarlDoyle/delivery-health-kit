@@ -57,6 +57,17 @@ describe("sheets renderer (pure rows)", () => {
     ]);
   });
 
+  it("leaves DORA cells blank when there are no deployments", () => {
+    const dora = report.dora;
+    if (!dora) throw new Error("Expected DORA metrics in report fixture");
+    const noDeployments: DeliveryReport = {
+      ...report,
+      dora: { ...dora, noData: true, totalDeploys: 0 },
+    };
+    const row = renderSheetsRows(noDeployments)[1];
+    expect(row?.slice(3, 8)).toEqual(["", "", "", "", ""]);
+  });
+
   it("renders digest rows with reliability columns", () => {
     const digest: ReliabilityReport = {
       generatedAt: "2026-06-29T12:00:00Z",

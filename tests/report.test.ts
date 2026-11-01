@@ -90,6 +90,19 @@ describe("renderers", () => {
     expect(blocks.some((b) => JSON.stringify(b).includes("team-level only"))).toBe(true);
   });
 
+  it("renders an explicit no-data state instead of an Elite DORA result", () => {
+    const report = assembleReport({
+      config: { team: "No deploys", periodDays: 14, repos: [], teamMembers: [] },
+      mode: "offline",
+      now: Date.parse("2026-06-29T12:00:00Z"),
+      deploys: [],
+    });
+    const md = renderMarkdown(report);
+    expect(md).toContain("DORA: **No data**");
+    expect(md).toContain("quality metrics are unavailable");
+    expect(md).not.toContain("Elite");
+  });
+
   it("omits sections whose source produced no data", () => {
     const report = assembleReport({
       config: { team: "Empty", periodDays: 14, repos: [], teamMembers: [] },

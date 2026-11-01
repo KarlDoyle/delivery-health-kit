@@ -70,7 +70,7 @@ Configuration is stored locally at `~/.config/dhk/config.json` with restrictive 
 
 The metric definitions are intended to remain consistent; organisation-specific details are configured through adapters and presets.
 
-- **Deploy signal:** merges to the default branch (zero-config) or a BigQuery deployment log.
+- **Deploy signal:** live reports currently use merges to the default branch as a deployment proxy. A BigQuery deploy-event fetcher is implemented and tested in isolation, but is not yet wired into the live CLI.
 - **Prometheus metric shape:** Micrometer and client_golang presets, or custom series and labels.
 - **Jira taxonomy:** configurable work-categorisation types and labels; sprint-scope fields are optional.
 - **Hosts:** self-hosted Sentry, regional PagerDuty and PromQL-compatible endpoints.
@@ -83,7 +83,7 @@ The metric definitions are intended to remain consistent; organisation-specific 
 | PagerDuty | Live integration | Read-only API key |
 | Sentry | Live integration | Organisation and auth token |
 | Prometheus | Live integration, with per-service SLO configuration | PromQL URL |
-| BigQuery deploys | Live integration via table or custom query configuration | GCP project and token |
+| BigQuery deploys | Fetcher implemented and unit-tested; not yet integrated into `dhk report --live` | GCP project, OAuth token and configured table/query (CLI wiring planned) |
 | Jira | Computation and sprint model ready; REST fetcher documented but not bundled | Jira credentials |
 | Slack / Google Sheets | Optional output integrations | Bot token / OAuth token |
 
@@ -131,6 +131,7 @@ The demo uses committed synthetic data in `fixtures/sample-org/`, generated dete
 - ✅ Demo-first onboarding and GitHub → Core-4 report.
 - ✅ Reliability digest, scorecard and sprint model.
 - ✅ Markdown, Slack and Sheets output paths.
+- ◻ Wire the BigQuery deploy fetcher into `dhk report --live` with secure configuration.
 - ◻ Bundle the Jira live fetcher into `--live`.
 - ◻ Add a DevEx pulse survey to complete the Effectiveness/DXI measure.
 - ◻ Explore an AI-readiness view based on DORA capability signals.
