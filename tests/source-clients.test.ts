@@ -67,13 +67,13 @@ describe("bigquery-dora (mocked fetch — no real GCP calls)", () => {
     );
 
     expect(out).toHaveLength(1);
-    expect(out[0]).toMatchObject({
+    expect(out?.[0]).toMatchObject({
       repo: "acme/web",
       isRevert: false,
       isFix: false,
       service: "acme/web",
     });
-    expect(out[0]?.builtAt).toBe(new Date(1782000000 * 1000).toISOString());
+    expect(out?.[0]?.builtAt).toBe(new Date(1782000000 * 1000).toISOString());
   });
 
   it("uses a custom query verbatim when provided (takes precedence over table)", async () => {
@@ -115,7 +115,7 @@ describe("bigquery-dora (mocked fetch — no real GCP calls)", () => {
       { projectId: "p", authToken: "t", table: "t", periodDays: 14 },
       { logger, fetch: mockFetch },
     );
-    expect(out[0]).toMatchObject({
+    expect(out?.[0]).toMatchObject({
       builtAt: "2026-06-20T09:00:00.000Z",
       isRevert: true,
       isFix: true,
@@ -307,7 +307,7 @@ describe("sentry (mocked fetch — no real Sentry API calls)", () => {
     );
     expect(calls).toBe(2);
     expect(out).toHaveLength(1);
-    expect(out[0]?.project).toBe("api");
+    expect(out?.[0]?.project).toBe("api");
   });
 
   it('ignores a Link header that lacks results="true" (treats it as no next page)', async () => {
