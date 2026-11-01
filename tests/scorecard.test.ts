@@ -69,6 +69,15 @@ describe("scoreReport", () => {
     expect(parts).toHaveProperty("support");
   });
 
+  it("excludes DORA when the deployment window has no data", () => {
+    const r = healthyReport();
+    r.dora = { ...r.dora!, noData: true, totalDeploys: 0 };
+    const { parts } = scoreReport(r);
+    expect(parts).not.toHaveProperty("dora");
+    expect(parts).toHaveProperty("prFlow");
+    expect(parts).toHaveProperty("support");
+  });
+
   it("only scores the dimensions that have data", () => {
     const r = healthyReport();
     r.dora = undefined;
