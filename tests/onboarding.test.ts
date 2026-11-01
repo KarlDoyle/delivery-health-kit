@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { runConnect, runDemo } from "../src/cli.js";
+import { runConnect, runDemo, runReport } from "../src/cli.js";
 import { configPath, loadUserConfig, saveUserConfig, setupChecklist } from "../src/config.js";
 
 /** Every test gets an isolated config dir — never the developer's real one. */
@@ -107,5 +107,42 @@ describe("dhk connect github (mocked fetch — no real API calls)", () => {
 
   it("rejects an unknown source with usage help", async () => {
     await expect(runConnect(["nope"], { quiet: true })).rejects.toThrow(/Usage: dhk connect/);
+  });
+
+  it("connects BigQuery and stores the OAuth token in owner-only config", async () => {
+    const out = await runConnect(
+      ["bigquery"],
+      { project: "acme-prod", "auth-token": "secret-token", table: "deploys.history", quiet: true },
+    );
+    const saved = await loadUserConfig();
+    expect(saved?.bigquery).toEqual({
+      projectId: "acme-prod",
+      authToken: "secret-token",
+      table: "deploys.history",
+      query: undefined,
+    });
+    expect(out).toContain("BigQuery deploys ✓");
+  });
+
+  it("uses configured BigQuery deployment data for live reports", async () => {
+    await saveUserConfig({
+      team: "Atlas",
+      bigquery: {
+        projectId: "acme-prod",
+        authToken: "secret-token",
+        query: "SELECT repo, built_at, deployed_at, is_revert FROM deploys",
+      },
+    });
+    let called = false;
+    const mockFetch: typeof globalThis.fetch = async (input, init) => {
+      called = true;
+      expect(String(input)).toContain("/projects/acme-prod/queries");
+      expect(JSON.parse(String(init?.body)).query).toBe(
+        "SELECT repo, built_at, deployed_at, is_revert FROM deploys",
+      );
+      return new Response(JSON.stringify({ jobComplete: true, rows: [] }), { status: 200 });
+    };
+    await runReport({ live: true, quiet: true }, { fetch: mockFetch });
+    expect(called).toBe(true);
   });
 });
