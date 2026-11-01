@@ -237,7 +237,7 @@ describe("sentry (mocked fetch — no real Sentry API calls)", () => {
     const mockFetch: typeof globalThis.fetch = async (input) => {
       calls++;
       const url = String(input);
-      if (url === "https://sentry.io/next-page") {
+      if (url.startsWith("https://sentry.io/api/0/organizations/acme/issues/?") && url.includes("cursor=next-page")) {
         return new Response(
           JSON.stringify([
             {
@@ -256,7 +256,9 @@ describe("sentry (mocked fetch — no real Sentry API calls)", () => {
       }
       return new Response(JSON.stringify([]), {
         status: 200,
-        headers: { link: '<https://sentry.io/next-page>; rel="next"; results="true"' },
+        headers: {
+          link: '<https://sentry.io/api/0/organizations/acme/issues/?cursor=next-page>; rel="next"; results="true"',
+        },
       });
     };
 
