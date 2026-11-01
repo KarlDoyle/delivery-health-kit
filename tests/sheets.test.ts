@@ -58,9 +58,11 @@ describe("sheets renderer (pure rows)", () => {
   });
 
   it("leaves DORA cells blank when there are no deployments", () => {
+    const dora = report.dora;
+    if (!dora) throw new Error("Expected DORA metrics in report fixture");
     const noDeployments: DeliveryReport = {
       ...report,
-      dora: { ...report.dora!, noData: true, totalDeploys: 0 },
+      dora: { ...dora, noData: true, totalDeploys: 0 },
     };
     const row = renderSheetsRows(noDeployments)[1];
     expect(row?.slice(3, 8)).toEqual(["", "", "", "", ""]);
