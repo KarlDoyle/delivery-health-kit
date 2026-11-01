@@ -192,7 +192,8 @@ describe("dhk connect github (mocked fetch — no real API calls)", () => {
         table: "deploys.history",
       },
     });
-    let githubFallbackCalled = false;
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const mergedAt = new Date((nowSeconds - 24 * 60 * 60) * 1000).toISOString();
     const mockFetch: typeof globalThis.fetch = async (input) => {
       const url = String(input);
       if (url.includes("bigquery.googleapis.com")) {
@@ -200,10 +201,27 @@ describe("dhk connect github (mocked fetch — no real API calls)", () => {
           status: 200,
         });
       }
-      if (url.includes("/repos/acme/web/pulls")) githubFallbackCalled = true;
-      return new Response(JSON.stringify([]), { status: 200 });
+      if (url.includes("/pulls?state=closed")) {
+        return new Response(
+          JSON.stringify([
+            {
+              number: 1,
+              title: "One merged PR",
+              created_at: new Date((nowSeconds - 3 * 24 * 60 * 60) * 1000).toISOString(),
+              merged_at: mergedAt,
+              updated_at: mergedAt,
+              user: { login: "dev" },
+            },
+          ]),
+          { status: 200 },
+        );
+      }
+      if (url.includes("/reviews")) return new Response(JSON.stringify([]), { status: 200 });
+      if (url.endsWith("/pulls/1")) {
+        return new Response(JSON.stringify({ additions: 10, deletions: 2 }), { status: 200 });
+      }
+      throw new Error(`Unexpected mock request: ${url}`);
     };
-    await runReport({ live: true, quiet: true }, { fetch: mockFetch });
-    expect(githubFallbackCalled).toBe(true);
-  });
-});
+    const report = await runReport({ live: true, quiet: true }, { fetch: mockFetch });
+    expect(report).toContain("1 deploys over 14 days.");
+  });});
