@@ -724,7 +724,11 @@ async function connectSimple(
       process.env.BIGQUERY_AUTH_TOKEN ??
       existing.bigquery?.authToken ??
       (await prompt("Paste a BigQuery OAuth access token (e.g. gcloud auth print-access-token): "));
-    const table = flag("table") ?? process.env.BIGQUERY_TABLE ?? existing.bigquery?.table;
+    const table =
+      flag("table") ??
+      process.env.BIGQUERY_TABLE ??
+      existing.bigquery?.table ??
+      (await prompt("BigQuery table (dataset.table or project.dataset.table): "));
     const query = flag("query") ?? process.env.BIGQUERY_QUERY ?? existing.bigquery?.query;
     if (!projectId.trim() || !authToken.trim()) {
       throw new Error("BigQuery requires a GCP project ID and OAuth access token.");
