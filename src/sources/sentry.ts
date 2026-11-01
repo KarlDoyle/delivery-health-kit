@@ -78,13 +78,30 @@ interface ApiIssue {
 /** Max pages followed via Link cursors — a runaway-volume guard. */
 const MAX_PAGES = 10;
 
-/** Extract the rel="next" URL from a Sentry Link header when results remain. */
-function nextPageUrl(linkHeader: string | null): string | null {
+/** Extract a safe rel="next" URL from a Sentry Link header when results remain. */
+function nextPageUrl(linkHeader: string | null, expectedUrl: URL): string | null {
   if (!linkHeader) return null;
   for (const part of linkHeader.split(",")) {
     if (part.includes('rel="next"') && part.includes('results="true"')) {
-      const m = part.match(/<([^>]+)>/);
-      if (m?.[1]) return m[1];
+      const match = part.match(/<([^>]+)>/);
+      if (!match?.[1]) continue;
+
+      try {
+        const next = new URL(match[1], expectedUrl);
+        // Pagination must stay on the exact API endpoint. Otherwise the
+        // request would forward the Sentry bearer token to an untrusted URL.
+        if (
+          next.origin === expectedUrl.origin &&
+          next.pathname === expectedUrl.pathname &&
+          !next.username &&
+          !next.password
+        ) {
+          return next.toString();
+        }
+      } catch {
+        // Ignore malformed pagination URLs rather than risking credential
+        // disclosure or failing an otherwise successful first-page response.
+      }
     }
   }
   return null;
@@ -138,7 +155,16 @@ export async function fetchSentryIssues(
         project: i.project.name,
       });
     }
-    url = nextPageUrl(res.headers.get("link"));
+    const linkHeader = res.headers.get("link");
+    const nextUrl = nextPageUrl(linkHeader, first);
+    if (
+      linkHeader?.includes('rel="next"') &&
+      linkHeader.includes('results="true"') &&
+      !nextUrl
+    ) {
+      logger?.warn("Ignoring unsafe or malformed Sentry pagination link");
+    }
+    url = nextUrl;
   }
   return out;
 }
