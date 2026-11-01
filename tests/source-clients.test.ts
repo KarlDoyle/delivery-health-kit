@@ -161,14 +161,26 @@ describe("bigquery-dora (mocked fetch — no real GCP calls)", () => {
       const url = new URL(String(input));
       seen.push(url.toString());
       if (url.searchParams.has("pageToken")) {
-        return new Response(JSON.stringify({ rows: [{ f: [{ v: "acme/api" }, { v: "1782000000" }, { v: "1782003600" }, { v: "false" }] }] }), { status: 200 });
+        return new Response(
+          JSON.stringify({
+            rows: [
+              { f: [{ v: "acme/api" }, { v: "1782000000" }, { v: "1782003600" }, { v: "false" }] },
+            ],
+          }),
+          { status: 200 },
+        );
       }
-      return new Response(JSON.stringify({
-        jobComplete: true,
-        jobReference: { jobId: "job-1", location: "EU" },
-        pageToken: "page-2",
-        rows: [{ f: [{ v: "acme/web" }, { v: "1782000000" }, { v: "1782003600" }, { v: "false" }] }],
-      }), { status: 200 });
+      return new Response(
+        JSON.stringify({
+          jobComplete: true,
+          jobReference: { jobId: "job-1", location: "EU" },
+          pageToken: "page-2",
+          rows: [
+            { f: [{ v: "acme/web" }, { v: "1782000000" }, { v: "1782003600" }, { v: "false" }] },
+          ],
+        }),
+        { status: 200 },
+      );
     };
     const out = await fetchBigQueryDeploys(
       { projectId: "p", authToken: "t", table: "deploys.history", periodDays: 14 },
@@ -188,14 +200,19 @@ describe("bigquery-dora (mocked fetch — no real GCP calls)", () => {
       seen.push(url);
       if (init?.method === "POST") {
         return new Response(
-          JSON.stringify({ jobComplete: false, jobReference: { jobId: "job-pending", location: "US" } }),
+          JSON.stringify({
+            jobComplete: false,
+            jobReference: { jobId: "job-pending", location: "US" },
+          }),
           { status: 200 },
         );
       }
       return new Response(
         JSON.stringify({
           jobComplete: true,
-          rows: [{ f: [{ v: "acme/web" }, { v: "1782000000" }, { v: "1782003600" }, { v: "false" }] }],
+          rows: [
+            { f: [{ v: "acme/web" }, { v: "1782000000" }, { v: "1782003600" }, { v: "false" }] },
+          ],
         }),
         { status: 200 },
       );
