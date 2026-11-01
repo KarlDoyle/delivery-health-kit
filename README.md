@@ -1,216 +1,141 @@
-# Baseline (`dhk`)
+# Baseline
 
-**One report on how the team is delivering, from the tools you already
-use** — team-level only, one source is enough to start, and the data never
-leaves your machine.
+**Engineering health and delivery insight for better team decisions.**
 
-![build](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)
-![tests](https://img.shields.io/badge/tests-107-a78bfa?style=flat-square)
+Baseline (`dhk`) brings delivery, reliability and engineering-effectiveness signals into one team-level report, using the tools an engineering organisation already has.
+
+It is designed to help engineering leaders understand how work flows, where friction is building and where improvement may be needed — without turning engineering metrics into individual performance scores.
+
+![build](https://img.shields.io/badge/build-CI%20gated-brightgreen?style=flat-square)
 ![local-first](https://img.shields.io/badge/local--first-yes-a78bfa?style=flat-square)
 ![licence](https://img.shields.io/badge/licence-UNLICENSED-slategray?style=flat-square)
 
-_Product name: **Baseline** (npm: `eng-baseline`) · CLI binary: `dhk` · the
-2025 DORA report's finding is the framing: AI is a mirror — this is the tool
-that shows a team its real baseline._
+_Product name: **Baseline** · npm package: `eng-baseline` · CLI: `dhk`_
+
+## Try it
 
 ```bash
-pnpm install && pnpm dhk demo    # a full dashboard before any credential
-pnpm dhk connect github          # paste one token → your own report (~2 min)
+pnpm install
+pnpm dhk demo
 ```
 
-No Docker, no blueprint wizard, no account, no SSO, no data-scope step, no seat
-pricing. The first run opens on a fully-populated sample org so the value is
-visible before you connect anything; one GitHub token later you're looking at
-your own team.
+Run the offline demo before connecting any services. Connect GitHub to generate a report from your own engineering data:
 
-## See it before you connect anything
-
-`pnpm dhk demo` runs fully offline against the committed sample org ("Nimbus
-Labs", 3 fictional teams) — no config, no network call. Real output, captured
-by actually running this command on 2026-07-03, unedited (the fixture's own
-`generated` timestamp below is fixed at its seeded `asOf` date, 2026-06-29, so
-every run prints the same deterministic figures — that's the point). Truncated
-here; the full run continues through Impact, then renders the reliability
-digest — incidents, errors, SLOs — from the same fixtures:
-
-```
-# Delivery Health — Orion
-
-_Period: last 14 days · generated 2026-06-29 · mode: offline_ · `team-level only · your data stays on your machine`
-
-**TL;DR:** 14 tickets / 51 pts · 22 PRs merged · DORA: deploy elite · 10 support requests.
-
-## Speed
-
-| Metric | Value | DORA class |
-| --- | --- | --- |
-| Deployment frequency | 1.5/day | Elite |
-| Lead time for changes | 15.5h | Elite |
-
-21 deploys over 14 days.
-
-- PR cycle time (open → merge): **14.2h** avg
-- Time to first review: **3.5h** avg (the feedback loop)
-- PRs merged: 22
-
-## Effectiveness
-
-- Avg PR size: **224 lines** (batch-size health — smaller flows faster)
-- Where the work landed: payments (14), checkout (8)
-- Ticket lead time (in-progress → done): avg 2.1d, median 2.6d, p90 3.6d
-
-> Effectiveness is fully measured with a DevEx pulse survey (DXI) — not yet connected.
-> The figures above are system-side proxies.
-
-## Quality
-
-| Metric | Value | DORA class |
-| --- | --- | --- |
-| Change failure rate (revert-based proxy) | 0% | Elite |
-| Rework rate (fix/revert deploys) | 14.3% | — |
-
-0 reverts, 3 fix/revert deploys of 21 total.
-
-_CFR shown as a revert-based proxy — connect PagerDuty for the incident-linked figure._
+```bash
+pnpm dhk connect github
 ```
 
-## The guarantees (product-enforced, not policy)
+The committed sample organisation is fictional and deterministic. It lets you explore the report without credentials or network access.
 
-- **Team-level only.** No per-person metric exists in the data model — a
-  leaderboard cannot be built from this tool. On-call load is per service and
-  out-of-hours share, never per responder.
-- **Local-first.** All computation happens on your machine. Offline mode makes
-  zero network calls; live mode calls only the APIs you connected. No telemetry.
-- **No single-metric optimisation.** Every view is a balanced Core-4 set
-  (SPACE guardrail); a badge on every output says so.
-- **Honest numbers.** CFR is labelled with its basis (incident-linked vs
-  revert-proxy); Effectiveness proxies carry a "survey not connected" note; the
-  verdict bands are deterministic code, never an LLM.
-
-## What you get
+## What it measures
 
 **`dhk report` — the delivery report (DX Core 4):**
 
 | Dimension | Metrics |
 | --- | --- |
-| **Speed** | deployment frequency · lead time for changes (DORA 2024 classes) · PR cycle time · time-to-first-review |
-| **Effectiveness** | PR/batch size · ticket lead time percentiles — labelled system-side proxies (full measure = DevEx pulse survey, optional later) |
-| **Quality** | change failure rate (incident-linked when PagerDuty is connected, labelled proxy otherwise) · rework rate (DORA 2024) · failed-deployment recovery time (median + p90) |
-| **Impact** | feature-vs-maintenance split · tickets/story points · support drag (unplanned load) |
+| **Speed** | Deployment frequency · lead time for changes (DORA 2024 classes) · PR cycle time · time-to-first-review |
+| **Effectiveness** | PR/batch size · ticket lead-time percentiles, labelled as system-side proxies |
+| **Quality** | Change failure rate (incident-linked when PagerDuty is connected, labelled proxy otherwise) · rework rate · failed-deployment recovery time |
+| **Impact** | Feature-vs-maintenance split · tickets/story points · support drag (unplanned load) |
 
 **`dhk digest` — the reliability digest:**
 
 | Section | Metrics |
 | --- | --- |
-| **Incidents** (PagerDuty) | count · urgency/severity mix · time-to-detect · recovery time (create→resolve, median/p90) · on-call load by service + out-of-hours share |
-| **Errors** (Sentry) | unresolved issues · new this period · by project/level |
-| **SLOs** (Prometheus) | per-service availability + p95 latency vs targets · attainment roll-up |
+| **Incidents** (PagerDuty) | Count · urgency/severity mix · time-to-detect · recovery time (create→resolve, median/p90) · on-call load by service and out-of-hours share |
+| **Errors** (Sentry) | Unresolved issues · new this period · by project/level |
+| **SLOs** (Prometheus) | Per-service availability and p95 latency vs targets · attainment roll-up |
 
-Plus: `dhk scorecard` (many teams ranked in one view), `dhk sprint-health`
-(one-sprint verdict: Hero / Laser-Focus / Solid / Chaos), `dhk sprint-trend`
-(a run of sprints: hero/chaos/laser-focus callouts, full six-bucket sprint
-model with churn index), `dhk support-drag`, `dhk risky-ticket`.
+Additional commands include `dhk scorecard`, `dhk sprint-health`, `dhk sprint-trend`, `dhk support-drag` and `dhk risky-ticket`. The sprint views include sprint intelligence, scope/churn signals and a concise report to support review conversations.
 
-Output formats: **Markdown** (default), **Slack Block Kit** (`--format slack`),
-**Google Sheets rows** (`--format sheets`, `--push` to append to a Sheet).
+Output formats: **Markdown** (default), **Slack Block Kit** (`--format slack`) and **Google Sheets rows** (`--format sheets`, `--push` to append to a Sheet).
+
+## Product principles
+
+- **Team-level only.** No per-person metric exists in the data model. The tool is designed to support team improvement, not individual ranking.
+- **Local-first.** Computation happens on your machine. Offline mode makes zero network calls; live mode calls only the APIs you connect. No telemetry.
+- **Balanced indicators.** Speed is considered alongside effectiveness, quality and impact; no single metric is intended to stand alone.
+- **Honest numbers.** Change-failure figures are labelled by their basis (incident-linked or revert proxy). Effectiveness proxies carry a clear note when a DevEx pulse survey is not connected.
+- **Deterministic calculations.** Metric calculations and verdict bands are code, not LLM-generated scores.
 
 ## The 5-minute path
 
-1. `dhk` — no config? The sample-org demo renders: a Core-4 report, a
-   reliability digest, and a 3-team scorecard. Never an empty screen.
-2. `dhk connect github` — paste a repo-read token; it validates, auto-discovers
-   your repos, saves config (`~/.config/dhk/config.json`, 0600), and **runs
-   your first real report right there**.
-3. A setup checklist shows what each further connection unlocks:
-   `GitHub ✓ · Jira ○ · PagerDuty ○ · Sentry ○ · Prometheus ○` — one source is
-   enough; each one enriches.
+1. Run `dhk` with no configuration to explore the sample report, reliability digest and three-team scorecard.
+2. Run `dhk connect github`; the CLI validates a repo-read token, discovers repositories, saves local configuration and runs the first report.
+3. Add other sources as needed. One source is enough to start; each additional connection enriches the report.
 
-Zero-config defaults, correct-after not configure-before: repos = all
-discoverable; deploys = merges to your default branch (orgs with a real deploy
-log configure `bigquery-dora` instead); incident = PagerDuty triggered.
+Configuration is stored locally at `~/.config/dhk/config.json` with restrictive file permissions.
 
-## Adapts to your stack (the adapter principle)
+## Adapts to your stack
 
-The metric maths is the standard — DORA 2024, DX Core 4, SPACE — and never
-varies by org. Everything org-specific is config with sensible presets:
+The metric definitions are intended to remain consistent; organisation-specific details are configured through adapters and presets.
 
-- **Deploy signal:** merges-to-main (default, zero-config) · BigQuery deploy
-  log (your table/query, your schema) · fix/revert flags from PR titles.
-- **Prometheus metric shape:** `micrometer` preset (Spring) ·
-  `prometheus-http` preset (client_golang) · or name your own series + labels.
-- **Jira taxonomy:** work-categorisation types/labels are configurable;
-  sprint-scope fields are optional and derived when present.
-- **Hosts:** self-hosted Sentry, regional PagerDuty, any PromQL endpoint.
+- **Deploy signal:** merges to the default branch (zero-config) or a BigQuery deployment log.
+- **Prometheus metric shape:** Micrometer and client_golang presets, or custom series and labels.
+- **Jira taxonomy:** configurable work-categorisation types and labels; sprint-scope fields are optional.
+- **Hosts:** self-hosted Sentry, regional PagerDuty and PromQL-compatible endpoints.
 
-## Offline by default, live when connected
+## Integrations
 
-Every compute function is pure; fixtures and live fetchers feed the same
-assembly path. `pnpm test` (107 tests) exercises all the maths offline against
-hand-checked fixtures — no network, no credentials, mocked fetch for every live
-path. The committed `fixtures/sample-org/` (fictional "Nimbus Labs", 3 teams ×
-7 sources) is generated deterministically by `scripts/generate-sample-org.mjs`.
-
-| Source | Live status | Needs |
+| Source | Current implementation status | Needs |
 | --- | --- | --- |
-| GitHub | wired (`connect github`) | token with repo read |
-| PagerDuty | wired (`connect pagerduty`) | read-only API key |
-| Sentry | wired (`connect sentry`) | org + auth token |
-| Prometheus | wired (`connect prometheus` + per-service SLO config) | PromQL URL |
-| BigQuery deploys | wired (config: table or custom query) | GCP project + token |
-| Jira | compute + sprint model ready; REST fetcher documented, not bundled | `connect jira` stores creds |
-| Slack post / Sheets push | wired (optional peer dep / REST) | bot token / OAuth token |
+| GitHub | Live integration | Token with repository read access |
+| PagerDuty | Live integration | Read-only API key |
+| Sentry | Live integration | Organisation and auth token |
+| Prometheus | Live integration, with per-service SLO configuration | PromQL URL |
+| BigQuery deploys | Live integration via table or custom query configuration | GCP project and token |
+| Jira | Computation and sprint model ready; REST fetcher documented but not bundled | Jira credentials |
+| Slack / Google Sheets | Optional output integrations | Bot token / OAuth token |
+
+## Engineering approach
+
+Every compute function is pure; fixtures and live fetchers feed the same assembly path. The offline test suite exercises calculations against hand-checked fixtures, without requiring credentials or network access.
+
+The project includes sequential CI gates (typecheck, lint, test and build), a separate end-to-end job that drives the built CLI, coverage and bundle-size ratchets, a pre-push hook, a committed secret-scan test and a standing reviewer.
+
+The standing reviewer uses a **human-owned rubric** covering:
+
+- Claims matching the actual implementation.
+- Tests exercising real behaviour.
+- Security and input handling.
+- No committed secrets.
+- Adherence to the requested specification.
+- Documentation that accurately describes current behaviour and limitations.
+
+The reviewer is advisory. It can recommend ACCEPT or REJECT, but a human owns the rubric and makes the final decision.
+
+## An iterative approach to engineering and AI
+
+Baseline is part of a broader body of work built up through repeated problem-solving.
+
+I have often started by identifying a specific engineering problem and building a small, focused tool or script to address it — including early single-purpose utilities for sprint reporting, delivery insight and engineering workflows. Those experiments were used to test ideas, learn what was useful and shape the next iteration.
+
+The current project brings those lessons together in a more comprehensive, maintainable application. AI-assisted development with Claude, alongside my own starter templates, prompts and engineering harnesses, has helped accelerate implementation, explore alternatives and expand testing.
+
+The engineering direction remains human-led: identifying the problem, choosing the approach, shaping the architecture, reviewing generated work, challenging assumptions and deciding what is ready to keep. AI is used as an engineering multiplier, not as a substitute for ownership or judgement.
+
+This repository is an accumulation of that work and learning, rather than a claim that the current implementation was deployed unchanged in previous companies.
 
 ## Development
 
 ```bash
-pnpm typecheck && pnpm lint && pnpm test   # the gates CI runs
-pnpm build && pnpm size && pnpm e2e        # built-CLI smoke + size ratchet
-pnpm review                                # standing reviewer (local Ollama)
+pnpm typecheck && pnpm lint && pnpm test
+pnpm build && pnpm size && pnpm e2e
+pnpm review
 ```
 
-Built on the `ai-starter` standard: sequential CI gates (typecheck → lint →
-test → build) plus a separate **e2e job** driving the built CLI, a **coverage
-ratchet enforced in CI** (thresholds recorded in `vitest.config.ts`, floor only
-rises), a **size ratchet**, a `pre-push` hook that mirrors CI exactly, a
-committed secret-scan test, and the standing reviewer
-(`scripts/review.mjs` + `docs/review-rubric.md`).
+The demo uses committed synthetic data in `fixtures/sample-org/`, generated deterministically by `scripts/generate-sample-org.mjs`.
 
-## Status & roadmap
+## Status and roadmap
 
-- ✅ v1: demo-first onboarding, GitHub → Core-4 report, reliability digest,
-  scorecard, sprint model, Markdown/Slack/Sheets output.
-- ◻ Jira live fetcher bundled into `--live`.
-- ◻ DevEx pulse survey (completes Core 4's Effectiveness/DXI).
-- ◻ "AI-readiness" view (2025 DORA capabilities: version-control maturity,
-  small batches, platform quality).
-- ◻ Benchmarks vs DORA tiers · period/trend comparison · export/API for
-  internal developer portals.
+- ✅ Demo-first onboarding and GitHub → Core-4 report.
+- ✅ Reliability digest, scorecard and sprint model.
+- ✅ Markdown, Slack and Sheets output paths.
+- ◻ Bundle the Jira live fetcher into `--live`.
+- ◻ Add a DevEx pulse survey to complete the Effectiveness/DXI measure.
+- ◻ Explore an AI-readiness view based on DORA capability signals.
+- ◻ Add period/trend comparison and export/API support for internal developer portals.
 
-## Part of the suite
+## Licence
 
-One engine, many products — eight local-first developer tools, one build
-standard, one safety philosophy.
-
-- **[moss](../moss)** — local-first AI CLI: routes prompts across model
-  providers, runs safety-gated skills, all on your machine.
-- **[relay](../relay)** — calm, confident Smartling translation review, right
-  in your browser; only ever does what you could do by hand.
-- **[quarry](../quarry)** — local-first code-RAG: ask any codebase a question,
-  answered and cited from the code itself, no cloud, no API key.
-- **[marshal](../marshal)** — code-grounded ticket intelligence built on
-  Quarry: routes and rewrites raw tickets into ready-to-work specs.
-- **delivery-health-kit (Baseline, `dhk`)** — engineering-health insight your
-  team installs in five minutes; DORA and delivery metrics, data never leaves
-  your machine.
-- **[ai-starter](../ai-starter)** — three opinionated starter templates so
-  every new project begins with the right shape.
-- **[document-migration-pipeline](../document-migration-pipeline)** —
-  local-first pipeline that turns scattered non-code files into inspectable,
-  reviewed Markdown.
-- **[sweep](../sweep)** — a macOS CLI that plans (never auto-executes) the
-  cleanup of your account traces across sites you're leaving behind.
-
-## License
-
-Unlicensed (all rights reserved) while private — licensing is decided at
-go-public.
+Unlicensed (all rights reserved) while private. Licensing is to be decided if the project is made public.
