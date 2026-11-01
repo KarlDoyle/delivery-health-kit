@@ -224,4 +224,5 @@ describe("dhk connect github (mocked fetch — no real API calls)", () => {
     };
     const report = await runReport({ live: true, quiet: true }, { fetch: mockFetch });
     expect(report).toContain("1 deploys over 14 days.");
-  });});
+  });
+});
