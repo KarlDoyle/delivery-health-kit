@@ -8,7 +8,7 @@ It is designed to help engineering leaders understand how work flows, where fric
 
 ![build](https://img.shields.io/badge/build-CI%20gated-brightgreen?style=flat-square)
 ![local-first](https://img.shields.io/badge/local--first-yes-a78bfa?style=flat-square)
-![licence](https://img.shields.io/badge/licence-UNLICENSED-slategray?style=flat-square)
+![licence](https://img.shields.io/badge/licence-MIT-green?style=flat-square)
 
 _Product name: **Baseline** · npm package: `eng-baseline` · CLI: `dhk`_
 
@@ -139,4 +139,4 @@ The demo uses committed synthetic data in `fixtures/sample-org/`, generated dete
 
 ## Licence
 
-Unlicensed (all rights reserved) while private. Licensing is to be decided if the project is made public.
+Licensed under the MIT License. The package remains marked private in npm metadata.

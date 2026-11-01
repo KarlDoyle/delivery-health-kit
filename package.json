@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "description": "Engineering-health insight your team installs in five minutes — DORA, delivery and on-call metrics as DX Core 4, team-level only, and your data never leaves your machine. Runs fully offline against committed synthetic fixtures.",
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": true,
   "packageManager": "pnpm@11.5.2",
   "bin": {
