@@ -6,8 +6,9 @@ import type { DeployEvent } from "./dora.js";
 export interface BigQueryDoraConfig {
   projectId: string;
   authToken: string;
+  /** Table columns: repo STRING, built_at TIMESTAMP, deployed_at TIMESTAMP, is_revert BOOL, is_fix BOOL, service STRING. */
   table?: string;
-  /** Complete SQL returning repo, built_at, deployed_at, is_revert, is_fix, service. */
+  /** Complete SQL returning repo, built_at, deployed_at, is_revert, is_fix, service in that order. */
   query?: string;
   periodDays: number;
 }
