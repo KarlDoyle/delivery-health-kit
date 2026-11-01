@@ -65,7 +65,7 @@ Output formats: **Markdown** (default), **Slack Block Kit** (`--format slack`) a
 3. For deployment data from BigQuery, run `dhk connect bigquery` and provide a GCP project, OAuth access token and deployment table (`dataset.table` or `project.dataset.table`). A custom SQL query can be supplied with `--query` or `BIGQUERY_QUERY` instead.
 4. Add other sources as needed. BigQuery takes precedence over GitHub merge-based deployment estimates when configured; if the BigQuery query fails, the CLI warns and falls back to GitHub merges.
 
-The equivalent environment overrides are `BIGQUERY_PROJECT_ID`, `BIGQUERY_AUTH_TOKEN`, and either `BIGQUERY_TABLE` or `BIGQUERY_QUERY`. `BIGQUERY_AUTH_TOKEN` should be a short-lived OAuth access token (for example, generated with `gcloud auth print-access-token`).
+The equivalent environment overrides are `BIGQUERY_PROJECT_ID`, `BIGQUERY_AUTH_TOKEN`, and either `BIGQUERY_TABLE` or `BIGQUERY_QUERY`. `BIGQUERY_AUTH_TOKEN` should be a short-lived OAuth access token (for example, generated with `gcloud auth print-access-token`). The table must contain `repo` (STRING), `built_at` and `deployed_at` (TIMESTAMP), `is_revert` and `is_fix` (BOOL), and `service` (STRING); `is_fix` and `service` may be NULL. A custom query must return those six columns in that order.
 
 Configuration is stored locally at `~/.config/dhk/config.json` with restrictive file permissions.
 
