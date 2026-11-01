@@ -6,7 +6,7 @@ Baseline (`dhk`) brings delivery, reliability and engineering-effectiveness sign
 
 It is designed to help engineering leaders understand how work flows, where friction is building and where improvement may be needed — without turning engineering metrics into individual performance scores.
 
-![build](https://img.shields.io/badge/build-CI%20gated-brightgreen?style=flat-square)
+[GitHub Actions workflows](https://github.com/KarlDoyle/delivery-health-kit/actions)
 ![local-first](https://img.shields.io/badge/local--first-yes-a78bfa?style=flat-square)
 ![licence](https://img.shields.io/badge/licence-MIT-green?style=flat-square)
 
