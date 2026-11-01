@@ -135,24 +135,51 @@ describe("dhk connect github (mocked fetch — no real API calls)", () => {
         query: "SELECT repo, built_at, deployed_at, is_revert FROM deploys",
       },
     });
-    let called = false;
-    let githubFallbackCalled = false;
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const builtAt = String(nowSeconds - 2 * 24 * 60 * 60);
+    const deployedAt = String(nowSeconds - 24 * 60 * 60);
     const mockFetch: typeof globalThis.fetch = async (input, init) => {
       const url = String(input);
       if (url.includes("bigquery.googleapis.com")) {
-        called = true;
         expect(url).toContain("/projects/acme-prod/queries");
         expect(JSON.parse(String(init?.body)).query).toBe(
           "SELECT repo, built_at, deployed_at, is_revert FROM deploys",
         );
-        return new Response(JSON.stringify({ jobComplete: true, rows: [] }), { status: 200 });
+        return new Response(
+          JSON.stringify({
+            jobComplete: true,
+            rows: [
+              { f: [{ v: "acme/web" }, { v: builtAt }, { v: deployedAt }, { v: "false" }] },
+              { f: [{ v: "acme/api" }, { v: builtAt }, { v: deployedAt }, { v: "false" }] },
+            ],
+          }),
+          { status: 200 },
+        );
       }
-      githubFallbackCalled = true;
-      return new Response(JSON.stringify([]), { status: 200 });
+      if (url.includes("/pulls?state=closed")) {
+        return new Response(
+          JSON.stringify([
+            {
+              number: 1,
+              title: "One merged PR",
+              created_at: new Date((nowSeconds - 3 * 24 * 60 * 60) * 1000).toISOString(),
+              merged_at: new Date((nowSeconds - 24 * 60 * 60) * 1000).toISOString(),
+              updated_at: new Date((nowSeconds - 24 * 60 * 60) * 1000).toISOString(),
+              user: { login: "dev" },
+            },
+          ]),
+          { status: 200 },
+        );
+      }
+      if (url.includes("/reviews")) return new Response(JSON.stringify([]), { status: 200 });
+      if (url.endsWith("/pulls/1")) {
+        return new Response(JSON.stringify({ additions: 10, deletions: 2 }), { status: 200 });
+      }
+      throw new Error(`Unexpected mock request: ${url}`);
     };
-    await runReport({ live: true, quiet: true }, { fetch: mockFetch });
-    expect(called).toBe(true);
-    expect(githubFallbackCalled).toBe(false);
+    const report = await runReport({ live: true, quiet: true }, { fetch: mockFetch });
+    // GitHub still supplies PR-flow metrics, but the DORA deployment count comes from BigQuery.
+    expect(report).toContain("2 deploys over 14 days.");
   });
 
   it("falls back to GitHub merges when the configured BigQuery query fails", async () => {
