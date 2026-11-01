@@ -38,7 +38,11 @@ export async function fetchBigQueryDeploys(
     return null;
   }
 
-  if (!config.query && config.table && !/^[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_]+){1,2}$/.test(config.table)) {
+  if (
+    !config.query &&
+    config.table &&
+    !/^[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_]+){1,2}$/.test(config.table)
+  ) {
     logger?.warn("BigQuery table must be dataset.table or project.dataset.table");
     return null;
   }
