@@ -112,7 +112,7 @@ describe("bigquery-dora (mocked fetch — no real GCP calls)", () => {
       );
 
     const out = await fetchBigQueryDeploys(
-      { projectId: "p", authToken: "t", table: "t", periodDays: 14 },
+      { projectId: "p", authToken: "t", table: "d.t", periodDays: 14 },
       { logger, fetch: mockFetch },
     );
     expect(out?.[0]).toMatchObject({
@@ -136,7 +136,7 @@ describe("bigquery-dora (mocked fetch — no real GCP calls)", () => {
       );
 
     const out = await fetchBigQueryDeploys(
-      { projectId: "p", authToken: "t", table: "t", periodDays: 14 },
+      { projectId: "p", authToken: "t", table: "d.t", periodDays: 14 },
       { logger, fetch: mockFetch },
     );
     expect(out).toEqual([]);
@@ -148,7 +148,7 @@ describe("bigquery-dora (mocked fetch — no real GCP calls)", () => {
       throw new Error("ECONNRESET");
     };
     const out = await fetchBigQueryDeploys(
-      { projectId: "p", authToken: "t", table: "t", periodDays: 14 },
+      { projectId: "p", authToken: "t", table: "d.t", periodDays: 14 },
       { logger: { ...logger, warn }, fetch: failingFetch },
     );
     expect(out).toBeNull();
@@ -179,6 +179,34 @@ describe("bigquery-dora (mocked fetch — no real GCP calls)", () => {
     expect(seen).toHaveLength(2);
     expect(seen[1]).toContain("pageToken=page-2");
     expect(seen[1]).toContain("location=EU");
+  });
+
+  it("polls an incomplete query job before reading its results", async () => {
+    const seen: string[] = [];
+    const mockFetch: typeof globalThis.fetch = async (input, init) => {
+      const url = String(input);
+      seen.push(url);
+      if (init?.method === "POST") {
+        return new Response(
+          JSON.stringify({ jobComplete: false, jobReference: { jobId: "job-pending", location: "US" } }),
+          { status: 200 },
+        );
+      }
+      return new Response(
+        JSON.stringify({
+          jobComplete: true,
+          rows: [{ f: [{ v: "acme/web" }, { v: "1782000000" }, { v: "1782003600" }, { v: "false" }] }],
+        }),
+        { status: 200 },
+      );
+    };
+    const out = await fetchBigQueryDeploys(
+      { projectId: "p", authToken: "t", table: "deploys.history", periodDays: 14 },
+      { logger, fetch: mockFetch },
+    );
+    expect(out).toHaveLength(1);
+    expect(seen).toHaveLength(2);
+    expect(seen[1]).toContain("/queries/job-pending?location=US");
   });
 
   it("returns null for a BigQuery API error even when HTTP status is 200", async () => {
