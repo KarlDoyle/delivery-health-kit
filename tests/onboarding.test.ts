@@ -126,6 +126,7 @@ describe("dhk connect github (mocked fetch — no real API calls)", () => {
   it("uses configured BigQuery deployment data for live reports", async () => {
     await saveUserConfig({
       team: "Atlas",
+      github: { token: "github-token", repos: ["acme/web"] },
       bigquery: {
         projectId: "acme-prod",
         authToken: "secret-token",
@@ -133,15 +134,45 @@ describe("dhk connect github (mocked fetch — no real API calls)", () => {
       },
     });
     let called = false;
+    let githubFallbackCalled = false;
     const mockFetch: typeof globalThis.fetch = async (input, init) => {
-      called = true;
-      expect(String(input)).toContain("/projects/acme-prod/queries");
-      expect(JSON.parse(String(init?.body)).query).toBe(
-        "SELECT repo, built_at, deployed_at, is_revert FROM deploys",
-      );
-      return new Response(JSON.stringify({ jobComplete: true, rows: [] }), { status: 200 });
+      const url = String(input);
+      if (url.includes("bigquery.googleapis.com")) {
+        called = true;
+        expect(url).toContain("/projects/acme-prod/queries");
+        expect(JSON.parse(String(init?.body)).query).toBe(
+          "SELECT repo, built_at, deployed_at, is_revert FROM deploys",
+        );
+        return new Response(JSON.stringify({ jobComplete: true, rows: [] }), { status: 200 });
+      }
+      githubFallbackCalled = true;
+      return new Response(JSON.stringify([]), { status: 200 });
     };
     await runReport({ live: true, quiet: true }, { fetch: mockFetch });
     expect(called).toBe(true);
+    expect(githubFallbackCalled).toBe(false);
+  });
+
+  it("falls back to GitHub merges when the configured BigQuery query fails", async () => {
+    await saveUserConfig({
+      team: "Atlas",
+      github: { token: "github-token", repos: ["acme/web"] },
+      bigquery: {
+        projectId: "acme-prod",
+        authToken: "secret-token",
+        table: "deploys.history",
+      },
+    });
+    let githubFallbackCalled = false;
+    const mockFetch: typeof globalThis.fetch = async (input) => {
+      const url = String(input);
+      if (url.includes("bigquery.googleapis.com")) {
+        return new Response(JSON.stringify({ error: { message: "access denied" } }), { status: 200 });
+      }
+      if (url.includes("/repos/acme/web/pulls")) githubFallbackCalled = true;
+      return new Response(JSON.stringify([]), { status: 200 });
+    };
+    await runReport({ live: true, quiet: true }, { fetch: mockFetch });
+    expect(githubFallbackCalled).toBe(true);
   });
 });
