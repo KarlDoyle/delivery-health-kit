@@ -96,20 +96,25 @@ export async function fetchBigQueryDeploys(
   });
   if (!page) return null;
 
-  // A query can return before its job has completed. Poll the same job endpoint.
+  const rows: BigQueryRow[] = [...(page.rows ?? [])];
+  const jobId = page.jobReference?.jobId;
+  const jobUrl = jobId ? new URL(`${baseUrl}/${encodeURIComponent(jobId)}`) : null;
+  if (jobUrl && page.jobReference?.location) {
+    jobUrl.searchParams.set("location", page.jobReference.location);
+  }
+
+  // A query can return before its job has completed. Poll the job-results endpoint.
   if (page.jobComplete === false) {
-    const jobId = page.jobReference?.jobId;
-    if (!jobId) {
+    if (!jobUrl) {
       logger?.warn("BigQuery query is incomplete but returned no job ID");
       return null;
     }
-    const pollUrl = new URL(`${baseUrl}/${encodeURIComponent(jobId)}`);
-    if (page.jobReference?.location) pollUrl.searchParams.set("location", page.jobReference.location);
     let complete = false;
     for (let attempt = 0; attempt < 30; attempt++) {
       await new Promise((resolve) => setTimeout(resolve, 500));
-      const polled = await request(pollUrl.toString());
+      const polled = await request(jobUrl.toString());
       if (!polled) return null;
+      rows.push(...(polled.rows ?? []));
       page = polled;
       if (page.jobComplete !== false) {
         complete = true;
@@ -122,7 +127,6 @@ export async function fetchBigQueryDeploys(
     }
   }
 
-  const rows: BigQueryRow[] = [...(page.rows ?? [])];
   let pageToken = page.pageToken;
   const seenTokens = new Set<string>();
   // BigQuery pages are bounded; the guard protects against broken/repeating tokens.
@@ -132,9 +136,12 @@ export async function fetchBigQueryDeploys(
       return null;
     }
     seenTokens.add(pageToken);
-    const nextUrl = new URL(baseUrl);
+    if (!jobUrl) {
+      logger?.warn("BigQuery returned a page token without a query job ID");
+      return null;
+    }
+    const nextUrl = new URL(jobUrl);
     nextUrl.searchParams.set("pageToken", pageToken);
-    if (page.jobReference?.location) nextUrl.searchParams.set("location", page.jobReference.location);
     const next = await request(nextUrl.toString());
     if (!next) return null;
     rows.push(...(next.rows ?? []));
