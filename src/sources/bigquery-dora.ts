@@ -70,7 +70,16 @@ export async function fetchBigQueryDeploys(
     });
     if (!response) return null;
     const body = (await response.json().catch(() => null)) as BigQueryResponse | null;
-    if (!body || typeof body !== "object" || body.error) {
+    if (
+      !body ||
+      typeof body !== "object" ||
+      Array.isArray(body) ||
+      body.error ||
+      (body.rows !== undefined && !Array.isArray(body.rows)) ||
+      (body.pageToken !== undefined && typeof body.pageToken !== "string") ||
+      (body.jobComplete !== undefined && typeof body.jobComplete !== "boolean") ||
+      (body.rows === undefined && body.jobComplete === undefined && body.jobReference === undefined)
+    ) {
       logger?.warn("BigQuery returned an invalid response", { error: body?.error?.message });
       return null;
     }
