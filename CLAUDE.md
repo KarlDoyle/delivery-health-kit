@@ -1,17 +1,7 @@
-# moss
+# CLAUDE.md — Baseline
 
-## Project
-Local-first AI CLI providing model routing, skills, MCP tool access, document
-intelligence, and opt-in memory. TypeScript and pnpm.
+Baseline is a local-first engineering delivery and reliability reporting CLI (`dhk`).
 
-## Rules
-- Route subprocess calls through `src/lib/exec.ts`.
-- Route filesystem access through `src/lib/paths.ts`.
-- Route network calls through `src/lib/net.ts` and preserve its host allowlist.
-- Never store or print secrets; keep provider credentials in the configured secure store.
-- Keep tests and typechecking green before changes are proposed for merge.
+The canonical project instructions are in [AGENTS.md](AGENTS.md). Read that file before changing code, fixtures, integrations or reporting behaviour. The [README](README.md) describes the user-facing product and its current limitations.
 
-## Reader-facing docs
-Keep README, FIRST_RUN, OPERATOR_GUIDE, LIMITATIONS, and FUTURE accurate and
-free of internal planning notes. Keep the command list and flags aligned with
-`src/cli.ts`.
+Keep metrics team-level, maintain the distinction between measured signals and proxies, avoid secrets or employer data in commits, and run the quality gates specified in AGENTS.md before proposing changes.
