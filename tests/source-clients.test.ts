@@ -237,7 +237,10 @@ describe("sentry (mocked fetch — no real Sentry API calls)", () => {
     const mockFetch: typeof globalThis.fetch = async (input) => {
       calls++;
       const url = String(input);
-      if (url.startsWith("https://sentry.io/api/0/organizations/acme/issues/?") && url.includes("cursor=next-page")) {
+      if (
+        url.startsWith("https://sentry.io/api/0/organizations/acme/issues/?") &&
+        url.includes("cursor=next-page")
+      ) {
         return new Response(
           JSON.stringify([
             {
