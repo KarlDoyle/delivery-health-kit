@@ -16,6 +16,23 @@ const deploy = (over: Partial<DeployEvent>): DeployEvent => ({
   ...over,
 });
 
+describe("empty DORA windows", () => {
+  it("marks an empty deployment window as unavailable rather than Elite", () => {
+    const empty = computeDoraMetrics([], 14);
+    expect(empty.noData).toBe(true);
+    expect(empty.totalDeploys).toBe(0);
+    expect(empty.classes.changeFailureRate).not.toBe("Elite");
+  });
+
+  it("marks a window with only out-of-period deployments as unavailable", () => {
+    const empty = computeDoraMetrics([deploy({ deployedAt: "2026-03-01T11:00:00Z" })], 14, {
+      now: Date.parse("2026-06-29T12:00:00Z"),
+    });
+    expect(empty.noData).toBe(true);
+    expect(empty.totalDeploys).toBe(0);
+  });
+});
+
 describe("rework rate (DORA 2024)", () => {
   it("counts fix and revert deploys as rework, flag-based only", () => {
     const deploys = [deploy({}), deploy({ isFix: true }), deploy({ isRevert: true }), deploy({})];
