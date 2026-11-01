@@ -718,7 +718,10 @@ async function connectSimple(
     );
   } else if (source === "bigquery") {
     const projectId =
-      flag("project") ?? process.env.BIGQUERY_PROJECT_ID ?? existing.bigquery?.projectId ?? (await prompt("GCP project ID: "));
+      flag("project") ??
+      process.env.BIGQUERY_PROJECT_ID ??
+      existing.bigquery?.projectId ??
+      (await prompt("GCP project ID: "));
     const authToken =
       flag("auth-token") ??
       process.env.BIGQUERY_AUTH_TOKEN ??
@@ -736,10 +739,15 @@ async function connectSimple(
     if (!table && !query) {
       throw new Error("BigQuery requires --table or --query (or BIGQUERY_TABLE / BIGQUERY_QUERY).");
     }
-    if (table && !query && !/^[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_]+){1,2}$/.test(table)) {
+    if (table && !query && !/^[A-Za-z0-9_-]+(?:\.[A-Za-z0-9_]+){1,2}$/.test(table)) {
       throw new Error("BigQuery table must be dataset.table or project.dataset.table.");
     }
-    existing.bigquery = { projectId: projectId.trim(), authToken: authToken.trim(), table, query };
+    existing.bigquery = {
+      projectId: projectId.trim(),
+      authToken: authToken.trim(),
+      table,
+      query,
+    };
   } else if (source === "jira") {
     const baseUrl =
       flag("base-url") ?? (await prompt("Jira base URL (https://you.atlassian.net): "));
