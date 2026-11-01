@@ -30,16 +30,17 @@ async function runPagination(nextLink: string) {
 }
 
 describe("Sentry pagination URL validation", () => {
-  const endpoint =
-    "https://sentry.example.test/api/0/organizations/acme/issues/";
+  const endpoint = "https://sentry.example.test/api/0/organizations/acme/issues/";
 
   it("follows a same-origin next link for the same API endpoint", async () => {
     const next = `${endpoint}?cursor=next`;
     const { requests } = await runPagination(link(next));
 
     expect(requests).toHaveLength(2);
-    expect(requests[1]!.url).toBe(next);
-    expect(requests[1]!.authorization).toBe("Bearer sentry-test-token");
+    const secondRequest = requests[1];
+    if (!secondRequest) throw new Error("Expected second pagination request");
+    expect(secondRequest.url).toBe(next);
+    expect(secondRequest.authorization).toBe("Bearer sentry-test-token");
   });
 
   it("resolves a relative next link against the current API endpoint", async () => {
@@ -47,20 +48,33 @@ describe("Sentry pagination URL validation", () => {
     const { requests } = await runPagination(link(next));
 
     expect(requests).toHaveLength(2);
-    expect(new URL(requests[1]!.url).searchParams.get("cursor")).toBe("next");
-    expect(requests[1]!.url).toContain("/api/0/organizations/acme/issues/");
+    const secondRequest = requests[1];
+    if (!secondRequest) throw new Error("Expected second pagination request");
+    expect(new URL(secondRequest.url).searchParams.get("cursor")).toBe("next");
+    expect(secondRequest.url).toContain("/api/0/organizations/acme/issues/");
   });
 
   it.each([
-    ["external host", "https://attacker.example.test/api/0/organizations/acme/issues/?cursor=steal"],
-    ["different port", "https://sentry.example.test:8443/api/0/organizations/acme/issues/?cursor=steal"],
-    ["different API path", "https://sentry.example.test/api/0/organizations/other/issues/?cursor=steal"],
+    [
+      "external host",
+      "https://attacker.example.test/api/0/organizations/acme/issues/?cursor=steal",
+    ],
+    [
+      "different port",
+      "https://sentry.example.test:8443/api/0/organizations/acme/issues/?cursor=steal",
+    ],
+    [
+      "different API path",
+      "https://sentry.example.test/api/0/organizations/other/issues/?cursor=steal",
+    ],
   ])("does not follow a next link with a %s", async (_reason, unsafeUrl) => {
     const { requests, issues } = await runPagination(link(unsafeUrl));
 
     expect(issues).toEqual([]);
     expect(requests).toHaveLength(1);
-    expect(requests[0]!.authorization).toBe("Bearer sentry-test-token");
+    const firstRequest = requests[0];
+    if (!firstRequest) throw new Error("Expected initial request");
+    expect(firstRequest.authorization).toBe("Bearer sentry-test-token");
   });
 
   it("ignores malformed next URLs without making another request", async () => {
