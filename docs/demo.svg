@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="1120" viewBox="0 0 1120 1120" role="img" aria-labelledby="title desc">
+<title id="title">Baseline offline demo — Orion</title>
+<desc id="desc">Actual CLI output excerpt from pnpm dhk demo --quiet, using committed fictional sample data. Long lines are wrapped. Shows delivery flow and the effectiveness proxy note.</desc>
+<rect width="1120" height="1120" rx="12" fill="#101827"/>
+<g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15" fill="#e2e8f0">
+<text x="24" y="36" fill="#93c5fd" xml:space="preserve">$ pnpm dhk demo --quiet</text>
+<text x="24" y="66" fill="#e2e8f0" xml:space="preserve"></text>
+<text x="24" y="96" fill="#93c5fd" xml:space="preserve"># Delivery Health — Orion</text>
+<text x="24" y="126" fill="#e2e8f0" xml:space="preserve"></text>
+<text x="24" y="156" fill="#e2e8f0" xml:space="preserve">_Period: last 14 days · generated 2026-06-29 · mode: offline_ · `team-level only · your data stays on your</text>
+<text x="24" y="186" fill="#e2e8f0" xml:space="preserve">  machine`</text>
+<text x="24" y="216" fill="#e2e8f0" xml:space="preserve"></text>
+<text x="24" y="246" fill="#e2e8f0" xml:space="preserve">**TL;DR:** 14 tickets / 51 pts · 22 PRs merged · DORA: deploy elite · 10 support requests.</text>
+<text x="24" y="276" fill="#e2e8f0" xml:space="preserve"></text>
+<text x="24" y="306" fill="#93c5fd" xml:space="preserve">## Speed</text>
+<text x="24" y="336" fill="#e2e8f0" xml:space="preserve"></text>
+<text x="24" y="366" fill="#e2e8f0" xml:space="preserve">| Metric | Value | DORA class |</text>
+<text x="24" y="396" fill="#e2e8f0" xml:space="preserve">| --- | --- | --- |</text>
+<text x="24" y="426" fill="#e2e8f0" xml:space="preserve">| Deployment frequency | 1.5/day | Elite |</text>
+<text x="24" y="456" fill="#e2e8f0" xml:space="preserve">| Lead time for changes | 15.5h | Elite |</text>
+<text x="24" y="486" fill="#e2e8f0" xml:space="preserve"></text>
+<text x="24" y="516" fill="#e2e8f0" xml:space="preserve">21 deploys over 14 days.</text>
+<text x="24" y="546" fill="#e2e8f0" xml:space="preserve"></text>
+<text x="24" y="576" fill="#e2e8f0" xml:space="preserve">- PR cycle time (open → merge): **14.2h** avg</text>
+<text x="24" y="606" fill="#e2e8f0" xml:space="preserve">- Time to first review: **3.5h** avg (the feedback loop)</text>
+<text x="24" y="636" fill="#e2e8f0" xml:space="preserve">- PRs merged: 22</text>
+<text x="24" y="666" fill="#e2e8f0" xml:space="preserve"></text>
+<text x="24" y="696" fill="#93c5fd" xml:space="preserve">## Effectiveness</text>
+<text x="24" y="726" fill="#e2e8f0" xml:space="preserve"></text>
+<text x="24" y="756" fill="#e2e8f0" xml:space="preserve">- Avg PR size: **224 lines** (batch-size health — smaller flows faster)</text>
+<text x="24" y="786" fill="#e2e8f0" xml:space="preserve">- Where the work landed: payments (14), checkout (8)</text>
+<text x="24" y="816" fill="#e2e8f0" xml:space="preserve">- Ticket lead time (in-progress → done): avg 2.1d, median 2.6d, p90 3.6d</text>
+<text x="24" y="846" fill="#e2e8f0" xml:space="preserve"></text>
+<text x="24" y="876" fill="#c4b5fd" xml:space="preserve">&gt; Effectiveness is fully measured with a DevEx pulse survey (DXI) — not yet connected.</text>
+<text x="24" y="906" fill="#c4b5fd" xml:space="preserve">&gt; The figures above are system-side proxies.</text>
+</g>
+</svg>
