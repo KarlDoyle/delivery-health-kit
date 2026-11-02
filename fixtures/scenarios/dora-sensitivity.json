@@ -1,0 +1,136 @@
+{
+  "description": "Fictional deployment and incident records for deterministic period and CFR-basis comparisons.",
+  "asOf": "2026-06-30T12:00:00Z",
+  "coverageStart": "2026-05-31T12:00:00Z",
+  "coverageEnd": "2026-06-30T12:00:00Z",
+  "deploys": [
+    {
+      "repo": "web",
+      "service": "web",
+      "builtAt": "2026-06-02T09:00:00Z",
+      "deployedAt": "2026-06-02T12:00:00Z",
+      "isRevert": false
+    },
+    {
+      "repo": "api",
+      "service": "api",
+      "builtAt": "2026-06-04T12:00:00Z",
+      "deployedAt": "2026-06-04T14:00:00Z",
+      "isRevert": false
+    },
+    {
+      "repo": "web",
+      "service": "web",
+      "builtAt": "2026-06-07T08:00:00Z",
+      "deployedAt": "2026-06-07T12:00:00Z",
+      "isRevert": true
+    },
+    {
+      "repo": "api",
+      "service": "api",
+      "builtAt": "2026-06-10T10:00:00Z",
+      "deployedAt": "2026-06-10T14:00:00Z",
+      "isRevert": false,
+      "isFix": true
+    },
+    {
+      "repo": "web",
+      "service": "web",
+      "builtAt": "2026-06-13T08:00:00Z",
+      "deployedAt": "2026-06-13T12:00:00Z",
+      "isRevert": false
+    },
+    {
+      "repo": "api",
+      "service": "api",
+      "builtAt": "2026-06-16T10:00:00Z",
+      "deployedAt": "2026-06-16T13:00:00Z",
+      "isRevert": false
+    },
+    {
+      "repo": "web",
+      "service": "web",
+      "builtAt": "2026-06-19T08:00:00Z",
+      "deployedAt": "2026-06-19T13:00:00Z",
+      "isRevert": true
+    },
+    {
+      "repo": "api",
+      "service": "api",
+      "builtAt": "2026-06-21T08:00:00Z",
+      "deployedAt": "2026-06-21T12:00:00Z",
+      "isRevert": false
+    },
+    {
+      "repo": "web",
+      "service": "web",
+      "builtAt": "2026-06-23T10:00:00Z",
+      "deployedAt": "2026-06-23T14:00:00Z",
+      "isRevert": false
+    },
+    {
+      "repo": "api",
+      "service": "api",
+      "builtAt": "2026-06-25T08:00:00Z",
+      "deployedAt": "2026-06-25T12:00:00Z",
+      "isRevert": false,
+      "isFix": true
+    },
+    {
+      "repo": "web",
+      "service": "web",
+      "builtAt": "2026-06-27T09:00:00Z",
+      "deployedAt": "2026-06-27T13:00:00Z",
+      "isRevert": false
+    },
+    {
+      "repo": "api",
+      "service": "api",
+      "builtAt": "2026-06-29T08:00:00Z",
+      "deployedAt": "2026-06-29T11:00:00Z",
+      "isRevert": false
+    }
+  ],
+  "incidents": [
+    {
+      "id": "SYN-1",
+      "title": "Synthetic API incident",
+      "status": "resolved",
+      "createdAt": "2026-06-16T15:00:00Z",
+      "acknowledgedAt": "2026-06-16T15:10:00Z",
+      "resolvedAt": "2026-06-16T15:30:00Z",
+      "urgency": "high",
+      "service": "api"
+    },
+    {
+      "id": "SYN-2",
+      "title": "Synthetic web incident after revert",
+      "status": "resolved",
+      "createdAt": "2026-06-19T14:00:00Z",
+      "acknowledgedAt": "2026-06-19T14:10:00Z",
+      "resolvedAt": "2026-06-19T15:30:00Z",
+      "urgency": "high",
+      "service": "web"
+    },
+    {
+      "id": "SYN-3",
+      "title": "Synthetic low-urgency API event",
+      "status": "resolved",
+      "createdAt": "2026-06-21T13:00:00Z",
+      "acknowledgedAt": "2026-06-21T13:20:00Z",
+      "resolvedAt": "2026-06-21T14:00:00Z",
+      "urgency": "low",
+      "service": "api"
+    },
+    {
+      "id": "SYN-4",
+      "title": "Synthetic API incident",
+      "status": "resolved",
+      "createdAt": "2026-06-25T15:00:00Z",
+      "acknowledgedAt": "2026-06-25T15:10:00Z",
+      "resolvedAt": "2026-06-25T17:00:00Z",
+      "urgency": "high",
+      "service": "api"
+    }
+  ]
+}
