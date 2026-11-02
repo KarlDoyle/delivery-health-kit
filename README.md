@@ -128,6 +128,8 @@ The standing reviewer uses a **human-owned rubric** covering:
 
 The reviewer is advisory. It can recommend ACCEPT or REJECT, but a human owns the rubric and makes the final decision.
 
+Implementation evidence: [architecture](docs/architecture.md), [metric definitions and limits](docs/metrics-and-proxies.md), [scenario results](docs/metric-scenarios.md), and [test strategy](docs/testing.md). The human review gate is described in the [review rubric](docs/review-rubric.md).
+
 ## An iterative approach to engineering and AI
 
 Baseline is part of a broader body of work built up through repeated problem-solving.

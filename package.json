@@ -20,6 +20,7 @@
     "lint:fix": "biome check --write .",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
+    "eval:scenarios": "node --import tsx/esm scripts/eval-scenarios.ts",
     "build": "tsc -p tsconfig.build.json",
     "e2e": "bash scripts/e2e-smoke.sh",
     "size": "node scripts/check-size.mjs",
