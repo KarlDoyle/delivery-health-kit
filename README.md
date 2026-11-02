@@ -1,10 +1,8 @@
 # Baseline
 
-**Engineering health and delivery insight for better team decisions.**
+**Team-level delivery and reliability signals for engineering leaders.**
 
-Baseline (`dhk`) brings delivery, reliability and engineering-effectiveness signals into one team-level report, using the tools an engineering organisation already has.
-
-It is designed to help engineering leaders understand how work flows, where friction is building and where improvement may be needed — without turning engineering metrics into individual performance scores.
+Baseline (`dhk`) brings delivery flow, incidents and support load into local reports that help engineering leaders identify bottlenecks and choose what to investigate. It uses existing engineering data, labels proxies explicitly and reports at team level.
 
 [GitHub Actions workflows](https://github.com/KarlDoyle/delivery-health-kit/actions)
 ![local-first](https://img.shields.io/badge/local--first-yes-a78bfa?style=flat-square)
@@ -14,20 +12,26 @@ _Product name: **Baseline** · CLI: `dhk` · npm publishing is currently disable
 
 **Status:** Release-ready, as assessed by the maintainer. The repository remains private, and the package is not published to npm.
 
-## Try it
+## Try the offline demo
+
+Requires Node.js ≥22.13 and pnpm.
 
 ```bash
 pnpm install
 pnpm dhk demo
 ```
 
-Run the offline demo before connecting any services. To use your own engineering data, install the source checkout's dependencies and connect GitHub:
+After dependencies are installed, the demo runs without credentials or network access. It shows a delivery report, reliability digest and three-team scorecard using committed, deterministic synthetic data.
+
+![Baseline offline demo for fictional team Orion, showing delivery frequency, lead time, PR flow and the effectiveness proxy note](docs/demo.svg)
+
+_Excerpt from `pnpm dhk demo --quiet`; fictional sample data, with dates anchored to the fixtures._
+
+To try your own GitHub data:
 
 ```bash
 pnpm dhk connect github
 ```
-
-The committed sample organisation is fictional and deterministic. It lets you explore the report without credentials or network access.
 
 ## Architecture at a glance
 
@@ -45,7 +49,13 @@ flowchart TD
 
 The same calculation path processes synthetic demo fixtures and live data from configured integrations. Calculations run locally; connecting services or pushing output explicitly exchanges data with those services. The diagram shows the core flow, not every optional integration or command.
 
-## What it measures
+## What Baseline measures—and what it does not
+
+Baseline summarises recorded delivery activity, incidents, errors and support requests. PR timestamps and incident counts describe activity directly; their interpretation depends on source coverage.
+
+Live delivery reports use PR merges as a deployment proxy: frequency counts merges, and “lead time for changes” measures PR open-to-merge time. These are not verified production deployments or commit-to-production lead times. PR size and ticket flow are proxies for engineering effectiveness; work mix and throughput do not establish business impact.
+
+Baseline does not measure individual productivity, developer experience through a survey, or business outcomes. Its scorecard is a rule-based summary of available signals, not a validated measure of team performance. Use results to guide investigation, with comparable periods and source coverage. See [metric definitions and limits](docs/metrics-and-proxies.md).
 
 **`dhk report` — the delivery report (DX Core 4):**
 
@@ -53,16 +63,18 @@ The same calculation path processes synthetic demo fixtures and live data from c
 | --- | --- |
 | **Speed** | Deployment frequency · lead time for changes (DORA 2024 classes) · PR cycle time · time-to-first-review |
 | **Effectiveness** | PR/batch size · ticket lead-time percentiles, labelled as system-side proxies |
-| **Quality** | Change failure rate (incident-linked when PagerDuty is connected, labelled proxy otherwise) · rework rate · failed-deployment recovery time |
+| **Quality** | Change failure rate (live report: revert proxy) · rework rate |
 | **Impact** | Feature-vs-maintenance split · tickets/story points · support drag (unplanned load) |
 
 **`dhk digest` — the reliability digest:**
 
 | Section | Metrics |
 | --- | --- |
-| **Incidents** (PagerDuty) | Count · urgency/severity mix · time-to-detect · recovery time (create→resolve, median/p90) · on-call load by service and out-of-hours share |
+| **Incidents** (PagerDuty) | Count · urgency/severity mix · time-to-acknowledge (labelled time-to-detect in output) · recovery time (create→resolve, median/p90) · on-call load by service and out-of-hours share |
 | **Errors** (Sentry) | Unresolved issues · new this period · by project/level |
 | **SLOs** (Prometheus) | Per-service availability and p95 latency vs targets · attainment roll-up |
+
+The digest calculations also support incident-linked CFR and failed-deployment recovery when deployment and incident records are supplied together, as in the offline fixtures. The live digest does not currently ingest deployments.
 
 Additional commands include `dhk scorecard`, `dhk sprint-health`, `dhk sprint-trend`, `dhk support-drag` and `dhk risky-ticket`. The sprint views include sprint intelligence, scope/churn signals and a concise report to support review conversations.
 
@@ -88,7 +100,7 @@ Configuration is stored locally at `~/.config/dhk/config.json` with restrictive 
 
 The metric definitions are intended to remain consistent; organisation-specific details are configured through adapters and presets.
 
-- **Deploy signal:** live reports use merges to the default branch as a deployment proxy. A merge is not proof that a production deployment occurred; connect a deployment-event source when authoritative deployment data is available.
+- **Deploy signal:** live reports derive deployment signals from merged PRs. Production deployment ingestion is not currently wired into the CLI; the BigQuery adapter exists separately. A merge is not proof of a production release.
 - **Prometheus metric shape:** Micrometer and client_golang presets, or custom series and labels.
 - **Jira taxonomy:** configurable work-categorisation types and labels; sprint-scope fields are optional.
 - **Hosts:** self-hosted Sentry, regional PagerDuty and PromQL-compatible endpoints.
@@ -115,7 +127,7 @@ In engineering management, the hard part of metrics is rarely producing another 
 
 Every compute function is pure; fixtures and live fetchers feed the same assembly path. The offline test suite exercises calculations against hand-checked fixtures, without requiring credentials or network access.
 
-The project includes sequential CI gates (typecheck, lint, test and build), a separate end-to-end job that drives the built CLI, coverage and bundle-size ratchets, a pre-push hook, a committed secret-scan test and a standing reviewer.
+The project includes sequential CI gates (typecheck, lint, test and build), a separate end-to-end job that drives the built CLI, coverage thresholds and a build-size budget, a pre-push hook, a committed secret-scan test and a standing reviewer.
 
 The standing reviewer uses a **human-owned rubric** covering:
 
@@ -141,6 +153,20 @@ The current project brings those lessons together in a more comprehensive, maint
 The engineering direction remains human-led: identifying the problem, choosing the approach, shaping the architecture, reviewing generated work, challenging assumptions and deciding what is ready to keep. AI is used as an engineering multiplier, not as a substitute for ownership or judgement.
 
 This repository is an accumulation of that work and learning, rather than a claim that the current implementation was deployed unchanged in previous companies.
+
+## Testing and quality gates
+
+Tests cover fixture-based calculations, deterministic demo output, mocked API responses and failure handling, report formatting, CLI guards and local configuration. Built-CLI smoke checks exercise help, demo, report, digest, scorecard and Sheets-row output.
+
+CI runs typechecking, lint, tests with enforced coverage thresholds, build and size checks on Node 22 and 24, followed by a separate end-to-end job. These checks do not validate real service credentials, production API behaviour or metric usefulness in a deployed organisation.
+
+Run the complete gate locally:
+
+```bash
+pnpm typecheck && pnpm lint && pnpm test && pnpm build && pnpm size && pnpm e2e
+```
+
+The pre-push hook runs through the size check; run `pnpm e2e` separately. See [testing details](docs/testing.md).
 
 ## Development
 

@@ -131,7 +131,7 @@ function qualitySection(dora?: DoraMetrics): string | null {
   if (dora.cfrBasis === "revert-proxy") {
     lines.push(
       "",
-      "_CFR shown as a revert-based proxy — connect PagerDuty for the incident-linked figure._",
+      "_CFR shown as a revert-based proxy. Incident-linked calculation requires deployment and incident records together; connecting PagerDuty does not upgrade the live delivery report._",
     );
   }
   return lines.join("\n");
