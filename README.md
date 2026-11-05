@@ -10,7 +10,7 @@ Baseline (`dhk`) brings delivery flow, incidents and support load into local rep
 
 _Product name: **Baseline** · CLI: `dhk` · npm publishing is currently disabled._
 
-**Status:** Release-ready, as assessed by the maintainer. The repository remains private, and the package is not published to npm.
+**Status:** Release-ready, as assessed by the maintainer. The repository is public; the package is not published to npm.
 
 ## Try the offline demo
 
